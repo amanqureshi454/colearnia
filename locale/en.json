@@ -1,0 +1,118 @@
+{
+  "Navbar": {
+    "Home": "Study Circles",
+    "How it work": "How it works",
+    "About Us": "About Us",
+    "Blog": "Blog",
+    "Contact": "Contact us",
+    "Pricing": "Pricing",
+    "create-account": "Create an account",
+    "Login": "Sign in"
+  },
+  "Hero": {
+    "Title": "Turn learning into a team game",
+    "CTA_Button": "Join for Free",
+    "How-it": "How Study Circle Works ?",
+    "Subtitle": "Choose quizzes tailored to Qatar’s curriculum, join study groups, and engage in educational competitions together."
+  },
+  "about": {
+    "Title": "What is Study Circle?",
+    "subtitle": "Study Circle is a fun, smart, and flexible platform where learning happens together.",
+    "for-Tech-Title": "For Teachers",
+    "for-Teacher-Sub": "Study Circle helps teachers manage their classes, organize quizzes by subject and topic, and run team-based learning sessions. It offers real-time feedback, detailed analytics, and clear insights for every student, class, and topic.",
+    "for-Teacher-CTA-1": "Let’s get started",
+    "for-Teacher-CTA-2": "Explore more",
+    "for-Student-Title": "For Students",
+    "for-Student-Sub": "Students join Study Circle through an invite from their teacher, or create their own circles. Once inside, they can see their upcoming assignments, collaborate with classmates, and complete quizzes as a team. They also get their own profile with progress tracking, badges, and placement in the class."
+  },
+  "Pricing": {
+    "pricingOptions": {
+      "title": "Plans Tailored to Your Needs",
+      "description": "Study Circle is a fun, smart, and flexible platform where learning happens together."
+    }
+  },
+  "Footer": {
+    "headline": "Empowering Retail & Dining with Seamless Digital Experiences",
+    "description": "Jood Pay is your unified platform for smart ordering, fast payments, and intelligent engagement—built for restaurants, cafés, and retail stores.",
+    "cta": "Get in Touch",
+    "ctaDescription": "Ready to transform your business? get in touch with us for a demo",
+    "address": "Madfuat Aljood Co. UN 7033558235, Jeddah, Saudi Arabia"
+  },
+  "how-it-work": {
+    "Title": "A smarter way to teach & learn",
+    "Subtitle": "We’re a team of educators, designers, and tech lovers who believe in the power of learning together. We’re building a better classroom one circle at a time.",
+    "CTA_Button": "Join for Free",
+    "description": "Create engaging, collaborative learning experiences, track student progress in real time, and motivate learners through gamified quizzes and analytics.",
+    "description2": "learn more effectively by practicing with peers in study circles, earning rewards through gamified quizzes, and tracking their own progress and achievements.",
+    "Feature-Title": " Study Circle Features",
+    "Feature-Description": "Everything is designed to make collaborative learning smooth and powerful.Study Circle combines structure and flexibility—exactly what modern learning needs.",
+    "Feature-title-1": "Real-time chat collaboration",
+    "Feature-title-2": "Student dashboard",
+    "Feature-title-3": "Detailed analytics",
+    "Feature-title-4": "Flexible circle creation",
+    "feature-chat": "In study circles groups can disscuss, plan, and answer together for better engagement.",
+    "feature-analytics": "Goals, badges, assignments and progress; a personalized space to monitor growth and stay on track.",
+    "feature-bar": "By subject, topic, student, and class. Every layer of performance is tracked and visualized for clarity.",
+    "feature-share": "For teachers & students, form study circles anytime, with full control and easy editing.",
+    "tech-card-1": "Sign up & select your school.",
+    "tech-card-2": "Create or choose a quiz",
+    "tech-card-3": "Assign it to a class",
+    "tech-card-4": "Track results",
+    "tech-card-desc-1": "Quickly register and connect to your educational institution.",
+    "tech-card-desc-2": "Build custom quizzes or pick from ready-made ones, perfectly organized.",
+    "tech-card-desc-3": "Easily group students into teams for collaborative quiz sessions.",
+    "tech-card-desc-4": "Get deep insights with clear, interactive analytics at every level.",
+    "student-card-1": "Receive an invite by email ",
+    "student-card-2": "Join a collaborative study circle",
+    "student-card-3": "join a challenge study circle",
+    "student-card-4": "See your performance",
+    "student-card-desc-1": "Access your Study Circle account with one simple click.",
+    "student-card-desc-2": "Collaborate live with your team and discuss questions before submitting.",
+    "student-card-desc-3": "Chat with your team, think fast, and challenge each other!",
+    "student-card-desc-4": "Track your rank and earn badges as you progress."
+  },
+  "About": {
+    "Title": "The Mission Behind the Study Circles",
+    "Subtitle": "We’re a team of educators, designers, and tech lovers who believe in the power of learning together.We’re building a better classroom — one circle at a time.",
+    "CTA_Button": "Join for Free",
+    "our-mission": "Our Mission",
+    "Contact-btn": "Contact us",
+    "get-started-btn": "Get started",
+    "What Makes Us Different ?": "What Makes Us Different ?",
+    "Different-sub": "We’re not just a quiz platform. We’re your learning partner.",
+    "different-title-1": "Empower teachers",
+    "different-subtitle-1": "We empower teachers with easy quiz creation, group management, and smart insights.",
+    "different-title-2": "Motivate students",
+    "different-subtitle-2": "We motivate students with gamified features like badges, goals, and leaderboards.",
+    "different-title-3": "Structure learning",
+    "different-subtitle-3": "We structure learning by breaking content into topics and sub-topics—so nothing is missed.",
+    "different-title-4": "Localized Learning",
+    "different-subtitle-4": "Designed to fit your educational environment. Fully aligned with the national curriculum followed in Qatar.",
+    "our-mission-sub": "We believe learning is not a solo journey Study Circle was created to bring collaboration, clarity, and engagement into classrooms using technology that adapts to how people really learn."
+  },
+  "Contact": {
+    "Title": "Built for Educators & Learners",
+    "Subtitle": "Whether you're a teacher, student, school, or partner, we’re here to support you every step of the way.",
+    "CTA_Button": "Send Message"
+  },
+  "Blog": {
+    "Title": "Learning That Works",
+    "category": "Category",
+    "subtitle-blog": "Discover how analytics can enhance teaching effectiveness and support the learning experience in study circles",
+    "blog-card-heading": "How to use analytics in teaching in study circles",
+    "blog-title": "Latest articles",
+    "Subtitle": "Our blog is where we share smart, practical ideas to help educators and students thrive. Whether you're just starting or already deep into group-based learning, there’s something here for you."
+  },
+  "Articles": [
+    {
+      "id": 1,
+      "title": "🌍 Collaborative Learning: Achieving More, Together!",
+      "description": "Collaborative learning is more than just studying in groups — it is about building knowledge together. When students share ideas, challenge each other's thinking, and solve problems as a team, they gain deeper understanding and stronger communication skills. Teachers play a key role in guiding this process by creating activities that encourage teamwork, discussion, and reflection. For students, working collaboratively improves critical thinking, creativity, and confidence. For teachers, it provides a chance to see different perspectives and identify where students need more support. Together, collaborative learning makes education an active, engaging, and rewarding journey.",
+      "imageUrl": "/images/png/blog- (1).png",
+      "category": "Case Studies",
+      "author": "Sarah Johnson",
+      "date": "Oct 24, 2025",
+      "categories": ["case-studies", "classroom"]
+    }
+  ]
+}
