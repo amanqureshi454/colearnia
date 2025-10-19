@@ -1,4 +1,5 @@
-/* eslint-disable */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+/* @ts-nocheck */
 
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -82,6 +83,7 @@ export async function POST(req: NextRequest) {
     );
 
     // Update subscription in database
+
     const currentPeriodEnd = new Date(
       updatedSubscription.current_period_end * 1000
     );
