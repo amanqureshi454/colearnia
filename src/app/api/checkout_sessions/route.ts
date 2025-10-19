@@ -4,6 +4,15 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
+type CheckoutRequestBody = {
+  plan: string;
+  duration: string;
+  email: string;
+  locale?: string;
+  token?: string;
+  promoCode?: string;
+  discountPercentage?: string | number;
+};
 
 export async function POST(req: NextRequest) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -15,12 +24,14 @@ export async function POST(req: NextRequest) {
 
   const stripe = new Stripe(secretKey, { apiVersion: "2025-06-30.basil" });
 
-  let requestData: any = {};
+  let requestData: CheckoutRequestBody = {} as CheckoutRequestBody;
   try {
-    requestData = req ? await req.json() : {};
+    requestData = req
+      ? ((await req.json()) as CheckoutRequestBody)
+      : ({} as CheckoutRequestBody);
   } catch (err) {
     console.error("Failed to parse request JSON:", err);
-    requestData = {};
+    requestData = {} as CheckoutRequestBody;
   }
 
   const plan = requestData?.plan;
@@ -64,7 +75,7 @@ export async function POST(req: NextRequest) {
     } catch {}
   }
 
-  const sessionData: any = {
+  const sessionData: Stripe.Checkout.SessionCreateParams = {
     mode: "subscription",
     payment_method_types: ["card"],
     line_items: [{ price: priceId, quantity: 1 }],
