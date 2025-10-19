@@ -32,6 +32,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
   const [subscription, setSubscription] = useState<SubscriptionData | null>(
     null
   );
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [selectedPriceId, setSelectedPriceId] = useState<string | null>(null);
 
   const currentPlans = pricingData.plans[currentTab];
@@ -231,7 +232,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
 
   const normalize = (str: string) => str?.toLowerCase().replace(/\s|_/g, "");
 
-  console.log(subscription);
+  // console.log(subscription);
   return (
     <div
       ref={pricingRef}
@@ -254,13 +255,13 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
             subscription?.status === "active" &&
             normalize(subscription?.plan) === normalize(plan.type) &&
             subscription?.duration === durationTab;
-          const isUserOnThisPlan = subscription?.plan === plan.type;
+          // const isUserOnThisPlan = subscription?.plan === plan.type;
           const isFreeStudentPlan = plan.type === "Student Free";
           const isFreeTeacherPlan = plan.type === "Teacher Free";
           const isFreePlan = isFreeStudentPlan || isFreeTeacherPlan;
           const isInstitutionPlan = plan.type === "Institution";
           const hasSubscription = !!subscription?.plan;
-          const isNewUser = !hasSubscription;
+          // const isNewUser = !hasSubscription;
           return (
             <div
               key={index}

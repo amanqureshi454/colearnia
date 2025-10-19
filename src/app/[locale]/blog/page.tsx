@@ -7,6 +7,14 @@ import Image from "next/image";
 import BlogCard from "@/components/shared/BlogCard";
 import { useHeroReveal } from "@/lib/useHeroReveal";
 import { useSectionReveal } from "@/lib/useBlogCard";
+interface Article {
+  id: string;
+  title: string;
+  description: string;
+  imageUrl: string;
+  category: string;
+  date: string;
+}
 
 const Page = () => {
   const [selectedCategory, setSelectedCategory] = useState("All");
@@ -20,7 +28,9 @@ const Page = () => {
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
   // ✅ Fetch articles from translations
-  const allArticles = t.raw("Articles") || [];
+  const allArticles = useMemo(() => {
+    return t.raw("Articles") || [];
+  }, [t]);
 
   // Animate hero only once
   useHeroReveal({
@@ -38,22 +48,22 @@ const Page = () => {
   });
 
   // Memoized categories
+  // Unique categories
   const uniqueCategories = useMemo(() => {
     if (!allArticles || allArticles.length === 0) return ["All"];
     const categories = Array.from(
-      new Set(allArticles.map((a: any) => a.category))
+      new Set((allArticles as Article[]).map((a) => a.category))
     );
     return ["All", ...categories];
   }, [allArticles]);
 
-  // Memoized filtered articles
+  // Filtered articles
   const filteredArticles = useMemo(() => {
     if (!allArticles || allArticles.length === 0) return [];
     return selectedCategory === "All"
-      ? allArticles
-      : allArticles.filter(
-          (a: any) =>
-            a.category.toLowerCase() === selectedCategory.toLowerCase()
+      ? (allArticles as Article[])
+      : (allArticles as Article[]).filter(
+          (a) => a.category.toLowerCase() === selectedCategory.toLowerCase()
         );
   }, [selectedCategory, allArticles]);
 
@@ -162,7 +172,7 @@ const Page = () => {
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {filteredArticles.length > 0 ? (
-            filteredArticles.map((article: any) => (
+            filteredArticles.map((article: Article) => (
               <BlogCard
                 key={article.id}
                 title={article.title}

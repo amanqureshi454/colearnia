@@ -1,7 +1,6 @@
 /* eslint-disable react/no-unescaped-entities */
 "use client";
 import React, { useEffect, useState } from "react";
-import AuthLayout from "@/components/shared/AuthLayout";
 import { Button } from "@/components/ui/Button";
 import { Loader, User, GraduationCap, Eye, EyeOff } from "lucide-react";
 import Link from "next/link";
@@ -9,7 +8,6 @@ import { useRouter } from "next/navigation";
 import { getCities, getLevels, getSchools } from "@/services/locationService";
 import toast, { Toaster } from "react-hot-toast";
 import { useLocale } from "next-intl";
-import Image from "next/image";
 
 interface FormData {
   firstName: string;
