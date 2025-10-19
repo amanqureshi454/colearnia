@@ -13,7 +13,10 @@ type CheckoutRequestBody = {
   promoCode?: string;
   discountPercentage?: string | number;
 };
-
+type JwtPayload = {
+  userId: string;
+  // add any other fields you expect in the token
+};
 export async function POST(req: NextRequest) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey)
@@ -70,7 +73,7 @@ export async function POST(req: NextRequest) {
   let userId = null;
   if (token) {
     try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+      const decoded = jwt.verify(token, process.env.JWT_SECRET!) as JwtPayload;
       userId = decoded.userId;
     } catch {}
   }
