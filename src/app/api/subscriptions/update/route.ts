@@ -9,6 +9,9 @@ import jwt from "jsonwebtoken";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-06-30.basil",
 });
+interface MySubscription extends Stripe.Subscription {
+  current_period_end: number;
+}
 
 const PRICE_MAP: Record<string, string | undefined> = {
   pro_monthly: process.env.STRIPE_PRICE_ID_STUDENT_PRO_MONTHLY,
@@ -84,8 +87,14 @@ export async function POST(req: NextRequest) {
 
     // Update subscription in database
 
+    // const currentPeriodEnd = new Date(
+    //   updatedSubscription.current_period_end * 1000
+    // );
+    const updatedSubscriptionTyped =
+      updatedSubscription as unknown as MySubscription;
+
     const currentPeriodEnd = new Date(
-      updatedSubscription.current_period_end * 1000
+      updatedSubscriptionTyped.current_period_end * 1000
     );
 
     await db.collection("subscriptions").updateOne(
