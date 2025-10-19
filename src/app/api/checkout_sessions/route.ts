@@ -1,5 +1,6 @@
 /* eslint-disable */
 
+export const dynamic = "force-dynamic";
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
@@ -46,7 +47,7 @@ export async function POST(req: NextRequest) {
       token,
       promoCode,
       discountPercentage,
-    } = requestData;
+    } = requestData || {};
 
     console.log("📋 Creating checkout session:", {
       plan,
