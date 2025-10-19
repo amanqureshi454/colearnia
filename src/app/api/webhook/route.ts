@@ -106,9 +106,11 @@ async function handleCheckoutComplete(session: any, stripe: Stripe) {
     }
 
     const currentDate = new Date();
-    /* @ts-nocheck */
-    const periodEnd = subscriptionDetails?.current_period_end
-      ? new Date(subscriptionDetails.current_period_end * 1000)
+    const subscriptionTyped = subscriptionDetails as unknown as {
+      current_period_end?: number;
+    };
+    const periodEnd = subscriptionTyped.current_period_end
+      ? new Date(subscriptionTyped.current_period_end * 1000)
       : new Date(currentDate.getTime() + 30 * 24 * 60 * 60 * 1000);
 
     // Get promo code details from metadata
