@@ -14,6 +14,7 @@ const Navbar = () => {
   const locale = pathname?.split("/")[1] || "en";
   const [userEmail, setUserEmail] = useState<string | null>(null);
   const [mounted, setMounted] = useState(false);
+  const [isScrolled, setIsScrolled] = useState(false);
 
   useEffect(() => {
     setMounted(true);
@@ -36,6 +37,15 @@ const Navbar = () => {
       console.error("❌ Failed to parse user from localStorage:", error);
     }
   }, []);
+  // ✅ Scroll listener
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50); // when Y > 50
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
@@ -45,10 +55,10 @@ const Navbar = () => {
 
   const navLinks = [
     { label: t("Home"), href: "" },
-    { label: t("How it work"), href: "how-it-work" },
     { label: t("About Us"), href: "about-us" },
+    { label: t("How it work"), href: "how-it-work" },
     { label: t("Blog"), href: "blog" },
-    { label: t("Pricing"), href: "pricing" },
+    // { label: t("Pricing"), href: "pricing" },
     { label: t("Contact"), href: "contact" },
   ];
 
@@ -56,77 +66,82 @@ const Navbar = () => {
     <>
       <nav
         dir={isRTL ? "rtl" : "ltr"}
-        className={`fixed top-0 left-1/2 md:block ${
-          isRTL ? "font-cairo" : "font-melodyM"
-        } sm:hidden transform z-[199] bg-brand md:block -translate-x-1/2 py-2 h-[85px] w-full`}
+        className={`fixed top-0 lg:block sm:hidden left-1/2 transform -translate-x-1/2 z-[199] w-full py-2.5 transition-all duration-300 font-inter
+        ${
+          isScrolled
+            ? "bg-white/80 backdrop-blur-md shadow-sm"
+            : "bg-transparent"
+        }
+        `}
       >
-        <div className="w-full md:max-w-[95%] h-full flex justify-between items-center mx-auto">
+        <div className="w-full md:max-w-[85%]  h-full flex justify-between items-center mx-auto">
           <Link href={localizePath()} className="logo">
             <Image
               width={240}
               height={50}
               quality={100}
               src="/images/svg/logo.svg"
-              className="w-[240px] object-contain h-[42px]"
+              className="w-[200px] object-cover h-[55px]"
               alt="Study Circle Logo"
             />
           </Link>
 
-          <div className="links">
-            {mounted && (
-              <ul className="flex justify-center items-center w-max">
-                {navLinks.map((link, i) => {
-                  const fullHref = localizePath(link.href);
-                  const isActive =
-                    link.href === ""
-                      ? pathname === localizePath() ||
-                        pathname === `${localizePath()}/`
-                      : pathname.startsWith(fullHref);
+          <div className="flex gap-0 w-7/12 justify-between items-center ">
+            <div className="links w-max">
+              {mounted && (
+                <ul className="flex justify-center items-center w-max">
+                  {navLinks.map((link, i) => {
+                    const fullHref = localizePath(link.href);
+                    const isActive =
+                      link.href === ""
+                        ? pathname === localizePath() ||
+                          pathname === `${localizePath()}/`
+                        : pathname.startsWith(fullHref);
 
-                  return (
-                    <li key={i} className="font-normal px-3 py-1">
-                      <Link
-                        className={`hover-links leading-[150%] ${
-                          isActive ? "text-white" : "text-white/60"
-                        }`}
-                        href={fullHref}
-                      >
-                        {link.label}
-                      </Link>
-                    </li>
-                  );
-                })}
-              </ul>
-            )}
-          </div>
+                    return (
+                      <li key={i} className="font-normal px-3 py-1">
+                        <Link
+                          className={` hover:text-black font-normal text-sm leading-[150%] ${
+                            isActive ? "text-black" : "text-[#A6A6A6]"
+                          }`}
+                          href={fullHref}
+                        >
+                          {link.label}
+                        </Link>
+                      </li>
+                    );
+                  })}
+                </ul>
+              )}
+            </div>
+            <div className="flex w-max  items-center gap-3">
+              {userEmail ? (
+                <p className="text-sm text-white font-medium font-inter">
+                  {userEmail}
+                </p>
+              ) : (
+                <>
+                  <Link
+                    href={localizePath("signup")}
+                    className="cursor-pointer text-black text-sm px-2 py-2 flex justify-center items-center font-medium transition-transform duration-200 ease-in-out hover:scale-105"
+                  >
+                    {t("Login")}
+                  </Link>
 
-          <div className="btn flex justify-center items-center gap-3">
-            {userEmail ? (
-              <p className="text-sm text-white font-medium font-inter">
-                {userEmail}
-              </p>
-            ) : (
-              <>
-                <Link
-                  href={localizePath("signup")}
-                  className="bg-third cursor-pointer text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform duration-200 ease-in-out hover:scale-105"
-                >
-                  {t("create-account")}
-                </Link>
-
-                <Link
-                  href={localizePath("signin")}
-                  className="bg-secondary cursor-pointer text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform duration-200 ease-in-out hover:scale-105"
-                >
-                  {t("Login")}
-                </Link>
-              </>
-            )}
-            <LanguageSelector />
+                  <Link
+                    href={localizePath("signin")}
+                    className="bg-heading cursor-pointer text-sm text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform duration-200 ease-in-out hover:scale-105"
+                  >
+                    {t("create-account")}
+                  </Link>
+                </>
+              )}
+              <LanguageSelector />
+            </div>
           </div>
         </div>
       </nav>
-      <div className="w-full md:hidden sm:block">
+      <div className="w-full lg:hidden sm:block">
         <MobileMenu />
       </div>
     </>

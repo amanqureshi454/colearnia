@@ -1,80 +1,114 @@
 "use client";
 
-import { useSplitTextAnimation } from "@/lib/useSectionReveal";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
+import SectionHeader from "@/components/shared/HeadingWrapper";
+import SectionWrapper from "@/components/shared/SectionWrapper";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const HowItWork = () => {
-  const t = useTranslations("Hero");
-  const headingRef = useRef(null);
-  const imageWrapperRef = useRef(null);
+  const t = useTranslations("how-it-work");
+  const containerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
-  useSplitTextAnimation({
-    headingRef,
-    triggerId: "how-it-work",
-  });
+  // -------------------------------------------------
+  // 1. DATA – edit / extend this array only
+  // -------------------------------------------------
+  const features = [
+    {
+      id: 1,
+      image: "/images/svg/feature (2).svg",
+      title: t("feature.1.title"),
+      description: t("feature.1.description"),
+    },
+    {
+      id: 2,
+      image: "/images/svg/feature (1).svg",
+      title: t("feature.2.title"),
+      description: t("feature.2.description"),
+    },
+    {
+      id: 3,
+      image: "/images/svg/feature (3).svg",
+      title: t("feature.3.title"),
+      description: t("feature.3.description"),
+    },
+  ];
 
+  // -------------------------------------------------
+
+  // Card Reveal Animation
   useEffect(() => {
-    if (!imageWrapperRef.current) return;
+    if (!containerRef.current) return;
 
-    const ctx = gsap.context(() => {
-      gsap.set(imageWrapperRef.current, { opacity: 0, scale: 1.05, y: 100 });
-
-      gsap.to(imageWrapperRef.current, {
+    document.fonts.ready.then(() => {
+      const tl = gsap.timeline({
         scrollTrigger: {
-          trigger: imageWrapperRef.current,
-          start: "top 80%",
+          trigger: containerRef.current,
+          start: "top 85%",
         },
-        opacity: 1,
-        scale: 1,
-        y: 0,
-        duration: 0.8,
-        ease: "power2.out",
       });
-    }, imageWrapperRef); // ✅ scoped only to that ref
 
-    return () => ctx.revert();
+      const cards = containerRef.current?.querySelectorAll(".feature-card");
+      if (cards && cards.length > 0) {
+        tl.from(
+          cards,
+          {
+            opacity: 0,
+            y: 100,
+            duration: 1,
+            ease: "power1.out",
+            stagger: 0.18,
+          },
+          0
+        );
+      }
+    });
+
+    return () => {
+      ScrollTrigger.getAll().forEach((st) => st.kill());
+    };
   }, []);
 
   return (
     <div
       id="how-it-work"
-      className={`w-full h-full bg-brand ${
-        isRTL ? "font-cairo" : "font-melodyB"
-      } relative py-16`}
+      ref={containerRef}
+      className="w-full h-full relative z-40"
     >
-      <div dir={isRTL ? "rtl" : "ltr"} className="w-full h-full px-4">
-        <h1
-          ref={headingRef}
-          className="text-center text-third font-extrabold sm:text-4xl md:text-5xl"
-        >
-          {t("How-it")}
-        </h1>
-      </div>
+      <SectionWrapper>
+        <SectionHeader heading={t("Title")} subheading={t("Subtitle")} />
 
-      {/* ✅ Animate this visible wrapper */}
-      <div className="overflow-hidden">
-        <div
-          ref={imageWrapperRef}
-          className="w-full mt-5 flex justify-center opacity-0 transition-opacity duration-700"
-        >
-          <Image
-            src="/images/png/how-it.png"
-            alt="How it works"
-            width={1000}
-            height={500}
-            className="md:w-9/12 sm:w-full h-full object-cover"
-          />
+        {/* ---- LOOP OVER FEATURES ---- */}
+        <div className="flex flex-col tab:flex-row gap-8 md:gap-12 tab:mt-14 sm:mt-7 justify-center items-center overflow-hidden">
+          {features.map((feature) => (
+            <div
+              key={feature.id}
+              className="feature-card flex flex-col gap-2 items-center text-center"
+            >
+              <Image
+                alt={feature.title}
+                className="md:w-44 md:h-44 sm:w-32 sm:h-32 rounded-full object-cover"
+                width={176}
+                height={176}
+                src={feature.image}
+              />
+              <h2 className="font-inter font-semibold sm:text-xl tab:text-2xl md:text-3xl mt-4 text-heading">
+                {feature.title}
+              </h2>
+              <p className="font-inter font-medium sm:text-sm md:text-lg text-heading">
+                {feature.description}
+              </p>
+            </div>
+          ))}
         </div>
-      </div>
+      </SectionWrapper>
     </div>
   );
 };

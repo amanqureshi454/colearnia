@@ -1,14 +1,6 @@
 @import "tailwindcss";
 
 @font-face {
-  font-family: "Melody-bold";
-  src: url("/font/BLMelody-Bold.otf") format("opentype");
-  font-weight: 700;
-  font-style: normal;
-  font-display: swap;
-}
-
-@font-face {
   font-family: "Inter";
   src: url("/font/Inter.ttf") format("truetype");
   font-weight: 400;
@@ -23,31 +15,21 @@
   font-display: swap;
 }
 
-@font-face {
-  font-family: "Cairo";
-  src: url("/font/Cairo-VariableFont_slnt,wght.ttf") format("truetype");
-  font-weight: 500;
-  font-style: normal;
-  font-display: swap;
-}
 @theme inline {
-  --color-background: #fef2d9;
-  --color-brand: #1a233a;
+  --color-background: #193c51;
+  --color-brand: #76a136;
+  --color-heading: #193c51;
   --color-text-primary: #1a1a1a;
+  --color-paragraph: #8b8b8a;
 
-  --color-secondary: #760a21;
+  --color-secondary: #fc7a1a;
   --color-third: #cb9746;
 
-  --color-heading: #31303f;
-  /* --font-manrope: var(----font-manrope); */
-  --font-melodyB: "Melody-bold", sans-serif;
-  --font-melodyM: "Melody-medium", sans-serif;
   --font-cairo: "Cairo", sans-serif;
   --font-inter: "Inter", sans-serif;
 
-  --breakpoint-xl: 1600px;
   --breakpoint-lg: 1400px;
-  --breakpoint-md: 1024px;
+  --breakpoint-md: 1250px;
   --breakpoint-tab: 767px;
   --breakpoint-sm: 320px;
 
@@ -60,51 +42,29 @@
 
 /* globals.css */
 
+.arabic .font-inter {
+  font-family: "Cairo", sans-serif !important;
+}
+body {
+  font-family: "Inter", sans-serif;
+  direction: ltr;
+}
+
+/* When Arabic locale is active */
+body.arabic {
+  font-family: "Cairo", sans-serif !important;
+  direction: rtl;
+}
+
+/* Optional: override specific components */
+body.arabic .font-inter {
+  font-family: "Cairo", sans-serif !important;
+}
+/* Required for SplitText slide-in effect */
 .line {
   overflow: hidden;
+  display: block;
 }
-
-.hover-links {
-  display: inline-block;
-  vertical-align: middle;
-  -webkit-transform: perspective(1px) translateZ(0);
-  transform: perspective(1px) translateZ(0);
-  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
-  position: relative;
-  -webkit-transition-property: color;
-  transition-property: color;
-  -webkit-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-}
-
-.hover-links:before {
-  content: "";
-  position: absolute;
-  z-index: -1;
-  height: 1px;
-  left: 0;
-  right: 0;
-  bottom: 0;
-  background: #fff;
-  -webkit-transform: scaleX(0);
-  transform: scaleX(0);
-  -webkit-transform-origin: 0 50%;
-  transform-origin: 0 50%;
-  -webkit-transition-property: transform;
-  transition-property: transform;
-  -webkit-transition-duration: 0.5s;
-  transition-duration: 0.5s;
-  -webkit-transition-timing-function: ease-out;
-  transition-timing-function: ease-out;
-}
-
-.hover-links:hover:before,
-.hover-links:focus:before,
-.hover-links:active:before {
-  -webkit-transform: scaleX(1);
-  transform: scaleX(1);
-}
-
 .go-corner {
   display: flex;
   align-items: center;
@@ -266,4 +226,13 @@
 
 .footer-text a:hover {
   text-decoration: underline;
+}
+
+/* globals.css (or any global stylesheet) */
+/* ── Custom pill pagination ── */
+.swiper-pagination-custom .swiper-pagination-bullet {
+  @apply w-2 h-2 rounded-full bg-gray-300 opacity-100 transition-all duration-300;
+}
+.swiper-pagination-custom .swiper-pagination-bullet-active {
+  @apply w-[20px] bg-[#0A2E5A]; /* dark‑blue pill */
 }

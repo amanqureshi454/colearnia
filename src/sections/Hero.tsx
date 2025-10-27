@@ -5,15 +5,23 @@ import { useTranslations } from "next-intl";
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import SplitText from "gsap/SplitText";
-import { ArrowRight } from "lucide-react";
 import { usePathname } from "next/navigation";
+import { AnimatedTooltip } from "@/components/ui/animated-tooltip";
+import { people } from "@/data/testimonail";
+import Button from "@/components/shared/Button";
+import HeroHeadingTitle from "@/components/shared/HeroHeadingTitle";
+import HeroParagraph from "@/components/shared/HeroParagraph";
 
 // Register the plugin
 gsap.registerPlugin(SplitText);
 
 const Hero = () => {
   const t = useTranslations("Hero");
-  const headingRef = useRef(null);
+  const headingRef = useRef<HTMLHeadingElement>(null);
+  const arrowRef = useRef<HTMLImageElement>(null);
+  const watchBtnRef = useRef<HTMLDivElement>(null);
+  const videoRef = useRef<HTMLVideoElement>(null);
+  const testRef = useRef<HTMLDivElement>(null);
   const paraRef = useRef(null);
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
@@ -47,6 +55,16 @@ const Hero = () => {
       "-=0.2"
     );
 
+    tl.from(
+      arrowRef.current,
+      {
+        opacity: 0,
+        x: isRTL ? 50 : -50,
+        duration: 0.7,
+        ease: "power2.out",
+      },
+      "-=0.4"
+    );
     // Animate paragraph (after heading)
     tl.from(
       paraWords,
@@ -60,16 +78,40 @@ const Hero = () => {
       "-=0.5"
     ); // slight overlap for better flow
 
-    // Animate button
+    // CTA Buttons
     tl.from(
-      ".hero-button",
+      [".hero-button", watchBtnRef.current],
       {
         opacity: 0,
         y: 40,
         duration: 0.8,
-        ease: "power1",
+        ease: "power2.out",
+        stagger: 0.15,
       },
       "-=0.3"
+    );
+    tl.from(
+      testRef.current,
+      {
+        opacity: 0,
+        y: 40,
+        duration: 0.8,
+        ease: "power2.out",
+        stagger: 0.15,
+      },
+      "-=0.3"
+    );
+
+    // Video
+    tl.from(
+      videoRef.current,
+      {
+        opacity: 0,
+        scale: 1.05,
+        duration: 1.2,
+        ease: "power2.out",
+      },
+      "-=0.8"
     );
     tl.from(
       ".hero-bg-wrapper",
@@ -91,56 +133,76 @@ const Hero = () => {
   return (
     <>
       <div
-        className={`w-full  ${
-          isRTL ? "font-cairo" : "font-melodyB"
-        } h-full bg-background relative sm:pt-[150px] md:pt-[160px]`}
+        className={`w-full tab:h-screen bg-white relative sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] max-w-7xl mx-auto `}
       >
-        <div
-          dir={isRTL ? "rtl" : "ltr"}
-          className="relative z-20 gap-4 sm:px-4 mx-auto flex flex-col justify-center items-center"
-        >
-          <h1
-            ref={headingRef}
-            className="md:text-6xl sm:text-5xl leading-[1.2] font-bold text-brand text-center"
-          >
-            {t("Title")}
-          </h1>
-          <p
-            ref={paraRef}
-            className=" md:text-xl sm:text-lg opacity-80 sm:w-full md:w-5/12 text-center"
-          >
-            {t("Subtitle")}
-          </p>
-          <div className="overflow-hidden hero-button">
-            <button className="w-max  px-5 py-3.5 text-center transition-transform duration-200 ease-in-out hover:scale-105 cursor-pointer sm:text-lg md:text-2xl font-inter font-semibold flex justify-center items-center gap-3 bg-white/90 backdrop-blur-2xl rounded-lg">
-              {t("CTA_Button")}
-
-              <ArrowRight size={22} className="text-black" />
-            </button>
-          </div>
-        </div>
-        <div className="relative w-full z-10 md:h-[840px] sm:h-[550px] overflow-hidden px-5 ">
-          <div className="absolute md:h-[840px] sm:h-[550px] left-0 top-0 overflow-hidden w-full">
-            <div className="hero-bg-wrapper w-full h-full">
-              <Image
-                src="/images/png/hero-bg.png"
-                alt="Hero Background"
-                width={1000}
-                height={840}
-                className="w-full h-full object-cover"
-                priority
-              />
+        <div className="absolute bg-[#FFD6D6] sm:hidden block blur-[1000px] rounded-full w-[600px] h-[600px] -top-20 right-0"></div>
+        <div className="w-full h-full tab:pt-20 sm:pt-36 flex justify-center items-center">
+          <div className=" w-full h-[95%]">
+            <div className="flex tab:flex-row w-full sm:flex-col justify-between items-center lg:gap-6 sm:gap-5 h-full">
+              <div className="flex gap-2 tab:w-7/12 sm:w-full  flex-col">
+                <div className="flex gap-4 relative w-full z-20 flex-col">
+                  <HeroHeadingTitle
+                    headingRef={headingRef}
+                    isRTL={isRTL}
+                    t={t}
+                    className="your-extra-classes-here" // optional
+                  />
+                  <Image
+                    ref={arrowRef}
+                    src="/images/svg/arrow.svg"
+                    alt="Play"
+                    className="w-7/12 h-[55px] sm:object-contain  tab:object-cover"
+                    width={100}
+                    height={55}
+                  />
+                  <HeroParagraph
+                    paraRef={paraRef}
+                    isRTL={isRTL}
+                    t={t}
+                    className="your-extra-classes" // optional
+                  />
+                </div>
+                <div
+                  ref={watchBtnRef}
+                  className="flex flex-row flex-wrap tab:gap-4 sm:gap-2 mt-5"
+                >
+                  <Button text={t("CTA_Button")} />
+                  <button className="w-max px-6 sm:px-4 sm:py-3 text-center transition-transform duration-200 ease-in-out hover:scale-105  rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-semibold flex justify-center items-center gap-2 bg-transparent text-black">
+                    <Image
+                      src="/images/svg/play.svg"
+                      alt="Play"
+                      className="w-8 h-8 object-cover"
+                      width={28}
+                      height={28}
+                    />
+                    <span className="text-black">{t("Watch")}</span>
+                  </button>
+                </div>
+                <div
+                  ref={testRef}
+                  className="flex justify-start items-center mt-3 gap-4"
+                >
+                  <AnimatedTooltip items={people} />
+                  <p
+                    className={`text-sm  font-inter font-medium text-gray-500 ${
+                      isRTL ? "mr-8" : "ml-8"
+                    }`}
+                  >
+                    {t("Testimonials")}
+                  </p>
+                </div>
+              </div>
+              <div className="rounded-2xl tab:w-5/12 sm:w-full sm:h-[400px] tab:h-full relative z-30 aspect-square h-full">
+                <video
+                  ref={videoRef}
+                  src="/video/sectiontwo-video.mp4"
+                  className="w-full h-full object-cover rounded-2xl"
+                  muted
+                  loop
+                  playsInline
+                />
+              </div>
             </div>
-          </div>
-          <div className="absolute w-full h-full -bottom-64 left-0 z-20">
-            <Image
-              src="/images/png/line-3.png"
-              alt="Hero Background"
-              width={1000}
-              height={100}
-              className="w-full h-full object-contain"
-              priority
-            />
           </div>
         </div>
       </div>

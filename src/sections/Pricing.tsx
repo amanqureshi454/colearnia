@@ -9,6 +9,8 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import { Tab } from "@/components/ui/Tab";
 import SplitText from "gsap/SplitText";
 import Plan from "@/components/shared/Plan"; // Import the Plan component
+import SectionHeader from "@/components/shared/HeadingWrapper";
+import SectionWrapper from "@/components/shared/SectionWrapper";
 
 gsap.registerPlugin(ScrollTrigger, SplitText);
 
@@ -92,31 +94,8 @@ const Pricing = () => {
   }, []);
 
   return (
-    <div
-      ref={containerRef}
-      id="pricing"
-      className={`w-full h-full relative bg-background overflow-hidden py-16 px-4 ${
-        isRTL ? "font-cairo" : "font-melodyB"
-      }`}
-    >
-      <div dir={isRTL ? "rtl" : "ltr"} className="w-full text-center">
-        <h1
-          ref={headingRef}
-          className="text-brand font-extrabold sm:text-4xl md:text-[55px]"
-        >
-          {t("title")}
-        </h1>
-        <h2
-          ref={paraRef}
-          className={`text-brand text-second ${
-            isRTL
-              ? "font-cairo font-normal leading-[2]"
-              : "font-melodyM leading-[1.5]"
-          } font-medium mt-2 sm:text-sm md:text-lg`}
-        >
-          {t("description")}
-        </h2>
-      </div>
+    <SectionWrapper>
+      <SectionHeader heading={t("title")} subheading={t("description")} />
 
       <div ref={tab} className="tab">
         <Tab
@@ -143,9 +122,7 @@ const Pricing = () => {
 
       {/* Plan Component with Props */}
       <Plan currentTab={currentTab} durationTab={durationTab} />
-
-      <div className="absolute sm:hidden tab:block bg-[url('/images/svg/pricing.svg')] bottom-0 left-0 h-[500px] w-full bg-cover bg-no-repeat" />
-    </div>
+    </SectionWrapper>
   );
 };
 

@@ -1,35 +1,73 @@
 {
   "Navbar": {
-    "Home": "Study Circles",
+    "Home": "Home",
     "How it work": "How it works",
     "About Us": "About Us",
     "Blog": "Blog",
     "Contact": "Contact us",
     "Pricing": "Pricing",
-    "create-account": "Create an account",
-    "Login": "Sign in"
+    "create-account": "Join a circle",
+    "Login": "Login"
   },
   "Hero": {
-    "Title": "Turn learning into a team game",
-    "CTA_Button": "Join for Free",
-    "How-it": "How Study Circle Works ?",
-    "Subtitle": "Choose quizzes tailored to Qatar’s curriculum, join study groups, and engage in educational competitions together."
+    "Title": "Collaborative circles, fun missions, and clear progress.",
+    "CTA_Button": "Join a Circle Now",
+    "Watch": "Watch how it works",
+    "Testimonials": "Trusted by motivated students & educators",
+    "Subtitle": "Join classmates, practice with engaging challenges, and see your growth — so you never feel lost studying alone."
   },
   "about": {
-    "Title": "What is Study Circle?",
-    "subtitle": "Study Circle is a fun, smart, and flexible platform where learning happens together.",
-    "for-Tech-Title": "For Teachers",
-    "for-Teacher-Sub": "Study Circle helps teachers manage their classes, organize quizzes by subject and topic, and run team-based learning sessions. It offers real-time feedback, detailed analytics, and clear insights for every student, class, and topic.",
-    "for-Teacher-CTA-1": "Let’s get started",
-    "for-Teacher-CTA-2": "Explore more",
-    "for-Student-Title": "For Students",
-    "for-Student-Sub": "Students join Study Circle through an invite from their teacher, or create their own circles. Once inside, they can see their upcoming assignments, collaborate with classmates, and complete quizzes as a team. They also get their own profile with progress tracking, badges, and placement in the class."
+    "Title": "We understand the struggle  and we built a better way.",
+    "subtitle": "Created by educators and learners, StudyCircle helps students stay consistent, collaborate with peers, and feel proud of their progress.",
+    "AboutCTA1": "Start your journey",
+    "AboutCTA2": "Meet the team",
+    "features": [
+      "Collaborate in real-time with peers",
+      "Track your progress and achievements",
+      "Engage with gamified quizzes and challenges"
+    ]
+  },
+  "SimpleStep": {
+    "Title": "A simple plan to get results",
+    "Subtitle": "Without clear practice and feedback, students waste time, lose focus, and fall behind.",
+    "StartFree": "Start Free",
+    "step": {
+      "1": {
+        "title": "Join a Circle",
+        "description": "Find classmates who share your goals."
+      },
+      "2": {
+        "title": "Practice Missions",
+        "description": "Complete fun quizzes and challenges together."
+      },
+      "3": {
+        "title": "Track Progress",
+        "description": "See your improvement and celebrate milestones."
+      }
+    }
   },
   "Pricing": {
     "pricingOptions": {
-      "title": "Plans Tailored to Your Needs",
-      "description": "Study Circle is a fun, smart, and flexible platform where learning happens together."
+      "title": "Choose Plan That’s Right For You",
+      "description": "Choose plan that works best for you, feel free to contact us"
     }
+  },
+  "FAQ": {
+    "Title": "Questions? answered",
+    "question": [
+      {
+        "question": "What is a circle?",
+        "answer": "A small, supportive group of learners with shared goals and weekly missions."
+      },
+      {
+        "question": "What are missions?",
+        "answer": "Short, focused practice tasks designed to build skills and keep you on track."
+      },
+      {
+        "question": "Can I start for free?",
+        "answer": "Yes! You can join a circle and try missions completely free."
+      }
+    ]
   },
   "Footer": {
     "headline": "Empowering Retail & Dining with Seamless Digital Experiences",
@@ -38,57 +76,43 @@
     "ctaDescription": "Ready to transform your business? get in touch with us for a demo",
     "address": "Madfuat Aljood Co. UN 7033558235, Jeddah, Saudi Arabia"
   },
-  "how-it-work": {
-    "Title": "A smarter way to teach & learn",
-    "Subtitle": "We’re a team of educators, designers, and tech lovers who believe in the power of learning together. We’re building a better classroom one circle at a time.",
-    "CTA_Button": "Join for Free",
-    "description": "Create engaging, collaborative learning experiences, track student progress in real time, and motivate learners through gamified quizzes and analytics.",
-    "description2": "learn more effectively by practicing with peers in study circles, earning rewards through gamified quizzes, and tracking their own progress and achievements.",
-    "Feature-Title": " Study Circle Features",
-    "Feature-Description": "Everything is designed to make collaborative learning smooth and powerful.Study Circle combines structure and flexibility—exactly what modern learning needs.",
-    "Feature-title-1": "Real-time chat collaboration",
-    "Feature-title-2": "Student dashboard",
-    "Feature-title-3": "Detailed analytics",
-    "Feature-title-4": "Flexible circle creation",
-    "feature-chat": "In study circles groups can disscuss, plan, and answer together for better engagement.",
-    "feature-analytics": "Goals, badges, assignments and progress; a personalized space to monitor growth and stay on track.",
-    "feature-bar": "By subject, topic, student, and class. Every layer of performance is tracked and visualized for clarity.",
-    "feature-share": "For teachers & students, form study circles anytime, with full control and easy editing.",
-    "tech-card-1": "Sign up & select your school.",
-    "tech-card-2": "Create or choose a quiz",
-    "tech-card-3": "Assign it to a class",
-    "tech-card-4": "Track results",
-    "tech-card-desc-1": "Quickly register and connect to your educational institution.",
-    "tech-card-desc-2": "Build custom quizzes or pick from ready-made ones, perfectly organized.",
-    "tech-card-desc-3": "Easily group students into teams for collaborative quiz sessions.",
-    "tech-card-desc-4": "Get deep insights with clear, interactive analytics at every level.",
-    "student-card-1": "Receive an invite by email ",
-    "student-card-2": "Join a collaborative study circle",
-    "student-card-3": "join a challenge study circle",
-    "student-card-4": "See your performance",
-    "student-card-desc-1": "Access your Study Circle account with one simple click.",
-    "student-card-desc-2": "Collaborate live with your team and discuss questions before submitting.",
-    "student-card-desc-3": "Chat with your team, think fast, and challenge each other!",
-    "student-card-desc-4": "Track your rank and earn badges as you progress."
+  "CTA": {
+    "CTA2": "Try a Free Mission",
+    "CTA": "Join a Circle Now",
+    "Title": "Ready to achieve more, together?",
+    "titleCard1": "Without StudyCircle",
+    "features1": [
+      "Study alone and lose focus",
+      "No clear progress or feedback",
+      "Motivation fades; results suffer"
+    ],
+    "titleCard2": "With StudyCircle",
+    "features2": [
+      "Learn together, stay consistent",
+      "Practice smarter with missions",
+      "See evidence of progress & feel proud"
+    ]
   },
-  "About": {
-    "Title": "The Mission Behind the Study Circles",
-    "Subtitle": "We’re a team of educators, designers, and tech lovers who believe in the power of learning together.We’re building a better classroom — one circle at a time.",
-    "CTA_Button": "Join for Free",
-    "our-mission": "Our Mission",
-    "Contact-btn": "Contact us",
-    "get-started-btn": "Get started",
-    "What Makes Us Different ?": "What Makes Us Different ?",
-    "Different-sub": "We’re not just a quiz platform. We’re your learning partner.",
-    "different-title-1": "Empower teachers",
-    "different-subtitle-1": "We empower teachers with easy quiz creation, group management, and smart insights.",
-    "different-title-2": "Motivate students",
-    "different-subtitle-2": "We motivate students with gamified features like badges, goals, and leaderboards.",
-    "different-title-3": "Structure learning",
-    "different-subtitle-3": "We structure learning by breaking content into topics and sub-topics—so nothing is missed.",
-    "different-title-4": "Localized Learning",
-    "different-subtitle-4": "Designed to fit your educational environment. Fully aligned with the national curriculum followed in Qatar.",
-    "our-mission-sub": "We believe learning is not a solo journey Study Circle was created to bring collaboration, clarity, and engagement into classrooms using technology that adapts to how people really learn."
+  "how-it-work": {
+    "Title": "Studying alone is exhausting & unmotivating.",
+    "Subtitle": "Without clear practice and feedback, students waste time, lose focus, and fall behind.",
+    "feature": {
+      "1": {
+        "title": "Studying alone",
+        "description": "No structure or accountability"
+      },
+      "2": {
+        "title": "No feedback",
+        "description": "Hard to know if you're improving"
+      },
+      "3": {
+        "title": "Low motivation",
+        "description": "Progress isn't visible or rewarding"
+      }
+    }
+  },
+  "Testimonial": {
+    "Title": "What students say"
   },
   "Contact": {
     "Title": "Built for Educators & Learners",

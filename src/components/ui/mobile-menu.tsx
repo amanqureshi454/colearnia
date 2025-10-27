@@ -35,7 +35,7 @@ const MobileMenu = () => {
   return (
     <nav
       dir={isRTL ? "rtl" : "ltr"}
-      className={`fixed top-0 left-1/2 tab:px-8 sm:px-4 transform z-[199] font-manrope -translate-x-1/2 py-3 w-full transition-all duration-300 bg-brand`}
+      className={`fixed top-0 left-1/2 tab:px-8 md:px-16 sm:px-4 sm:py-2 transform z-[199] font-manrope -translate-x-1/2 tab:py-3 w-full transition-all duration-300 bg-brand`}
     >
       <div className="header flex justify-between items-center">
         <Link href="/" className="logo">
@@ -45,7 +45,7 @@ const MobileMenu = () => {
             quality={100}
             src="/images/svg/logo.svg"
             className="tab:w-full sm:w-40 :object-contain h-[52px]"
-            alt="Jood Pay Logo"
+            alt="Logo"
           />
         </Link>
 

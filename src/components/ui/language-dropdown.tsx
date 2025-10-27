@@ -21,17 +21,17 @@ export default function LanguageSelector() {
 
   return (
     <div
-      className="relative w-12"
+      className="relative w-max"
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {/* Toggle button */}
       <div
-        className={`w-12 flex cursor-pointer justify-center items-center gap-2 ${
+        className={` flex cursor-pointer justify-center items-center gap-2 ${
           isRTL ? "mr-3" : "ml-3"
         } `}
       >
-        <span className="font-normal text-md uppercase text-white text-center">
+        <span className="font-normal text-sm uppercase text-black text-center">
           {currentLang}
         </span>
         <Image
@@ -39,7 +39,11 @@ export default function LanguageSelector() {
           height={20}
           alt="dropdown-arrow"
           className="w-8 h-8 object-contain rounded-xl"
-          src={`${isRTL ? "/images/svg/qatar.svg" : "/images/svg/united-kingdom-flag-icon.svg"}`}
+          src={`${
+            isRTL
+              ? "/images/svg/qatar.svg"
+              : "/images/svg/united-kingdom-flag-icon.svg"
+          }`}
         />
       </div>
 

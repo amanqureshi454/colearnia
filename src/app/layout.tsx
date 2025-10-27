@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import SmoothScrollProvider from "@/lib/useLenisScroll";
 import Script from "next/script";
+import ArabicLayoutHandler from "@/lib/ArabicLayoutHandler";
 
 export const metadata: Metadata = {
   title: "Home | Study Circle",
@@ -30,7 +31,6 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        {/* Google Analytics */}
         <Script
           strategy="afterInteractive"
           src="https://www.googletagmanager.com/gtag/js?id=G-HRM622CRE6"
@@ -45,6 +45,9 @@ export default function RootLayout({
             });
           `}
         </Script>
+
+        {/* ✅ Arabic handler runs only on client */}
+        <ArabicLayoutHandler />
 
         <SmoothScrollProvider>{children}</SmoothScrollProvider>
       </body>

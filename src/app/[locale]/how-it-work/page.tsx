@@ -9,7 +9,7 @@ import gsap from "gsap";
 import SplitText from "gsap/SplitText";
 import ForTeacher from "@/sections/ForTeacher";
 import ForStudent from "@/sections/ForStudent";
-import Feature from "@/sections/Feature";
+import Feature from "@/sections/SimpleStep";
 import { useHeroReveal } from "@/lib/useHeroReveal";
 gsap.registerPlugin(SplitText);
 const Page = () => {
