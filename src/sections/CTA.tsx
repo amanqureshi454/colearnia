@@ -9,15 +9,14 @@ import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { useSplitTextAnimation } from "@/lib/useSectionReveal";
+import CTAReuse from "@/components/shared/CTAReuse";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const CTA = () => {
-  const containerRef = useRef<HTMLDivElement>(null);
   const comparisonRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("CTA");
   const pathname = usePathname();
-  const buttonsRef = useRef<HTMLDivElement>(null);
   const headingRef = useRef<HTMLHeadingElement>(null);
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
@@ -51,40 +50,6 @@ const CTA = () => {
       features: [t("features2.0"), t("features2.1"), t("features2.2")],
     },
   ];
-
-  // Heading & Button Animation
-  useEffect(() => {
-    if (!containerRef.current) return;
-
-    document.fonts.ready.then(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-        },
-      });
-
-      // === Button Animation ===
-      if (buttonsRef.current) {
-        const buttons = buttonsRef.current.querySelectorAll("button, a");
-        tl.from(
-          buttons,
-          {
-            opacity: 0,
-            y: 40,
-            duration: 0.8,
-            ease: "power2.out",
-            stagger: 0.15,
-          },
-          "-=0.3"
-        );
-      }
-    });
-
-    return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
-  }, []);
 
   // Card Animation
   useEffect(() => {
@@ -127,26 +92,12 @@ const CTA = () => {
 
   return (
     <SectionWrapper>
-      <div
-        ref={containerRef}
-        className="w-full max-w-7xl rounded-3xl sm:h-84 tab:h-102 bg-[url('/images/svg/cta.svg')] bg-cover bg-center overflow-hidden"
-      >
-        <div className="relative flex h-full gap-5 items-center justify-center flex-col p-6 text-center">
-          <h1
-            ref={headingRef}
-            className="text-center w-full text-white font-bold font-inter sm:text-4xl md:text-5xl"
-          >
-            {t("Title")}
-          </h1>
-
-          <div ref={buttonsRef} className="flex flex-row gap-4 mt-5">
-            <Button text={t("CTA")} />
-            <button className="w-max px-5 py-3.5 text-center bg-white ease-in-out hover:scale-105 rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-medium flex justify-center items-center">
-              <span className="text-heading">{t("CTA2")}</span>
-            </button>
-          </div>
-        </div>
-      </div>
+      <CTAReuse
+        backgroundImage="bg-[url('/images/png/CTA-1.png')]"
+        title={t("Title")}
+        primaryText={t("CTA")}
+        secondaryText={t("CTA2")}
+      />
 
       {/* Comparison Section */}
       <div

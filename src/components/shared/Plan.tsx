@@ -236,7 +236,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
   return (
     <div
       ref={pricingRef}
-      className="flex justify-center sm:flex-col tab:flex-row items-center gap-5 sm:mt-6 tab:mt-14 max-w-[1200px] mx-auto tab:px-4"
+      className="flex justify-center sm:flex-col tab:flex-row tab:flex-wrap items-center gap-5 sm:mt-6 tab:mt-14 max-w-[1200px] mx-auto tab:px-4"
     >
       {currentPlans?.map(
         (
@@ -265,9 +265,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
           return (
             <div
               key={index}
-              className={`pricing-box relative ${
-                currentTab === "I'm Student" ? "tab:w-[32%]" : "tab:w-[32%]"
-              } sm:w-full  p-6 rounded-2xl flex flex-col overflow-hidden justify-between ${
+              className={`pricing-box relative tab:w-[45%] md:w-[32%] sm:w-full  p-6 rounded-2xl flex flex-col overflow-hidden justify-between ${
                 plan.type === "Pro"
                   ? "bg-background"
                   : "bg-white shadow-[0px_4px_9px_0px_#0000000D]"

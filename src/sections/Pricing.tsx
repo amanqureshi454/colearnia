@@ -100,7 +100,7 @@ const Pricing = () => {
       <div ref={tab} className="tab">
         <Tab
           space="px-8 py-3"
-          tabColor="bg-brand"
+          tabColor="bg-heading"
           currentTab={currentTab}
           layoutIdPrefix="studentTab"
           setCurrentTab={(tabValue: string) =>

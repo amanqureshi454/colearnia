@@ -16,11 +16,8 @@ export default function Home() {
       <SimpleStep />
       <CTA />
       <Testimonials />
-
-      <FAQ />
-      {/*
       <Pricing />
-      */}
+      <FAQ />
     </>
   );
 }

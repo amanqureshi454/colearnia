@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import SplitText from "gsap/SplitText";
 import { usePathname } from "next/navigation";
@@ -11,6 +11,7 @@ import { people } from "@/data/testimonail";
 import Button from "@/components/shared/Button";
 import HeroHeadingTitle from "@/components/shared/HeroHeadingTitle";
 import HeroParagraph from "@/components/shared/HeroParagraph";
+import { PlayIcon, Volume2, VolumeX } from "lucide-react";
 
 // Register the plugin
 gsap.registerPlugin(SplitText);
@@ -25,6 +26,27 @@ const Hero = () => {
   const paraRef = useRef(null);
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
+
+  const [isMuted, setIsMuted] = useState(true);
+
+  const [showVolume, setShowVolume] = useState(false);
+  const [fadeOut, setFadeOut] = useState(false);
+
+  // Handle automatic fade-out after 2s
+  useEffect(() => {
+    let timer: string | number | NodeJS.Timeout | undefined;
+    if (showVolume) {
+      setFadeOut(false); // reset fade
+      timer = setTimeout(() => setFadeOut(true), 2000); // fade out after 2s
+    }
+    return () => clearTimeout(timer);
+  }, [showVolume]);
+  const toggleMute = () => {
+    if (videoRef.current) {
+      videoRef.current.muted = !videoRef.current.muted;
+      setIsMuted(videoRef.current.muted);
+    }
+  };
   useEffect(() => {
     const tl = gsap.timeline();
 
@@ -192,15 +214,34 @@ const Hero = () => {
                   </p>
                 </div>
               </div>
-              <div className="rounded-2xl tab:w-5/12 sm:w-full sm:h-[400px] tab:h-full relative z-30 aspect-square h-full">
+              <div
+                onMouseEnter={() => setShowVolume(true)}
+                onMouseLeave={() => setShowVolume(false)}
+                className="rounded-2xl tab:w-5/12 sm:w-full sm:h-[400px] tab:h-full relative z-30 aspect-square h-full"
+              >
                 <video
                   ref={videoRef}
-                  src="/video/sectiontwo-video.mp4"
+                  src="/video/study-circle.mp4"
                   className="w-full h-full object-cover rounded-2xl"
                   muted
+                  autoPlay
                   loop
                   playsInline
                 />
+                {showVolume && (
+                  <div
+                    onClick={toggleMute}
+                    className={`bg-brand w-16 h-16 absolute transition-opacity duration-500 ${
+                      fadeOut ? "opacity-0" : "opacity-100"
+                    } rounded-full top-1/2 left-1/2 transform cursor-pointer -translate-x-1/2 -translate-y-1/2 flex justify-center items-center`}
+                  >
+                    {isMuted ? (
+                      <VolumeX className="w-7 h-7 text-black" />
+                    ) : (
+                      <Volume2 className="w-7 h-7 text-black" />
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
