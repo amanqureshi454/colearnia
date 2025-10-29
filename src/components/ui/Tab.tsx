@@ -30,7 +30,7 @@ export function Tab({
   const items = type ? type.map((item) => item.name) : [];
 
   return (
-    <div id="" className={cn("relative z-50 mb-6 sm:mb-2 sm:pt-2", className)}>
+    <div id="" className={cn("relative z-50 mb-6 sm:mb-5 ", className)}>
       <div className="flex w-max mx-auto items-center gap-3 sm:gap-1 bg-transparent backdrop-blur-lg py-2 px-2.5 rounded-md shadow-[0px_4px_9px_0px_#0000000D]">
         {items.map((item) => {
           const isActive = currentTab === item;

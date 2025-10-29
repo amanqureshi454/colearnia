@@ -20,7 +20,7 @@ const HeroHeadingTitle = forwardRef<
       className={`
           lg:text-7xl tab:text-[46px] md:text-6xl sm:text-5xl 
           font-bold text-heading 
-          ${isRTL ? "text-right leading-[1.35]" : "text-left  leading-[1.1]"} 
+          ${isRTL ? "text-right leading-[1.35]" : "text-left  leading-[1.15]"} 
           ${className}
         `.trim()}
     >

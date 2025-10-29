@@ -23,7 +23,6 @@ interface Type {
 
 const Pricing = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
-  const containerRef = useRef<HTMLDivElement>(null);
   const paraRef = useRef<HTMLHeadingElement>(null);
   const tab = useRef<HTMLDivElement>(null);
 
@@ -32,8 +31,6 @@ const Pricing = () => {
 
   const t = useTranslations("Pricing.pricingOptions");
   const pathname = usePathname();
-  const isRTL = pathname?.startsWith("/ar") ?? false;
-
   // Define tab types
   const type: Type[] = [{ name: "I'm Student" }, { name: "I'm Teacher" }];
   const duration: Type[] = [{ name: "monthly" }, { name: "yearly" }];

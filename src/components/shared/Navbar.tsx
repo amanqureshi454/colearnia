@@ -52,7 +52,7 @@ const Navbar = () => {
   // ✅ helper for locale-aware paths
   const localizePath = (path: string = "") =>
     `/${locale}${path ? `/${path}` : ""}`;
-
+  const isAboutUsPage = pathname?.includes("/about-us");
   const navLinks = [
     { label: t("Home"), href: "" },
     { label: t("About Us"), href: "about-us" },

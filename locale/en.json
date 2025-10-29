@@ -103,20 +103,54 @@
     ]
   },
   "how-it-work": {
-    "Title": "Studying alone is exhausting & unmotivating.",
-    "Subtitle": "Without clear practice and feedback, students waste time, lose focus, and fall behind.",
-    "feature": {
+    "Title": "Learning Together Made Simple",
+    "CTA_Button": "Join a Circle Now",
+    "Watch": "Watch how it works",
+    "A Circle in Action": "A Circle in Action",
+    "EachCircle": "Each circle has weekly goals, missions, and a shared progress view so everyone stays on track.",
+    "Subtitle": "StudyCircle turns studying into teamwork. Learn in circles, complete missions, and track your progress all in one fun, collaborative space.",
+    "features": [
+      "Accountability through small groups",
+      "Motivation via visible wins",
+      "Clarity with simple progress tracking"
+    ],
+    "CTATitle": "Ready to Achieve More, Together?",
+    "Join a Circle Now": "Join a Circle Now",
+    "Try a Free Mission": "Try a Free Mission",
+    "studentDesc": "Three simple steps to achieve more — together.",
+    "teacherDesc": "Create classes, organize circles, assign missions, and track progress.",
+    "studentTitle": "How StudyCircle Works",
+    "teacherTitle": "How StudyCircle Works for Teachers",
+    "stepStudent": {
       "1": {
-        "title": "Studying alone",
-        "description": "No structure or accountability"
+        "title": "Join a Circle",
+        "description": "Find peers who share your goals and set your weekly rhythm."
       },
       "2": {
-        "title": "No feedback",
-        "description": "Hard to know if you're improving"
+        "title": "Complete Missions",
+        "description": "Practice with short quizzes and challenges designed for mastery."
       },
       "3": {
-        "title": "Low motivation",
-        "description": "Progress isn't visible or rewarding"
+        "title": "Track Progress",
+        "description": "See your improvement and celebrate milestones."
+      }
+    },
+    "stepTeacher": {
+      "1": {
+        "title": "Create Classes",
+        "description": "Set class name, subjects, and enrollment options."
+      },
+      "2": {
+        "title": "Create Circles in the Class",
+        "description": "Group students into small circles by level or goal."
+      },
+      "3": {
+        "title": "Assign Missions",
+        "description": "Publish quizzes and challenges with deadlines and auto‑grading."
+      },
+      "4": {
+        "title": "Track Progress",
+        "description": "See analytics by class, circle, and student to guide support.."
       }
     }
   },

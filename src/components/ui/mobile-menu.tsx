@@ -4,7 +4,7 @@ import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const languages = ["en", "ar"] as const;
@@ -13,7 +13,7 @@ const MobileMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useTranslations("Navbar");
   const pathname = usePathname();
-
+  const [isScrolled, setIsScrolled] = useState(false);
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
   const navLinks = [
@@ -24,18 +24,29 @@ const MobileMenu = () => {
     { label: t("Pricing"), href: "pricing" },
     { label: t("Contact"), href: "contact" },
   ];
-
   const locale = useLocale();
   const availableLangs = languages.filter((lang) => lang !== locale);
 
   const strippedPath = pathname.replace(/^\/(en|ar)/, "");
 
+  useEffect(() => {
+    const handleScroll = () => {
+      setIsScrolled(window.scrollY > 50); // when Y > 50
+    };
+
+    window.addEventListener("scroll", handleScroll);
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
   const localizePath = (path: string = "") =>
     `/${locale}${path ? `/${path}` : ""}`;
   return (
     <nav
       dir={isRTL ? "rtl" : "ltr"}
-      className={`fixed top-0 left-1/2 tab:px-8 md:px-16 sm:px-4 sm:py-2 transform z-[199] font-manrope -translate-x-1/2 tab:py-3 w-full transition-all duration-300 bg-brand`}
+      className={`fixed top-0 left-1/2 tab:px-8 md:px-16 sm:px-4 sm:py-2 transform z-[199] font-manrope -translate-x-1/2 tab:py-3 w-full transition-all duration-300 ${
+        isScrolled || menuOpen
+          ? "bg-white/80 backdrop-blur-md"
+          : "bg-transparent"
+      }`}
     >
       <div className="header flex justify-between items-center">
         <Link href="/" className="logo">
@@ -61,7 +72,7 @@ const MobileMenu = () => {
               "--width": "1.55rem",
               "--thickness": "0.155rem",
               "--gap": "0.25rem",
-              "--color": "#fff",
+              "--color": isScrolled ? "#000" : "#fff",
               "--duration": "400ms",
             } as React.CSSProperties
           }
@@ -109,7 +120,7 @@ const MobileMenu = () => {
                       }}
                       className={`${
                         isRTL ? "font-cairo" : "font-melodyB"
-                      } px-4 py-1 overflow-hidden cursor-pointer font-bold text-4xl text-white`}
+                      } px-4 py-1 overflow-hidden cursor-pointer font-bold text-4xl text-black`}
                     >
                       <motion.div onClick={() => setMenuOpen(false)}>
                         <Link href={fullHref}>{link.label}</Link>

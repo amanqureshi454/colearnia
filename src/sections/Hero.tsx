@@ -11,7 +11,7 @@ import { people } from "@/data/testimonail";
 import Button from "@/components/shared/Button";
 import HeroHeadingTitle from "@/components/shared/HeroHeadingTitle";
 import HeroParagraph from "@/components/shared/HeroParagraph";
-import { PlayIcon, Volume2, VolumeX } from "lucide-react";
+import { Volume2, VolumeX } from "lucide-react";
 
 // Register the plugin
 gsap.registerPlugin(SplitText);
@@ -26,7 +26,6 @@ const Hero = () => {
   const paraRef = useRef(null);
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
-
   const [isMuted, setIsMuted] = useState(true);
 
   const [showVolume, setShowVolume] = useState(false);
@@ -157,7 +156,7 @@ const Hero = () => {
       <div
         className={`w-full tab:h-screen bg-white relative sm:max-w-[95%] md:max-w-[90%] lg:max-w-[85%] max-w-7xl mx-auto `}
       >
-        <div className="absolute bg-[#FFD6D6] sm:hidden block blur-[1000px] rounded-full w-[600px] h-[600px] -top-20 right-0"></div>
+        <div className="absolute bg-[#FFD6D6] sm:hidden tab:block blur-[1000px] rounded-full w-[600px] h-[600px] -top-20 right-0"></div>
         <div className="w-full h-full tab:pt-20 sm:pt-36 flex justify-center items-center">
           <div className=" w-full h-[95%]">
             <div className="flex tab:flex-row w-full sm:flex-col justify-between items-center lg:gap-6 sm:gap-5 h-full">
@@ -221,7 +220,9 @@ const Hero = () => {
               >
                 <video
                   ref={videoRef}
-                  src="/video/study-circle.mp4"
+                  src={`${
+                    isRTL ? "/video/arabic.mp4" : "/video/study-circle.mp4"
+                  }`}
                   className="w-full h-full object-cover rounded-2xl"
                   muted
                   autoPlay
