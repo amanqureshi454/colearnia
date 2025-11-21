@@ -270,14 +270,18 @@
     "socialTitle": "Follow us on social media",
     "ctaButton": "Send Message",
     "fields": [
-      { "label": "Name*", "placeholder": "Name" },
-      { "label": "Email*", "placeholder": "Email" },
+      { "label": "Name*", "name": "from_name", "placeholder": "Name" },
+      {
+        "label": "Email*",
+        "name": "from_email",
+        "placeholder": "Email"
+      },
       {
         "label": "Phone*",
-
+        "name": "from_phone",
         "placeholder": "(123) 456 - 7890"
       },
-      { "label": "School", "placeholder": "School" }
+      { "label": "School", "name": "from_school", "placeholder": "School" }
     ],
     "toast": {
       "sending": "Sending your message...",
