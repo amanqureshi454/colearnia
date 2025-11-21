@@ -1,7 +1,7 @@
 "use client";
 
 import { useLocale, useTranslations } from "next-intl";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import { useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import BlogCard from "@/components/shared/BlogCard";
@@ -24,7 +24,6 @@ const Page = () => {
   const headingRef = useRef(null);
   const headingRef2 = useRef(null);
   const paraRef = useRef(null);
-  const router = useRouter();
   const t = useTranslations("");
   const t2 = useTranslations("Blog");
   const pathname = usePathname();

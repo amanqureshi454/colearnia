@@ -6,7 +6,7 @@ import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Autoplay, Navigation, Pagination } from "swiper/modules";
+import { Autoplay, Pagination } from "swiper/modules";
 import SectionHeader from "@/components/shared/HeadingWrapper";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import gsap from "gsap";
@@ -24,7 +24,7 @@ const Testimonials = () => {
   const headingRef = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const isRTL = pathname?.startsWith("/ar") ?? false;
+  // const isRTL = pathname?.startsWith("/ar") ?? false;
 
   useSplitTextAnimation({
     headingRef,

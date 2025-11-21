@@ -13,8 +13,17 @@ import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import ResourceModal from "@/components/ui/resource-modal";
 
+type Resource = {
+  id: number;
+  title: string;
+  category1: string;
+  category2: string;
+  image: string;
+  description: string;
+};
+
 gsap.registerPlugin(SplitText);
-const resources = [
+const resources: Resource[] = [
   {
     id: 1,
     title: "Name of the resource",
@@ -54,7 +63,9 @@ const Page = () => {
   );
 
   const [isOpen, setIsOpen] = useState(false);
-  const [selectedResource, setSelectedResource] = useState<any>(null);
+  const [selectedResource, setSelectedResource] = useState<Resource | null>(
+    null
+  );
 
   // === Hero Animation ===
   useEffect(() => {

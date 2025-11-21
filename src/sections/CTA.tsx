@@ -1,5 +1,4 @@
 "use client";
-import Button from "@/components/shared/Button";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import { useTranslations } from "next-intl";
 import Image from "next/image";

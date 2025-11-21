@@ -12,7 +12,7 @@ interface HeroParagraphProps {
 const HeroParagraph = forwardRef<
   HTMLParagraphElement | null,
   HeroParagraphProps
->(({ paraRef, isRTL, t, className = "" }, ref) => {
+>(({ paraRef, isRTL, t, className = "" }, _ref) => {
   return (
     <p
       ref={paraRef}

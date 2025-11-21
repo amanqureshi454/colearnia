@@ -183,9 +183,9 @@ const Page = () => {
       console.log("✅ EmailJS Success:", result.text);
       toast.success(t("toast.success"));
       form.current.reset();
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error("❌ EmailJS Error:", error);
-      toast.error(t("toast.error"));
+      toast.error(t("toast.error") as string);
     } finally {
       setLoading(false);
     }

@@ -179,7 +179,7 @@ const Page = () => {
         );
 
         // Quote icon
-        const quote = document.querySelector(".pt-4 img");
+        const quote = document.querySelector(".quote-icon");
         if (quote) {
           tl.from(quote, { opacity: 0, scale: 0.8, duration: 0.6 }, "-=0.4");
         }
@@ -300,10 +300,12 @@ const Page = () => {
                 <div
                   className={`w-20 h-20 ${item.bgColor} rounded-lg flex items-center justify-center mb-4`}
                 >
-                  <img
+                  <Image
                     src={item.iconSrc}
                     alt={item.title}
                     className="w-10 h-10 object-cover"
+                    width={40}
+                    height={40}
                   />
                 </div>
                 <h3 className="md:text-2xl sm:text-xl font-bold text-black mb-3">
@@ -333,9 +335,11 @@ const Page = () => {
                 } sm:w-full shrink-0 sm:min-h-[250px] md:min-h-[240px] shadow-[0px_1px_6px_0px_#00000029] hover:shadow-xl transition-shadow sm:p-5 md:p-8 flex flex-col items-center text-center`}
               >
                 <div className="w-16 h-16 flex items-center justify-center mb-4">
-                  <img
+                  <Image
                     src={item.iconSrc}
                     alt={item.title}
+                    width={64}
+                    height={64}
                     className="w-16 h-16 object-cover"
                   />
                 </div>
@@ -378,7 +382,7 @@ const Page = () => {
                   alt="Quote Icon"
                   width={28}
                   height={28}
-                  className="w-10 h-10 object-cover"
+                  className="w-10 h-10 quote-icon object-cover"
                 />
               </div>
             </div>

@@ -15,7 +15,7 @@ const HowItWork = () => {
   const t = useTranslations("studyValue");
   const containerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-  const isRTL = pathname?.startsWith("/ar") ?? false;
+  // const isRTL = pathname?.startsWith("/ar") ?? false;
 
   // -------------------------------------------------
   // 1. DATA – edit / extend this array only

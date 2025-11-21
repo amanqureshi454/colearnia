@@ -12,7 +12,7 @@ interface HeroHeadingTitleProps {
 const HeroHeadingTitle = forwardRef<
   HTMLHeadingElement | null,
   HeroHeadingTitleProps
->(({ headingRef, isRTL, t, className = "" }, ref) => {
+>(({ headingRef, isRTL, t, className = "" }, _ref) => {
   return (
     <h1
       ref={headingRef}

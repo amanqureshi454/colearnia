@@ -1,37 +1,45 @@
 "use client";
 
 import { createPortal } from "react-dom";
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import Dropdown from "@/components/ui/dropdown";
 import CountryDropdown from "@/components/ui/country-dropdown";
 import { getLevels } from "@/services/locationService";
 import toast, { Toaster } from "react-hot-toast";
 import BtnLoader from "./btn-loader";
 
-interface Level {
+type Level = {
   _id: string;
   name: string;
-}
+};
+
+type ResourceSummary = {
+  title: string;
+  id: number;
+};
+
+type ResourceModalProps = {
+  isOpen: boolean;
+  setIsOpen: (isOpen: boolean) => void;
+  selectedResource: ResourceSummary | null;
+};
+
+type LevelOption = {
+  label: string;
+  value: string;
+};
 
 export default function ResourceModal({
   isOpen,
   setIsOpen,
   selectedResource,
-}: any) {
+}: ResourceModalProps) {
   const [selectedLevelLabel, setSelectedLevelLabel] = useState("");
-
   const [country, setCountry] = useState<string>("");
-  // Replace this
-
-  // With this — store label for display, code for HubSpot
-  const [selectedCountryLabel, setSelectedCountryLabel] = useState("");
-  const [selectedCountryCode, setSelectedCountryCode] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
 
-  const [levelOptions, setLevelOptions] = useState<
-    { label: string; value: string }[]
-  >([]);
+  const [levelOptions, setLevelOptions] = useState<LevelOption[]>([]);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -49,25 +57,25 @@ export default function ResourceModal({
 
         // We send LEVEL NAME to HubSpot — not ID
         setLevelOptions(
-          levels.map((lvl: any) => ({
+          levels.map((lvl: Level) => ({
             label: lvl.name, // UI label
             value: lvl.name, // Value sent to HubSpot
           }))
         );
-      } catch (err) {
+      } catch (err: unknown) {
         console.error("Error fetching levels:", err);
       }
     }
     fetchLevels();
   }, []);
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (
       !formData.fullName ||
       !formData.email ||
-      !country || // ← Use label (user sees it)
+      !country ||
       !formData.school ||
       !selectedLevelLabel
     ) {
@@ -81,7 +89,7 @@ export default function ResourceModal({
       fields: [
         { name: "full_name", value: formData.fullName.trim() },
         { name: "email", value: formData.email.trim() },
-        { name: "country_name", value: country }, // ← Only the label!
+        { name: "country_name", value: country },
         { name: "school", value: formData.school.trim() },
         { name: "school_level", value: selectedLevelLabel },
         { name: "resource_name", value: selectedResource?.title || "Unknown" },
@@ -112,7 +120,7 @@ export default function ResourceModal({
       } else {
         throw new Error(raw || "Submission failed");
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Error:", err);
       toast.error("Something went wrong. Please try again.");
     } finally {
@@ -127,7 +135,7 @@ export default function ResourceModal({
     return createPortal(
       <div className="fixed inset-0 bg-black/60 flex justify-center items-center z-[9999] px-4">
         <div className="bg-white rounded-2xl p-10 max-w-lg w-full text-center shadow-2xl animate-in fade-in zoom-in duration-200">
-          <div className="text-5xl mb-4">You're all set!</div>
+          <div className="text-5xl mb-4">You&apos;re all set!</div>
           <p className="text-gray-500 mb-8 leading-relaxed">
             The download link is on its way to your inbox.
             <br />

@@ -149,7 +149,7 @@ const Hero = () => {
       headingSplit.revert();
       paraSplit.revert();
     };
-  }, []);
+  }, [isRTL]);
 
   return (
     <>
