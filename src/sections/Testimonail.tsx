@@ -3,7 +3,6 @@
 import { useSplitTextAnimation } from "@/lib/useSectionReveal";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import React, { useRef, useEffect } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
@@ -23,8 +22,6 @@ const Testimonials = () => {
   const t = useTranslations("Testimonial");
   const headingRef = useRef<HTMLHeadingElement>(null);
   const containerRef = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
-  // const isRTL = pathname?.startsWith("/ar") ?? false;
 
   useSplitTextAnimation({
     headingRef,

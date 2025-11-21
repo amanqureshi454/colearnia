@@ -2,7 +2,6 @@
 
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { usePathname } from "next/navigation";
 import React, { useEffect, useRef } from "react";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
@@ -14,8 +13,6 @@ gsap.registerPlugin(ScrollTrigger);
 const HowItWork = () => {
   const t = useTranslations("studyValue");
   const containerRef = useRef<HTMLDivElement>(null);
-  const pathname = usePathname();
-  // const isRTL = pathname?.startsWith("/ar") ?? false;
 
   // -------------------------------------------------
   // 1. DATA – edit / extend this array only

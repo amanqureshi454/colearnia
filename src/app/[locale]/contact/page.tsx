@@ -1,4 +1,3 @@
-/* eslint-disable react/no-unescaped-entities */
 "use client";
 
 import { ArrowRight } from "lucide-react";
@@ -10,7 +9,6 @@ import gsap from "gsap";
 import SplitText from "gsap/SplitText";
 gsap.registerPlugin(SplitText);
 import { Toaster, toast } from "react-hot-toast";
-
 import emailjs from "@emailjs/browser";
 import BtnLoader from "@/components/ui/btn-loader";
 import HeroHeadingTitle from "@/components/shared/HeroHeadingTitle";

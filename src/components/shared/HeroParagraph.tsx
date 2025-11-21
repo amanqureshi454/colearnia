@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef } from "react";
+import React from "react";
 
 interface HeroParagraphProps {
   paraRef: React.RefObject<HTMLParagraphElement | null>;
@@ -9,10 +9,12 @@ interface HeroParagraphProps {
   className?: string;
 }
 
-const HeroParagraph = forwardRef<
-  HTMLParagraphElement | null,
-  HeroParagraphProps
->(({ paraRef, isRTL, t, className = "" }, _ref) => {
+const HeroParagraph = ({
+  paraRef,
+  isRTL,
+  t,
+  className = "",
+}: HeroParagraphProps) => {
   return (
     <p
       ref={paraRef}
@@ -30,7 +32,7 @@ const HeroParagraph = forwardRef<
       {t("Subtitle")}
     </p>
   );
-});
+};
 
 HeroParagraph.displayName = "HeroParagraph";
 

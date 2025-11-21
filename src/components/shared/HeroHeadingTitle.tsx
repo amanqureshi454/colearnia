@@ -1,6 +1,6 @@
 "use client";
 
-import React, { forwardRef } from "react";
+import React from "react";
 
 interface HeroHeadingTitleProps {
   headingRef: React.RefObject<HTMLHeadingElement | null>;
@@ -9,10 +9,12 @@ interface HeroHeadingTitleProps {
   className?: string;
 }
 
-const HeroHeadingTitle = forwardRef<
-  HTMLHeadingElement | null,
-  HeroHeadingTitleProps
->(({ headingRef, isRTL, t, className = "" }, _ref) => {
+const HeroHeadingTitle = ({
+  headingRef,
+  isRTL,
+  t,
+  className = "",
+}: HeroHeadingTitleProps) => {
   return (
     <h1
       ref={headingRef}
@@ -27,7 +29,7 @@ const HeroHeadingTitle = forwardRef<
       {t("Title")}
     </h1>
   );
-});
+};
 
 HeroHeadingTitle.displayName = "HeroHeadingTitle";
 
