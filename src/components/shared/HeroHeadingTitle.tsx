@@ -18,9 +18,9 @@ const HeroHeadingTitle = forwardRef<
       ref={headingRef}
       style={{ textAlign: isRTL ? "right" : "left" }}
       className={`
-          lg:text-7xl tab:text-[46px] md:text-6xl sm:text-5xl 
-          font-bold text-heading 
-          ${isRTL ? "text-right leading-[1.35]" : "text-left  leading-[1.15]"} 
+          lg:text-7xl font-inter tab:text-[46px] md:text-6xl !leading-[1.15] sm:text-5xl 
+          font-extrabold text-heading 
+          ${isRTL ? "text-right" : "text-left"} 
           ${className}
         `.trim()}
     >

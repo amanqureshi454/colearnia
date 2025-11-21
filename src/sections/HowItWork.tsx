@@ -12,7 +12,7 @@ import SectionWrapper from "@/components/shared/SectionWrapper";
 gsap.registerPlugin(ScrollTrigger);
 
 const HowItWork = () => {
-  const t = useTranslations("how-it-work");
+  const t = useTranslations("studyValue");
   const containerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
@@ -24,20 +24,20 @@ const HowItWork = () => {
     {
       id: 1,
       image: "/images/svg/feature (2).svg",
-      title: t("feature.1.title"),
-      description: t("feature.1.description"),
+      title: t("feature.0.title"),
+      description: t("feature.0.desc"),
     },
     {
       id: 2,
       image: "/images/svg/feature (1).svg",
-      title: t("feature.2.title"),
-      description: t("feature.2.description"),
+      title: t("feature.1.title"),
+      description: t("feature.1.desc"),
     },
     {
       id: 3,
       image: "/images/svg/feature (3).svg",
-      title: t("feature.3.title"),
-      description: t("feature.3.description"),
+      title: t("feature.2.title"),
+      description: t("feature.2.desc"),
     },
   ];
 

@@ -7,13 +7,18 @@
     "Contact": "Contact us",
     "Pricing": "Pricing",
     "create-account": "Join a circle",
-    "Login": "Login"
+    "Login": "Login",
+    "FreeResource": "Free Resource"
   },
   "Hero": {
     "Title": "Collaborative circles, fun missions, and clear progress.",
     "CTA_Button": "Join a Circle Now",
     "Watch": "Watch how it works",
     "Testimonials": "Trusted by motivated students & educators",
+    "Subtitle": "Join classmates, practice with engaging challenges, and see your growth — so you never feel lost studying alone."
+  },
+  "resource": {
+    "Title": "Get free and valuable resources to support your learning.",
     "Subtitle": "Join classmates, practice with engaging challenges, and see your growth — so you never feel lost studying alone."
   },
   "about": {
@@ -34,7 +39,80 @@
       "Collaborate in real-time with peers",
       "Track your progress and achievements",
       "Engage with gamified quizzes and challenges"
-    ]
+    ],
+    "AboutPage": {
+      "Hero": {
+        "title": "We’re building the most motivating way to learn together.",
+        "subtitle": "StudyCircle turns studying into teamwork. We help students form small circles, complete focused missions, and see their progress clearly."
+      },
+      "InfoCards": [
+        {
+          "title": "Our Mission",
+          "description": "Empower every learner to achieve more through collaboration, accountability, and joyful practice."
+        },
+        {
+          "title": "Our Vision",
+          "description": "A world where studying feels social, meaningful, and measurable — for every student, everywhere."
+        },
+        {
+          "title": "What We Value",
+          "description": "Students first • Motivation by design • Trust & privacy • Evidence-based"
+        }
+      ],
+      "Values": {
+        "sectionTitle": "Our Values",
+        "items": [
+          {
+            "title": "Students first",
+            "description": "Every decision starts with learner outcomes."
+          },
+          {
+            "title": "Trust & privacy",
+            "description": "We protect learner data and promote safe collaboration."
+          },
+          {
+            "title": "Motivation by design",
+            "description": "Small wins, clear goals, visible progress."
+          },
+          {
+            "title": "Evidence-based",
+            "description": "We use proven learning science and iterate with real classrooms."
+          }
+        ]
+      },
+      "LonelyToCircles": {
+        "title": "From lonely study sessions to powerful circles.",
+        "body1": "We started StudyCircle after seeing students lose motivation studying alone — even the brightest ones. Classmates wanted structured practice, friendly accountability, and a way to see real improvement.",
+        "body2": "So we built circles: small, supportive groups with weekly missions and a shared view of progress. The results were immediate — more consistency, more confidence, and better outcomes.",
+        "quote": "Learning thrives in small, supportive circles, where progress is visible and wins are shared."
+      },
+      "Milestones": {
+        "sectionTitle": "Our Journey",
+        "sectionSubtitle": "From idea to impact — step by step, with real classrooms and real students.",
+        "items": [
+          {
+            "title": "Milestone 1",
+            "description": "Prototype validated with pilot classrooms"
+          },
+          {
+            "title": "Milestone 2",
+            "description": "Gamified missions & progress dashboard"
+          },
+          {
+            "title": "Milestone 3",
+            "description": "Teacher tools for classes, circles & analytics"
+          },
+          {
+            "title": "Milestone 4",
+            "description": "Bilingual (EN/AR) with RTL support"
+          }
+        ],
+        "ctaTitle": "Want to partner or pilot?",
+        "ctaSubtitle": "We’re partnering with schools, universities, and educators in Qatar and beyond.",
+        "ctaPrimary": "Join the Circle",
+        "ctaSecondary": "Learn More"
+      }
+    }
   },
   "SimpleStep": {
     "Title": "A simple plan to get results",
@@ -59,7 +137,9 @@
     "pricingOptions": {
       "title": "Choose Plan That’s Right For You",
       "description": "Choose plan that works best for you, feel free to contact us"
-    }
+    },
+    "student": "I'm Student",
+    "teacher": "I'm Teacher"
   },
   "FAQ": {
     "Title": "Questions? answered",
@@ -79,11 +159,31 @@
     ]
   },
   "Footer": {
-    "headline": "Empowering Retail & Dining with Seamless Digital Experiences",
-    "description": "Jood Pay is your unified platform for smart ordering, fast payments, and intelligent engagement—built for restaurants, cafés, and retail stores.",
-    "cta": "Get in Touch",
-    "ctaDescription": "Ready to transform your business? get in touch with us for a demo",
-    "address": "Madfuat Aljood Co. UN 7033558235, Jeddah, Saudi Arabia"
+    "logo": {
+      "alt": "CoLearnnia Logo"
+    },
+    "tagline": "Learn Together, Succeed Together",
+    "columns": [
+      {
+        "title": "Support",
+        "links": ["Help centre", "Account information", "About", "Contact us"]
+      },
+      {
+        "title": "Help and Solution",
+        "links": [
+          "Talk to support",
+          "Support docs",
+          "System status",
+          "Covid response"
+        ]
+      },
+      {
+        "title": "Product",
+        "links": ["Update", "Security", "Beta test", "Pricing product"]
+      }
+    ],
+    "copyright": "© 2025 CoLearnnia. Copyright and rights reserved",
+    "legalLinks": ["Terms and conditions", "Privacy Policy"]
   },
   "CTA": {
     "CTA2": "Try a Free Mission",
@@ -115,7 +215,6 @@
       "Clarity with simple progress tracking"
     ],
     "CTATitle": "Ready to Achieve More, Together?",
-    "Join a Circle Now": "Join a Circle Now",
     "Try a Free Mission": "Try a Free Mission",
     "studentDesc": "Three simple steps to achieve more — together.",
     "teacherDesc": "Create classes, organize circles, assign missions, and track progress.",
@@ -154,13 +253,39 @@
       }
     }
   },
+  "tabs": {
+    "student": "For Student",
+    "teacher": "For Teacher"
+  },
+
   "Testimonial": {
     "Title": "What students say"
   },
   "Contact": {
     "Title": "Built for Educators & Learners",
     "Subtitle": "Whether you're a teacher, student, school, or partner, we’re here to support you every step of the way.",
-    "CTA_Button": "Send Message"
+    "CTA_Button": "Send Message",
+    "title": "Want to reach out directly?",
+    "description": "Whether you're a teacher, student, school, or partner, we're here to support you every step of the way.",
+    "socialTitle": "Follow us on social media",
+    "ctaButton": "Send Message",
+    "fields": [
+      { "label": "Name*", "placeholder": "Name" },
+      { "label": "Email*", "placeholder": "Email" },
+      {
+        "label": "Phone*",
+
+        "placeholder": "(123) 456 - 7890"
+      },
+      { "label": "School", "placeholder": "School" }
+    ],
+    "toast": {
+      "sending": "Sending your message...",
+      "success": "Your message has been sent successfully!",
+      "error": "Something went wrong. Please try again later."
+    },
+    "messageLabel": "Message*",
+    "messagePlaceholder": "Type your message here..."
   },
   "Blog": {
     "Title": "Learning That Works",
@@ -173,13 +298,32 @@
   "Articles": [
     {
       "id": 1,
+      "slug": "collaborative-learning",
       "title": "🌍 Collaborative Learning: Achieving More, Together!",
       "description": "Collaborative learning is more than just studying in groups — it is about building knowledge together. When students share ideas, challenge each other's thinking, and solve problems as a team, they gain deeper understanding and stronger communication skills. Teachers play a key role in guiding this process by creating activities that encourage teamwork, discussion, and reflection. For students, working collaboratively improves critical thinking, creativity, and confidence. For teachers, it provides a chance to see different perspectives and identify where students need more support. Together, collaborative learning makes education an active, engaging, and rewarding journey.",
-      "imageUrl": "/images/png/blog- (1).png",
+      "imageUrl": "/images/png/image 326.png",
       "category": "Case Studies",
       "author": "Sarah Johnson",
       "date": "Oct 24, 2025",
       "categories": ["case-studies", "classroom"]
     }
-  ]
+  ],
+  "studyValue": {
+    "Title": "Studying alone is exhausting & unmotivating.",
+    "Subtitle": "Without clear practice and feedback, students waste time, lose focus, and fall behind.",
+    "feature": [
+      {
+        "title": "Studying alone",
+        "desc": "No structure or accountability"
+      },
+      {
+        "title": "No feedback",
+        "desc": "Hard to know if you’re improving"
+      },
+      {
+        "title": "Low motivation",
+        "desc": "Progress isn’t visible or rewarding"
+      }
+    ]
+  }
 }

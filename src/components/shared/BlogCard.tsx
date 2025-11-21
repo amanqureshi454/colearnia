@@ -2,6 +2,8 @@
 import React from "react";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
+import Link from "next/link";
+import { useLocale } from "next-intl";
 
 interface BlogCardProps {
   title: string;
@@ -9,6 +11,7 @@ interface BlogCardProps {
   imageUrl: string;
   category: string;
   date: string;
+  slug: string;
   className: string;
 }
 
@@ -16,12 +19,14 @@ const BlogCard: React.FC<BlogCardProps> = ({
   title,
   description,
   imageUrl,
+  slug,
   category,
   className,
   date,
 }) => {
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
+  const locale = useLocale();
   return (
     <div className={`bg-[#F1F3F7] rounded-xl overflow-hidden ${className}`}>
       {/* Image */}
@@ -52,9 +57,12 @@ const BlogCard: React.FC<BlogCardProps> = ({
             isRTL ? "font-cairo" : "font-inter"
           }`}
         >
-          <button className="text-xs font-semibold text-brand px-3 py-1.5 rounded bg-white">
+          <Link
+            href={`/${locale}/blog/${slug}`}
+            className="text-xs font-semibold text-brand px-3 py-1.5 rounded bg-white"
+          >
             {category}
-          </button>
+          </Link>
           <p className="text-xs opacity-80">{date}</p>
         </div>
       </div>

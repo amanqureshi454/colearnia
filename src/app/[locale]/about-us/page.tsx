@@ -1,6 +1,5 @@
 "use client";
 
-import Button from "@/components/shared/Button";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
@@ -11,7 +10,7 @@ import { ScrollTrigger } from "gsap/ScrollTrigger";
 import CTAReuse from "@/components/shared/CTAReuse";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import SectionHeader from "@/components/shared/HeadingWrapper";
-import { infoData, milestones, weValue } from "@/data/feature";
+import { useStepsData } from "@/data/feature";
 
 // Register GSAP plugins
 gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -19,6 +18,7 @@ gsap.registerPlugin(SplitText, ScrollTrigger);
 const Page = () => {
   const t = useTranslations("about");
   const pathname = usePathname();
+  const { infoData, weValue, milestones } = useStepsData();
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
   // Refs for animations
@@ -258,7 +258,7 @@ const Page = () => {
                 isRTL ? "text-right leading-[1.35]" : "text-left leading-[1.1]"
               }`}
             >
-              We’re building the most motivating way to learn together.
+              {t("AboutPage.Hero.title")}
             </h1>
             <p
               ref={SubheadingHeadingRef}
@@ -266,13 +266,15 @@ const Page = () => {
                 isRTL ? "border-r-4 pr-3" : "border-l-4 pl-3"
               }`}
             >
-              StudyCircle turns studying into teamwork. We help students form
-              small circles, complete focused missions, and see their progress
-              clearly.
+              {t("AboutPage.Hero.subtitle")}
             </p>
           </div>
 
-          <div className="md:h-[810px] sm:hidden tab:block tab:h-[750px] absolute top-0 right-0 tab:w-6/12 md:w-5/12 overflow-hidden">
+          <div
+            className={`md:h-[860px] sm:hidden tab:block tab:h-[780px] absolute top-0 ${
+              isRTL ? "left-0" : "right-0"
+            } tab:w-6/12 md:w-5/12 overflow-hidden`}
+          >
             <Image
               ref={HeroImageRef}
               src="/images/svg/about-page-men.svg"
@@ -286,7 +288,7 @@ const Page = () => {
           {/* INFO CARDS */}
           <div
             ref={HeroCardRef}
-            className="flex justify-center tab:flex-row sm:flex-col items-center sm:h-full tab:h-[300px] relative z-30 gap-6 sm:mt-5 tab:mt-12 sm:mb-[180px] tab:mb-32"
+            className="flex justify-center tab:flex-row sm:flex-col items-center sm:h-full tab:h-[300px] relative z-30 gap-6 sm:mt-5 tab:mt-16 sm:mb-[180px] tab:mb-24"
           >
             {infoData.map((item, i) => (
               <div
@@ -315,7 +317,6 @@ const Page = () => {
           </div>
         </SectionWrapper>
       </div>
-
       {/* WE VALUE CARDS */}
       <SectionWrapper>
         <div className="" ref={weHave}>
@@ -361,21 +362,15 @@ const Page = () => {
               ref={lonelyHeadingRef}
               className="w-full text-heading leading-[1.2] font-bold font-inter sm:text-4xl tab:text-5xl md:text-6xl"
             >
-              From lonely study sessions to powerful circles.
+              {t("AboutPage.LonelyToCircles.title")}
             </h1>
 
             <div className="border-l-4 border-secondary bg-white pl-6 space-y-4">
               <p className="text-gray-700 tab:text-sm md:text-lg leading-relaxed">
-                We started StudyCircle after seeing students lose motivation
-                studying alone — even the brightest ones. Classmates wanted
-                structured practice, friendly accountability, and a way to see
-                real improvement.
+                {t("AboutPage.LonelyToCircles.body1")}
               </p>
               <p className="text-gray-700 tab:text-sm md:text-lg leading-relaxed">
-                So we built circles: small, supportive groups with weekly
-                missions and a shared view of progress. The results were
-                immediate — more consistency, more confidence, and better
-                outcomes.
+                {t("AboutPage.LonelyToCircles.body2")}
               </p>
               <div className="pt-4">
                 <Image
@@ -403,8 +398,7 @@ const Page = () => {
               />
               <div className="text-center absolute p-4 left-1/2 sm:w-11/12 tab:w-10/12 transform -translate-x-1/2 tab:top-20 sm:top-8 md:top-10 space-y-3">
                 <p className="text-white sm:text-xl md:text-2xl font-serif font-bold leading-snug">
-                  Learning thrives in small, supportive circles, where progress
-                  is visible and wins are shared.
+                  {t("AboutPage.LonelyToCircles.quote")}
                 </p>
               </div>
             </div>
@@ -453,10 +447,10 @@ const Page = () => {
       <SectionWrapper>
         <CTAReuse
           backgroundImage="bg-[url('/images/png/about-cta.png')]"
-          title={t("CTATitle")}
-          subtitle={t("CTASubTitle")}
-          primaryText={t("CTABtn1")}
-          secondaryText={t("CTABtn2")}
+          title={t("AboutPage.Milestones.ctaTitle")}
+          subtitle={t("AboutPage.Milestones.ctaSubtitle")}
+          primaryText={t("AboutPage.Milestones.ctaPrimary")}
+          secondaryText={t("AboutPage.Milestones.ctaSecondary")}
         />
       </SectionWrapper>
     </div>

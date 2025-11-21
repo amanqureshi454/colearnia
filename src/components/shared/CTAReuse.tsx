@@ -3,7 +3,6 @@ import React, { useRef, useEffect } from "react";
 import Button from "./Button";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import Image from "next/image";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -90,13 +89,6 @@ const CTAReuse: React.FC<CTAReuseProps> = ({
       className={`w-full relative max-w-7xl mx-auto mb-14 rounded-4xl sm:h-84 tab:h-102 
                ${backgroundImage}  bg-cover bg-center overflow-hidden`}
     >
-      {/* <Image
-        alt="CTA"
-        width={500}
-        height={400}
-        className="w-full h-full object-cover rounded-3xl absolute top-0 left-0"
-        src={"/images/png/CTA-1.png"}
-      /> */}
       <div className="relative flex h-full gap-4 items-center justify-center flex-col p-3 text-center">
         {/* Title */}
         <h1

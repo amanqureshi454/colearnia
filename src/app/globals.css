@@ -8,9 +8,23 @@
   font-display: swap;
 }
 @font-face {
-  font-family: "Melody-medium";
-  src: url("/font/BLMelody-Medium.otf") format("opentype");
-  font-weight: 500;
+  font-family: "Almarai-ExtraBold";
+  src: url("/font/Almarai-ExtraBold.ttf") format("truetype");
+  font-weight: 900;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Almarai-Bold";
+  src: url("/font/Almarai-Bold.ttf") format("truetype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Almarai-Regular";
+  src: url("/font/Almarai-Regular.ttf") format("truetype");
+  font-weight: 400;
   font-style: normal;
   font-display: swap;
 }
@@ -25,7 +39,6 @@
   --color-secondary: #fc7a1a;
   --color-third: #cb9746;
 
-  --font-cairo: "Cairo", sans-serif;
   --font-inter: "Inter", sans-serif;
 
   --breakpoint-lg: 1400px;
@@ -42,8 +55,17 @@
 
 /* globals.css */
 
-.arabic .font-inter {
+/* .arabic .font-inter {
   font-family: "Cairo", sans-serif !important;
+} */
+.arabic .font-extrabold {
+  font-family: "Almarai-ExtraBold", sans-serif !important;
+}
+.arabic .font-bold {
+  font-family: "Almarai-ExtraBold", sans-serif !important;
+}
+.arabic .font-normal {
+  font-family: "Almarai-Regular", sans-serif !important;
 }
 body {
   font-family: "Inter", sans-serif;
@@ -52,13 +74,13 @@ body {
 
 /* When Arabic locale is active */
 body.arabic {
-  font-family: "Cairo", sans-serif !important;
+  font-family: "Almarai-Regular", sans-serif !important;
   direction: rtl;
 }
 
 /* Optional: override specific components */
 body.arabic .font-inter {
-  font-family: "Cairo", sans-serif !important;
+  font-family: "Almarai-Regular", sans-serif !important;
 }
 /* Required for SplitText slide-in effect */
 .line {

@@ -1,5 +1,4 @@
-import { ArrowRight, Check } from "lucide-react";
-import Image from "next/image";
+import { Check } from "lucide-react";
 import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -7,13 +6,20 @@ import BtnLoader from "../ui/btn-loader";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { pricingData } from "@/data/pricing";
-type UserType = "I'm Student" | "I'm Teacher";
+export type UserType = "student" | "teacher";
 type DurationType = "monthly" | "yearly";
 
 interface PlanProps {
   currentTab: UserType;
   durationTab: DurationType;
 }
+const PLAN_KEY_MAP: Record<string, string> = {
+  Basic: "student_basic",
+  Pro: "student_plus",
+  "Trial Pass": "student_trial",
+  Guest: "student_trial",
+  "Teacher Plus": "teacher_plus",
+};
 interface SubscriptionData {
   plan: string;
   status: string;
@@ -54,9 +60,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
     try {
       setLoading(true);
       const userEmail = JSON.parse(userData)?.email;
-
       console.log("🆓 Switching to Free plan for:", userEmail);
-
       // Use the existing cancel subscription API
       const response = await fetch("/api/subscriptions/cancel", {
         method: "POST",
@@ -236,196 +240,250 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
   return (
     <div
       ref={pricingRef}
-      className="flex justify-center sm:flex-col tab:flex-row tab:flex-wrap items-center gap-5 sm:mt-6 tab:mt-14 max-w-[1200px] mx-auto tab:px-4"
+      className={`flex justify-center w-full sm:flex-col tab:flex-row  ${
+        currentTab === "teacher" ? "gap-5" : "gap-3"
+      } tab:flex-wrap items-center  sm:mt-6 tab:mt-14 max-w-[1400px] mx-auto tab:px-4`}
     >
-      {currentPlans?.map(
-        (
-          plan: {
-            type: string;
-            price: { monthly: string; yearly: string };
-            time: string;
-            description: string;
-            benefits: string[];
-            buttonText: string;
-            priceID?: { monthly?: string; yearly?: string };
-          },
-          index: number
-        ) => {
-          const isActive =
-            subscription?.status === "active" &&
-            normalize(subscription?.plan) === normalize(plan.type) &&
-            subscription?.duration === durationTab;
-          // const isUserOnThisPlan = subscription?.plan === plan.type;
-          const isFreeStudentPlan = plan.type === "Student Free";
-          const isFreeTeacherPlan = plan.type === "Teacher Free";
-          const isFreePlan = isFreeStudentPlan || isFreeTeacherPlan;
-          const isInstitutionPlan = plan.type === "Institution";
-          const hasSubscription = !!subscription?.plan;
-          // const isNewUser = !hasSubscription;
-          return (
-            <div
-              key={index}
-              className={`pricing-box relative tab:w-[45%] md:w-[32%] sm:w-full  p-6 rounded-2xl flex flex-col overflow-hidden justify-between ${
-                plan.type === "Pro"
-                  ? "bg-background"
-                  : "bg-white shadow-[0px_4px_9px_0px_#0000000D]"
-              }`}
-            >
-              {isActive && (
-                <p className="px-3 absolute -top-4 left-1/2 -translate-x-1/2 py-1.5 text-white bg-[#C99E56] font-melodyM text-xs rounded-full">
-                  Active Plan
-                </p>
-              )}
-              {plan.type === "Pro" && (
-                <div className="absolute top-40 -left-24 rounded-full w-[550px] h-[550px] bg-brand" />
-              )}
+      {currentPlans
+        ?.filter((plan) =>
+          durationTab === "yearly"
+            ? plan.type !== "Guest" && plan.type !== "Trial Pass"
+            : true
+        )
+        .map(
+          (
+            plan: {
+              type: string;
+              price: { monthly: string; yearly: string };
+              time: string;
+              description: string;
+              benefits: string[];
+              buttonText: string;
+              priceID?: { monthly?: string; yearly?: string };
+            },
+            index: number
+          ) => {
+            const isActive =
+              subscription?.status === "active" &&
+              normalize(subscription?.plan) === normalize(plan.type) &&
+              subscription?.duration === durationTab;
 
-              <div className="flex flex-col relative z-30 gap-4 justify-between h-full">
-                <div className="flex flex-col gap-3">
-                  <div className="h-max text-center mt-3">
-                    <h3
-                      className={`text-3xl font-inter ${
-                        plan.type === "Pro" ? "text-white" : "text-black"
-                      } font-semibold`}
-                    >
-                      {plan.type}
-                    </h3>
-                    <p
-                      className={`mt-3 font-inter font-medium ${
-                        plan.type === "Pro" ? "text-white" : "text-paragraph"
-                      }  text-xl`}
-                    >
-                      {plan.description}
-                    </p>
+            const isFreeStudentPlan = plan.type === "Student Free";
+            const isFreeTeacherPlan = plan.type === "Teacher Free";
+            const isFreePlan = isFreeStudentPlan || isFreeTeacherPlan;
+            const isInstitutionPlan = plan.type === "Institution";
+            const hasSubscription = !!subscription?.plan;
+            return (
+              <div
+                key={index}
+                className={`pricing-box relative ${
+                  currentTab === "student"
+                    ? durationTab === "yearly"
+                      ? "tab:w-[32%]" // ⭐ ADDED → yearly student card width
+                      : "tab:w-[45%] md:w-[24%]"
+                    : "tab:w-[45%] md:w-[32%]"
+                } sm:w-full  p-4 rounded-2xl flex flex-col overflow-hidden justify-between ${
+                  plan.type === "Pro" || plan.type === "Teacher Plus"
+                    ? "bg-background"
+                    : "bg-white shadow-[0px_4px_9px_0px_#0000000D]"
+                }`}
+              >
+                {isActive && (
+                  <p className=" absolute top-3 left-3 text-white text-xs rounded-full">
+                    Active Plan
+                  </p>
+                )}
+                {plan.type === "Pro" || plan.type === "Teacher Plus" ? (
+                  <div
+                    className={`absolute ${
+                      currentTab === "teacher"
+                        ? "-left-20 top-28"
+                        : "-left-32 top-36"
+                    } rounded-full w-[560px] h-[560px] bg-brand`}
+                  />
+                ) : null}
 
-                    <p
-                      className={`mt-8 text-4xl ${
-                        plan.type === "Pro" ? "text-white" : "text-black"
-                      } font-inter font-extrabold`}
-                    >
-                      {plan.price[durationTab]}
-                    </p>
-                  </div>
-                  {plan.type === "Pro" && (
+                <div className="flex flex-col relative z-30 gap-4 justify-between h-full">
+                  <div className="flex flex-col gap-3">
+                    <div className="h-max text-center mt-3">
+                      <h3
+                        className={`text-3xl font-inter font-semibold ${
+                          plan.type === "Pro" || plan.type === "Teacher Plus"
+                            ? "text-white"
+                            : "text-black"
+                        }`}
+                      >
+                        {plan.type}
+                      </h3>
+
+                      <p
+                        className={`mt-3 font-inter font-medium text-lg ${
+                          plan.type === "Pro" || plan.type === "Teacher Plus"
+                            ? "text-white"
+                            : "text-paragraph"
+                        }`}
+                      >
+                        {plan.description}
+                      </p>
+
+                      <p
+                        className={`mt-8 text-4xl font-inter font-extrabold ${
+                          plan.type === "Pro" || plan.type === "Teacher Plus"
+                            ? "text-white"
+                            : "text-black"
+                        }`}
+                      >
+                        {plan.price[durationTab]} QAR
+                      </p>
+                    </div>
+                    {/* {plan.type === "Pro" && (
                     <div className="px-4 py-2.5 mx-auto text-center w-max bg-secondary rounded-xl text-white font-inter font-medium">
                       Save $50 a year
                     </div>
-                  )}
-                  <ul
-                    className={`mt-3 space-y-2 text-sm p-5 rounded-xl ${
-                      plan.type === "Pro" ? "bg-white" : " bg-[#F9FAFB]"
-                    }`}
-                  >
-                    {plan.benefits.map((benefit: string, idx: number) => (
-                      <li key={idx} className="flex items-start gap-2.5">
-                        <div className="w-6 h-6 bg-heading rounded-full flex justify-center items-center">
-                          <Check size={12} className="text-white" />
-                        </div>
-                        <p className="text-lg font-inter font-medium text-black">
-                          {benefit}
-                        </p>
-                      </li>
-                    ))}
-                    {/* Button Logic */}
-                    {isActive ? (
-                      // Active plan → Go to Dashboard (both free & paid)
-                      <Link
-                        href={
-                          process.env.NEXT_PUBLIC_DASHBOARD_URL ||
-                          "https://uat.studycircleapp.com/"
-                        }
-                        className="mt-8 py-4 w-full flex justify-center hover:scale-105 transition-all ease-in-out duration-200 items-center rounded-2xl text-sm font-medium border border-[#727272] text-[#3D3B3B]"
-                      >
-                        Go to Dashboard
-                      </Link>
-                    ) : isFreePlan && hasSubscription && !isActive ? (
-                      // User already has a paid plan → Show “Switch to Free”
-                      <button
-                        onClick={() => {
-                          setLoadingPlan(plan.type);
-                          handleFreePlan();
-                        }}
-                        className={`mt-8 py-4 shadow-[0px_4px_9px_0px_#0000000D] ${
-                          plan.type === "Pro"
-                            ? "bg-heading text-white"
-                            : "bg-white text-heading"
-                        } cursor-pointer hover:scale-105 transition-all ease-in-out duration-200 w-full px-4 rounded-3xl text-sm font-normal flex items-center justify-center gap-2`}
-                        disabled={loading}
-                      >
-                        {loading && loadingPlan === plan.type ? (
-                          <>
-                            <BtnLoader
-                              size={24}
-                              color={
-                                plan.type.includes("Plus")
-                                  ? "#ffffff"
-                                  : "#000000"
-                              }
-                            />
-                            Switching to {plan.type}...
-                          </>
-                        ) : (
-                          `Switch to ${plan.type}`
-                        )}
-                      </button>
-                    ) : isInstitutionPlan ? (
-                      // Institution Plan → Contact Sales
-                      <button
-                        onClick={() => {
-                          setLoadingPlan(plan.type);
-                          // Contact sales logic
-                        }}
-                        className={`mt-8 py-4  shadow-[0px_4px_9px_0px_#0000000D] ${
-                          plan.type === "Pro"
-                            ? "bg-heading text-white"
-                            : "bg-white text-heading"
-                        } cursor-pointer hover:scale-105 transition-all ease-in-out duration-200 w-full px-4 rounded-3xl text-sm font-normal flex items-center justify-center gap-2`}
-                      >
-                        {plan.buttonText}
-                      </button>
-                    ) : (
-                      // Default → Subscribe (for new users or upgrades)
-                      <button
-                        onClick={() => {
-                          setLoadingPlan(plan.type);
-                          handleSubscribe(
-                            plan.type.replace(/\s+/g, "_").toLowerCase(),
-                            durationTab,
-                            plan.priceID?.[durationTab]
-                          );
-                        }}
-                        className="mt-8 py-4 w-full flex justify-center cursor-pointer hover:scale-105 transition-all ease-in-out duration-200 items-center rounded-2xl text-sm font-medium border border-[#727272] text-[#3D3B3B] hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
-                        disabled={loading}
-                        // className={`mt-8 py-4 cursor-pointer hover:scale-105 transition-all ease-in-out duration-200 w-full px-4 rounded-2xl text-sm font-normal flex items-center justify-center gap-2 ${
-                        //   plan.type.includes("Plus")
-                        //     ? "bg-brand text-white"
-                        //     : "border border-[#727272] text-[#3D3B3B] hover:bg-gray-50"
-                        // }`}
-                      >
-                        {loading && loadingPlan === plan.type ? (
-                          <>
-                            <BtnLoader
-                              size={24}
-                              color={
-                                plan.type.includes("Plus")
-                                  ? "#ffffff"
-                                  : "#000000"
-                              }
-                            />
-                            Redirecting...
-                          </>
-                        ) : (
-                          plan.buttonText
-                        )}
-                      </button>
-                    )}
-                  </ul>
+                  )} */}
+                    <ul
+                      className={`mt-3  flex flex-col justify-between md:h-[440px] text-sm ${
+                        currentTab === "teacher" ? "p-5" : "p-3"
+                      } rounded-xl ${
+                        plan.type === "Pro" ? "bg-white" : " bg-[#F9FAFB]"
+                      }`}
+                    >
+                      <div className="space-y-2">
+                        {plan.benefits.map((benefit: string, idx: number) => (
+                          <li key={idx} className="flex items-start gap-2.5">
+                            <div className="w-6 h-6 bg-heading rounded-full shrink-0 flex justify-center items-center">
+                              <Check
+                                size={12}
+                                className="text-white shrink-0"
+                              />
+                            </div>
+                            <p className="text-sm font-inter font-medium text-black">
+                              {benefit}
+                            </p>
+                          </li>
+                        ))}
+                      </div>
+
+                      {/* Button Logic */}
+                      {/* ────────────────────────────── BUTTON LOGIC ────────────────────────────── */}
+                      {isActive ? (
+                        // ── 1. CURRENT ACTIVE PLAN → GO TO DASHBOARD ────────────────────────
+                        <Link
+                          href={
+                            process.env.NEXT_PUBLIC_DASHBOARD_URL ||
+                            "https://uat.studycircleapp.com/"
+                          }
+                          className="mt-8 py-4 w-full flex justify-center items-center
+               rounded-2xl text-sm font-medium border border-[#727272]
+               text-[#3D3B3B] hover:scale-105 transition-all
+               duration-200"
+                        >
+                          Go to Dashboard
+                        </Link>
+                      ) : isFreePlan && hasSubscription && !isActive ? (
+                        // ── 2. USER HAS PAID PLAN → SWITCH TO FREE ───────────────────────────
+                        <button
+                          onClick={() => {
+                            setLoadingPlan(plan.type);
+                            handleFreePlan();
+                          }}
+                          disabled={loading}
+                          className={`mt-8 py-4 shadow-[0px_4px_9px_0px_#0000000D] 
+               ${
+                 plan.type === "Pro" || plan.type === "Teacher Plus"
+                   ? "bg-heading text-white"
+                   : "bg-white text-heading border border-[#727272]"
+               } cursor-pointer hover:scale-105 transition-all
+               duration-200 w-full rounded-3xl text-sm font-normal
+               flex items-center justify-center gap-2`}
+                        >
+                          {loading && loadingPlan === plan.type ? (
+                            <>
+                              <BtnLoader
+                                size={24}
+                                color={
+                                  plan.type.includes("Plus")
+                                    ? "#ffffff"
+                                    : "#000000"
+                                }
+                              />
+                              Switching to {plan.type}...
+                            </>
+                          ) : (
+                            `Switch to ${plan.type}`
+                          )}
+                        </button>
+                      ) : isInstitutionPlan ? (
+                        // ── 3. INSTITUTION → REDIRECT TO CONTACT PAGE ───────────────────────
+                        <button
+                          onClick={() => {
+                            setLoadingPlan(plan.type);
+                            // replace with your real contact URL
+                            window.location.href = "/contact";
+                          }}
+                          className={`mt-8 py-4 shadow-[0px_4px_9px_0px_#0000000D] 
+               ${
+                 plan.type === "Pro" || plan.type === "Teacher Plus"
+                   ? "bg-heading text-white"
+                   : "bg-white text-heading border border-[#727272]"
+               } cursor-pointer hover:scale-105 transition-all
+               duration-200 w-full rounded-3xl text-sm font-normal
+               flex items-center justify-center gap-2`}
+                        >
+                          {plan.buttonText}
+                        </button>
+                      ) : (
+                        // ── 4. DEFAULT → SUBSCRIBE (new user / upgrade) ───────────────────────
+                        <button
+                          onClick={() => {
+                            setLoadingPlan(plan.type);
+
+                            const backendPlan = PLAN_KEY_MAP[plan.type];
+                            const durationToSend =
+                              backendPlan === "student_trial"
+                                ? "week"
+                                : durationTab;
+
+                            handleSubscribe(
+                              backendPlan,
+                              durationToSend,
+                              backendPlan === "student_trial"
+                                ? process.env.NEXT_PUBLIC_STRIPE_TRIAL_PRICE_ID
+                                : plan.priceID?.[durationTab]
+                            );
+                          }}
+                          disabled={loading}
+                          className={`mt-8 py-4 w-full flex justify-center items-center
+               rounded-2xl text-sm font-medium border border-[#727272]
+               text-[#3D3B3B] hover:bg-gray-50 hover:scale-105
+               transition-all duration-200 disabled:opacity-50
+               disabled:cursor-not-allowed`}
+                        >
+                          {loading && loadingPlan === plan.type ? (
+                            <>
+                              <BtnLoader
+                                size={24}
+                                color={
+                                  plan.type.includes("Plus")
+                                    ? "#ffffff"
+                                    : "#000000"
+                                }
+                              />
+                              Redirecting...
+                            </>
+                          ) : (
+                            plan.buttonText
+                          )}
+                        </button>
+                      )}
+                      {/* ─────────────────────────────────────────────────────────────────────── */}
+                    </ul>
+                  </div>
                 </div>
               </div>
-            </div>
-          );
-        }
-      )}
+            );
+          }
+        )}
     </div>
   );
 };

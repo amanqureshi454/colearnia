@@ -5,6 +5,7 @@ import SplitText from "gsap/SplitText";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import Image from "next/image";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 interface FooterColumn {
   title: string;
   links: { label: string; href: string }[];
@@ -17,56 +18,54 @@ interface FooterData {
   copyright: string;
   legalLinks: { label: string; href: string }[];
 }
-const footerData: FooterData = {
-  logo: {
-    src: "/images/png/footer-logo.png",
-    alt: "CoLearnnia Logo",
-    width: 220,
-    height: 80,
-  },
-  tagline: "Learn Together, Succeed Together",
-  columns: [
-    {
-      title: "Support",
-      links: [
-        { label: "Help centre", href: "/help" },
-        {
-          label: "Account information",
-          href: "/account",
-        },
-        { label: "About", href: "/about" },
-        { label: "Contact us", href: "/contact" },
-      ],
-    },
-    {
-      title: "Help and Solution",
-      links: [
-        { label: "Talk to support", href: "/support" },
-        { label: "Support docs", href: "/docs" },
-        { label: "System status", href: "/status" },
-        { label: "Covid responde", href: "/covid" },
-      ],
-    },
-    {
-      title: "Product",
-      links: [
-        { label: "Update", href: "/update" },
-        { label: "Security", href: "/security" },
-        { label: "Beta test", href: "/beta" },
-        { label: "Pricing product", href: "/pricing" },
-      ],
-    },
-  ],
-  copyright: "© 2025 Colearnia. Copyright and rights reserved",
-  legalLinks: [
-    { label: "Terms and conditions", href: "/terms" },
-    { label: "Privacy Policy", href: "/privacy" },
-  ],
-};
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
 const Footer = () => {
+  const t = useTranslations("Footer");
+  const footerData: FooterData = {
+    logo: {
+      src: "/images/png/footer-logo.png",
+      alt: t("logo.alt"),
+      width: 220,
+      height: 80,
+    },
+    tagline: t("tagline"),
+    columns: [
+      {
+        title: t("columns.0.title"), // "الدعم"
+        links: [
+          { label: t("columns.0.links.0"), href: "/help" }, // "مركز المساعدة"
+          { label: t("columns.0.links.1"), href: "/account" }, // "معلومات الحساب"
+          { label: t("columns.0.links.2"), href: "/about" }, // "من نحن"
+          { label: t("columns.0.links.3"), href: "/contact" }, // "تواصل معنا"
+        ],
+      },
+      {
+        title: t("columns.1.title"), // "الدعم والحلول"
+        links: [
+          { label: t("columns.1.links.0"), href: "/support" }, // "تحدث مع فريق الدعم"
+          { label: t("columns.1.links.1"), href: "/docs" }, // "وثائق المساعدة"
+          { label: t("columns.1.links.2"), href: "/status" }, // "حالة النظام"
+          { label: t("columns.1.links.3"), href: "/covid" }, // "استجابة كوفيد"
+        ],
+      },
+      {
+        title: t("columns.2.title"), // "المنتج"
+        links: [
+          { label: t("columns.2.links.0"), href: "/update" }, // "آخر التحديثات"
+          { label: t("columns.2.links.1"), href: "/security" }, // "الأمان"
+          { label: t("columns.2.links.2"), href: "/beta" }, // "اختبار بيتا"
+          { label: t("columns.2.links.3"), href: "/pricing" }, // "أسعار المنتج"
+        ],
+      },
+    ],
+    copyright: t("copyright"),
+    legalLinks: [
+      { label: t("legalLinks.0"), href: "/terms" }, // "الشروط والأحكام"
+      { label: t("legalLinks.1"), href: "/privacy" }, // "سياسة الخصوصية"
+    ],
+  };
   return (
     <footer className="bg-[#0A2E5A] text-white">
       <div className="max-w-7xl mx-auto px-4 py-12 md:py-16">

@@ -2,9 +2,10 @@ import React from "react";
 import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 
-// Define the type for each tour item
+// ✅ FIXED: Added value property
 interface Type {
   name: string;
+  value?: string;
 }
 
 // Define the props for the Tab component
@@ -27,31 +28,32 @@ export function Tab({
   type,
   layoutIdPrefix,
 }: TabProps) {
-  const items = type ? type.map((item) => item.name) : [];
-
   return (
     <div id="" className={cn("relative z-50 mb-6 sm:mb-5 ", className)}>
       <div className="flex w-max mx-auto items-center gap-3 sm:gap-1 bg-transparent backdrop-blur-lg py-2 px-2.5 rounded-md shadow-[0px_4px_9px_0px_#0000000D]">
-        {items.map((item) => {
-          const isActive = currentTab === item;
+        {type.map((item) => {
+          // ✅ FIX: Use value if available, otherwise use name
+          const tabValue = item.value || item.name;
+          const isActive = currentTab === tabValue;
+
           return (
             <motion.div
               layout
-              key={item}
-              onClick={() => setCurrentTab(item)}
+              key={tabValue}
+              onClick={() => setCurrentTab(tabValue)}
               className={cn(
                 "relative cursor-pointer text-sm font-medium font-inter rounded-full transition-colors",
                 space,
-                " hover:text-primary",
-                isActive && "bg-muted "
+                "hover:text-primary",
+                isActive && "bg-muted"
               )}
             >
               <span
-                className={` capitalize ${
+                className={`capitalize ${
                   isActive ? "text-white" : "text-black"
                 } leading-normal`}
               >
-                {item}
+                {item.name}
               </span>
               {isActive && (
                 <motion.div

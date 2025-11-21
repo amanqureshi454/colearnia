@@ -170,7 +170,11 @@ const Hero = () => {
                   />
                   <Image
                     ref={arrowRef}
-                    src="/images/svg/arrow.svg"
+                    src={`${
+                      isRTL
+                        ? "/images/svg/arabic-arrow.svg"
+                        : "/images/svg/arrow.svg"
+                    }`}
                     alt="Play"
                     className="w-7/12 h-[55px] sm:object-contain  tab:object-cover"
                     width={100}

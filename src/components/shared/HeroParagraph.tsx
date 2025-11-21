@@ -24,6 +24,8 @@ const HeroParagraph = forwardRef<
           lg:w-9/12 tab:w-full md:w-10/12 
           ${className}
         `.trim()}
+      aria-hidden
+      aria-label="false"
     >
       {t("Subtitle")}
     </p>

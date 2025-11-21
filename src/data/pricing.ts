@@ -1,4 +1,4 @@
-type UserType = "I'm Student" | "I'm Teacher";
+export type UserType = "student" | "teacher";
 export const pricingData: {
   plans: Record<
     UserType,
@@ -20,68 +20,86 @@ export const pricingData: {
   >;
 } = {
   plans: {
-    "I'm Student": [
+    student: [
       {
-        type: "Free",
+        type: "Guest",
         price: {
           monthly: "0",
           yearly: "0",
         },
         time: "month",
-        description: "Have a go and test your superpowers",
+        description: "For invited students exploring a single Circle.",
         benefits: [
-          "2 Users",
-          "2 Files",
-          "Public Share & Comments",
-          "Chat Support",
-          "New income apps",
+          "Access one invited Circle only",
+          "View results",
+          "No creation or editing",
         ],
         buttonText: "Signup for free",
       },
       {
-        type: "Pro",
+        type: "Trial Pass",
         price: {
-          monthly: "8",
-          yearly: "92",
+          monthly: "7",
+          yearly: "0",
+        },
+        time: "Week",
+        description: "Try all features for 14 days at a symbolic price.",
+        benefits: [
+          "Full access for 14 days",
+          "Explore all features",
+          "Create 1 Circle",
+          "Cancel anytime",
+        ],
+        buttonText: "Signup for Trial",
+      },
+      {
+        type: "Basic",
+        price: {
+          monthly: "49",
+          yearly: "490",
         },
         time: "month",
         description: "Experiment the power of infinite possibilities",
         benefits: [
-          "4 Users",
-          "All apps",
-          "Unlimited editable exports",
-          "Folders and collaboration",
-          "All incoming apps",
+          "Join unlimited Circles",
+          "Create up to 10 Circles",
+          "Leader benefits active in all Circles you join or create",
+          "Full analytics: Personal + all Circles joined or created",
+          "Add Quests & Missions in any Circle where allowed",
+          "Circle Captain badge",
+          "Priority support",
         ],
         priceID: {
-          monthly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY,
-          yearly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY,
+          monthly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY,
+          yearly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY,
         },
-        buttonText: "Go to pro",
+        buttonText: "Go with basic",
       },
       {
-        type: "Business",
+        type: "Pro",
         price: {
-          monthly: "16",
-          yearly: "192",
+          monthly: "99",
+          yearly: "990",
         },
         time: "month",
         description: "Unveil new superpowers and join the Design League.",
         benefits: [
-          "4 Users",
-          "All apps",
-          "Unlimited editable exports",
-          "Folders and collaboration",
-          "All incoming apps",
+          "Join unlimited Circles",
+          "Create up to 3 Circles",
+          "Leader benefits active only in your own Circles",
+          "Personal & your own Circle analytics",
+          "Add Quests & Missions in your own Circles",
+          "Circle Leader badge",
+          "Standard support",
         ],
         priceID: {
           monthly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY,
           yearly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY,
         },
-        buttonText: "Go to Business",
+        buttonText: "Go with Pro",
       },
     ],
-    "I'm Teacher": [
+    teacher: [
       {
         type: "Free",
         price: {

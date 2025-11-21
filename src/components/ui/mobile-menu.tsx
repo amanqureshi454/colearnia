@@ -1,6 +1,6 @@
 "use client";
 
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -21,24 +21,30 @@ const MobileMenu = () => {
     { label: t("How it work"), href: "how-it-work" },
     { label: t("About Us"), href: "about-us" },
     { label: t("Blog"), href: "blog" },
-    { label: t("Pricing"), href: "pricing" },
+    // { label: t("Pricing"), href: "pricing" },
     { label: t("Contact"), href: "contact" },
+    { label: t("FreeResource"), href: "resource" },
   ];
-  const locale = useLocale();
-  const availableLangs = languages.filter((lang) => lang !== locale);
 
+  const locale = usePathname().split("/")[1] || "en";
+  const availableLangs = languages.filter((lang) => lang !== locale);
   const strippedPath = pathname.replace(/^\/(en|ar)/, "");
 
+  // Handle scroll for background blur
   useEffect(() => {
     const handleScroll = () => {
-      setIsScrolled(window.scrollY > 50); // when Y > 50
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   const localizePath = (path: string = "") =>
     `/${locale}${path ? `/${path}` : ""}`;
+
+  const isAboutUsPage = pathname?.includes("/about-us");
+
   return (
     <nav
       dir={isRTL ? "rtl" : "ltr"}
@@ -55,24 +61,28 @@ const MobileMenu = () => {
             height={100}
             quality={100}
             src="/images/svg/logo.svg"
-            className="tab:w-full sm:w-40 :object-contain h-[52px]"
+            className="tab:w-full sm:w-40 h-[52px] object-contain"
             alt="Logo"
           />
         </Link>
 
-        {/* 🍔 Hamburger Button */}
+        {/* Hamburger Button */}
         <button
           aria-expanded={menuOpen}
           type="button"
           aria-label="menu"
-          onClick={() => setMenuOpen((prev) => !prev)} // 👈 Toggle menuOpen
+          onClick={() => setMenuOpen((prev) => !prev)}
           className="group relative h-6 w-6"
           style={
             {
               "--width": "1.55rem",
               "--thickness": "0.155rem",
               "--gap": "0.25rem",
-              "--color": isScrolled ? "#000" : "#fff",
+              "--color": isAboutUsPage
+                ? isScrolled
+                  ? "#000"
+                  : "#fff"
+                : "#000",
               "--duration": "400ms",
             } as React.CSSProperties
           }
@@ -82,10 +92,11 @@ const MobileMenu = () => {
           <span className="absolute left-1/2 top-1/2 h-[var(--thickness)] w-[var(--width)] -translate-x-1/2 translate-y-[calc(50%+var(--gap))] transition-transform duration-[calc(var(--duration)*2/3)] before:absolute before:right-0 before:h-full before:w-[60%] before:rounded-full before:bg-[var(--color)] before:transition-[right] before:delay-[calc(var(--duration)*1/3)] before:duration-[calc(var(--duration)*2/3)] group-aria-expanded:-translate-y-1/2 group-aria-expanded:-rotate-45 group-aria-expanded:delay-[calc(var(--duration)*1/3)] before:group-aria-expanded:right-[40%] before:group-aria-expanded:delay-0"></span>
         </button>
       </div>
+
       <AnimatePresence initial={false}>
         {menuOpen && (
           <motion.div
-            key="solution-list"
+            key="mobile-menu"
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
@@ -100,7 +111,7 @@ const MobileMenu = () => {
                   visible: { transition: { staggerChildren: 0.075 } },
                   hidden: {},
                 }}
-                className="flex justify-center flex-col items-left py-9 w-max overflow-hidden"
+                className="flex flex-col items-start py-9 w-max overflow-hidden"
               >
                 {navLinks.map((link, i) => {
                   const fullHref = `/${locale}${
@@ -130,43 +141,39 @@ const MobileMenu = () => {
                 })}
               </motion.ul>
             </div>
-            {/* Button with delay */}
+
+            {/* CTA Buttons */}
             <motion.div
               className="btn flex w-full flex-col justify-center items-center gap-3 overflow-hidden"
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              transition={{
-                duration: 0.6,
-                ease: "easeInOut",
-              }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
             >
               <Link
                 href={localizePath("signup")}
-                className="bg-third cursor-pointer w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform duration-200 ease-in-out hover:scale-105"
+                className="bg-third w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform hover:scale-105"
               >
                 {t("create-account")}
               </Link>
 
               <Link
                 href={localizePath("signin")}
-                className="bg-secondary cursor-pointer w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform duration-200 ease-in-out hover:scale-105"
+                className="bg-secondary w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform hover:scale-105"
               >
                 {t("Login")}
               </Link>
             </motion.div>
-            {/* Language Switcher Reveal */}
+
+            {/* Language Switcher */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.8, opacity: 0 }}
-              transition={{
-                duration: 0.6,
-                ease: "easeInOut",
-              }}
+              transition={{ duration: 0.6, ease: "easeInOut" }}
               className="relative z-20 w-full pt-10 overflow-hidden"
             >
-              <div className="ml-auto w-max rounded-[10px] border-white/40 bg-white p-4 px-2.5 py-2 text-white shadow-lg ">
+              <div className="ml-auto w-max rounded-[10px] border-white/40 bg-white p-4 px-2.5 py-2 text-white shadow-lg">
                 {availableLangs.map((lang) => (
                   <motion.div key={lang}>
                     <Link

@@ -16,7 +16,7 @@ const SectionWrapper: React.FC<SectionWrapperProps> = ({
     <div
       id={id}
       className={cn(
-        "relative z-20  max-w-7xl mx-auto  sm:w-full  sm:max-w-[95%] overflow-hidden md:max-w-[90%] lg:max-w-[85%] sm:py-8 md:py-12",
+        "relative z-20 max-w-7xl mx-auto sm:w-full  sm:max-w-[95%] overflow-hidden md:max-w-[90%] lg:max-w-[85%] sm:py-8 md:py-12",
         className
       )}
     >

@@ -1,12 +1,14 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
+import { useLocale, useTranslations } from "next-intl";
+import { usePathname, useRouter } from "next/navigation";
 import { useRef, useState, useMemo } from "react";
 import Image from "next/image";
 import BlogCard from "@/components/shared/BlogCard";
 import { useHeroReveal } from "@/lib/useHeroReveal";
 import { useSectionReveal } from "@/lib/useBlogCard";
+import Link from "next/link";
+
 interface Article {
   id: string;
   title: string;
@@ -14,6 +16,7 @@ interface Article {
   imageUrl: string;
   category: string;
   date: string;
+  slug?: string;
 }
 
 const Page = () => {
@@ -21,10 +24,11 @@ const Page = () => {
   const headingRef = useRef(null);
   const headingRef2 = useRef(null);
   const paraRef = useRef(null);
-
+  const router = useRouter();
   const t = useTranslations("");
   const t2 = useTranslations("Blog");
   const pathname = usePathname();
+  const locale = useLocale();
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
   // ✅ Fetch articles from translations
@@ -32,7 +36,7 @@ const Page = () => {
     return t.raw("Articles") || [];
   }, [t]);
 
-  // Animate hero only once
+  // ✅ Animate hero only once
   useHeroReveal({
     headingRef,
     paraRef,
@@ -40,51 +44,58 @@ const Page = () => {
     bgSelector: ".hero-bg-wrapper",
   });
 
-  // Animate blog section only once
+  // ✅ Animate blog section only once
   useSectionReveal({
     trigger: "#blog-section",
     headingRef: headingRef2,
     itemSelector: ".blog-card",
   });
 
-  // Memoized categories
-  // Unique categories
+  // ✅ Extract unique categories
   const uniqueCategories = useMemo(() => {
-    if (!allArticles || allArticles.length === 0) return ["All"];
-    const categories = Array.from(
+    if (!allArticles?.length) return ["All"];
+    const cats = Array.from(
       new Set((allArticles as Article[]).map((a) => a.category))
     );
-    return ["All", ...categories];
+    return ["All", ...cats];
   }, [allArticles]);
 
-  // Filtered articles
+  // ✅ Sort articles by date
+  const sortedArticles = useMemo(() => {
+    if (!allArticles?.length) return [];
+    return [...(allArticles as Article[])].sort(
+      (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    );
+  }, [allArticles]);
+
+  // ✅ Featured article = last article in array
+  const featuredArticle =
+    sortedArticles && sortedArticles.length > 0
+      ? sortedArticles[sortedArticles.length - 1]
+      : null;
+
+  // ✅ Filter articles by selected category
   const filteredArticles = useMemo(() => {
-    if (!allArticles || allArticles.length === 0) return [];
+    if (!sortedArticles?.length) return [];
     return selectedCategory === "All"
-      ? (allArticles as Article[])
-      : (allArticles as Article[]).filter(
+      ? sortedArticles
+      : sortedArticles.filter(
           (a) => a.category.toLowerCase() === selectedCategory.toLowerCase()
         );
-  }, [selectedCategory, allArticles]);
-
-  // Get featured article (first article)
-  const featuredArticle =
-    allArticles && allArticles.length > 0 ? allArticles[0] : null;
+  }, [selectedCategory, sortedArticles]);
 
   return (
-    <div
-      className={`w-full ${
-        isRTL ? "font-cairo" : "font-melodyB"
-      } h-full pb-14 bg-background relative sm:pt-[150px] md:pt-[160px]`}
-    >
-      {/* Header */}
+    <div className="w-full h-full pb-14 relative sm:pt-[90px] md:pt-[100px]">
+      <div className="absolute bg-[#FFD6D6] blur-[400px] rounded-full w-[600px] h-[600px] -top-20 right-0" />
+
+      {/* ---------- HEADER ---------- */}
       <div
         dir={isRTL ? "rtl" : "ltr"}
-        className="relative tab:w-8/12 z-20 gap-4 sm:px-4 mx-auto flex flex-col justify-center items-center"
+        className="relative z-40 tab:w-8/12 gap-4 sm:px-4 mx-auto flex flex-col justify-center items-center"
       >
         <h1
           ref={headingRef}
-          className="md:text-6xl sm:text-5xl font-bold leading-normal text-brand text-center"
+          className="md:text-6xl sm:text-5xl font-bold leading-normal text-heading text-center"
         >
           {t2("Title")}
         </h1>
@@ -96,7 +107,7 @@ const Page = () => {
         </p>
       </div>
 
-      {/* Hero card - Featured Article */}
+      {/* ---------- FEATURED ARTICLE (LAST BLOG) ---------- */}
       {featuredArticle && (
         <div className="tab:h-[458px] hero-bg-wrapper sm:h-max max-w-8xl sm:w-full tab:w-11/12 mt-14 mx-auto sm:px-4 tab:px-8 mb-16">
           <div className="bg-white rounded-[30px] flex h-full flex-col tab:flex-row overflow-hidden shadow-md">
@@ -111,10 +122,7 @@ const Page = () => {
               />
             </div>
             <div className="bg-brand tab:w-1/2 sm:w-full text-white tab:px-6 sm:px-0 h-full py-8 flex flex-col justify-center gap-6">
-              <div
-                dir={isRTL ? "rtl" : "ltr"}
-                className={`px-8 w-full ${isRTL ? "font-cairo" : "font-inter"}`}
-              >
+              <div dir={isRTL ? "rtl" : "ltr"} className="px-8 w-full">
                 <h2 className="text-3xl md:text-5xl font-extrabold mb-4">
                   {featuredArticle.title}
                 </h2>
@@ -122,9 +130,12 @@ const Page = () => {
                   {featuredArticle.description}
                 </p>
                 <div className="flex border-t border-white pt-7 mt-5 justify-between items-center w-full">
-                  <button className="bg-white text-brand text-sm font-semibold px-4 py-1.5 rounded border hover:bg-gray-200 transition">
+                  <Link
+                    href={`/${locale}/blog/${featuredArticle.slug}`}
+                    className="bg-white cursor-pointer text-brand text-sm font-semibold px-4 py-1.5 rounded border hover:bg-gray-200 transition"
+                  >
                     {featuredArticle.category}
-                  </button>
+                  </Link>
                   <div className="text-sm font-normal text-white">
                     {featuredArticle.date}
                   </div>
@@ -135,7 +146,7 @@ const Page = () => {
         </div>
       )}
 
-      {/* Blog Listing */}
+      {/* ---------- BLOG LISTING ---------- */}
       <div
         dir={isRTL ? "rtl" : "ltr"}
         id="blog-section"
@@ -157,7 +168,7 @@ const Page = () => {
             {uniqueCategories.map((cat, i) => (
               <button
                 key={i}
-                onClick={() => setSelectedCategory(cat as string)}
+                onClick={() => setSelectedCategory(cat)}
                 className={`px-4 py-1.5 cursor-pointer text-sm rounded-lg ${
                   selectedCategory === cat
                     ? "bg-brand text-white"
@@ -180,6 +191,7 @@ const Page = () => {
                 imageUrl={article.imageUrl}
                 category={article.category}
                 date={article.date}
+                slug={article?.slug || ""}
                 className="blog-card"
               />
             ))

@@ -5,6 +5,10 @@ import { useTranslations } from "next-intl";
 // Create a custom hook to get the steps data
 export const useStepsData = () => {
   const t = useTranslations("how-it-work");
+  const t2 = useTranslations("about.AboutPage.InfoCards");
+  const t3 = useTranslations("about.AboutPage.Values.items");
+  const t4 = useTranslations("about.AboutPage.Milestones.items");
+  const t5 = useTranslations("Contact");
 
   const stepStudent = [
     {
@@ -60,63 +64,122 @@ export const useStepsData = () => {
       description: t("stepTeacher.3.description"),
     },
   ];
-
-  return { stepStudent, stepTeacher };
+  const infoData = [
+    {
+      id: 1,
+      title: t2("0.title"),
+      description: t2("0.description"),
+      bgColor: "bg-[#F9F0FF]",
+      iconSrc: "/images/svg/cap.svg",
+    },
+    {
+      id: 2,
+      title: t2("1.title"),
+      description: t2("1.description"),
+      bgColor: "bg-[#F0F5FF]",
+      iconSrc: "/images/svg/eye.svg",
+    },
+    {
+      id: 3,
+      title: t2("2.title"),
+      description: t2("2.description"),
+      bgColor: "bg-[#E6FFDD]",
+      iconSrc: "/images/svg/shield-tick.svg",
+    },
+  ];
+  const weValue = [
+    {
+      id: 1,
+      title: t3("0.title"),
+      description: t3("0.description"),
+      iconSrc: "/images/svg/frame.svg", // use your own image path
+    },
+    {
+      id: 2,
+      title: t3("1.title"),
+      description: t3("1.description"),
+      iconSrc: "/images/svg/security-safe.svg",
+    },
+    {
+      id: 3,
+      title: t3("2.title"),
+      description: t3("2.description"),
+      iconSrc: "/images/svg/brush.svg",
+    },
+    {
+      id: 4,
+      title: t3("3.title"),
+      description: t3("3.description"),
+      iconSrc: "/images/svg/briefcase.svg",
+    },
+  ];
+  const milestones = [
+    {
+      id: 1,
+      title: t4("0.title"),
+      description: t4("0.description"),
+    },
+    {
+      id: 2,
+      title: t4("1.title"),
+      description: t4("1.description"),
+    },
+    {
+      id: 3,
+      title: t4("2.title"),
+      description: t4("2.description"),
+    },
+    {
+      id: 4,
+      title: t4("3.title"),
+      description: t4("3.description"),
+    },
+  ];
+  const contactInput = [
+    {
+      id: "name",
+      label: t5("fields.0.label"),
+      name: "from_name",
+      type: "text",
+      placeholder: t5("fields.0.placeholder"),
+      required: true,
+    },
+    {
+      id: "email",
+      label: t5("fields.1.label"),
+      name: "from_email",
+      type: "email",
+      placeholder: t5("fields.1.placeholder"),
+      required: true,
+    },
+    {
+      id: "phone",
+      label: t5("fields.2.label"),
+      name: "from_phone",
+      type: "tel",
+      placeholder: t5("fields.2.placeholder"),
+      inputMode: "numeric",
+      required: true,
+    },
+    {
+      id: "school",
+      label: t5("fields.3.label"),
+      name: "from_school",
+      type: "text",
+      placeholder: t5("fields.3.placeholder"),
+      required: false,
+    },
+  ];
+  return {
+    stepStudent,
+    stepTeacher,
+    infoData,
+    weValue,
+    milestones,
+    contactInput,
+  };
 };
 
-export const infoData = [
-  {
-    id: 1,
-    title: "Our Mission",
-    description:
-      "Empower every learner to achieve more through collaboration, accountability, and joyful practice.",
-    bgColor: "bg-[#F9F0FF]",
-    iconSrc: "/images/svg/cap.svg", // use your own image path
-  },
-  {
-    id: 2,
-    title: "Our Vision",
-    description:
-      "A world where studying feels social, meaningful, and measurable — for every student, everywhere.",
-    bgColor: "bg-[#F0F5FF]",
-    iconSrc: "/images/svg/eye.svg",
-  },
-  {
-    id: 3,
-    title: "What We Value",
-    description:
-      "Students first • Motivation by design • Trust & privacy • Evidence-based",
-    bgColor: "bg-[#E6FFDD]",
-    iconSrc: "/images/svg/shield-tick.svg",
-  },
-];
-export const weValue = [
-  {
-    id: 1,
-    title: "Students first",
-    description: "Every decision starts with learner outcomes.",
-    iconSrc: "/images/svg/frame.svg", // use your own image path
-  },
-  {
-    id: 2,
-    title: "Trust & privacy",
-    description: "We protect learner data and promote safe collaboration.",
-    iconSrc: "/images/svg/security-safe.svg",
-  },
-  {
-    id: 3,
-    title: "Motivation by design",
-    description: "Small wins, clear goals, visible progress.",
-    iconSrc: "/images/svg/brush.svg",
-  },
-  {
-    id: 4,
-    title: "Evidence-based",
-    description:
-      "We use proven learning science and iterate with real classrooms.",
-    iconSrc: "/images/svg/briefcase.svg",
-  },
-];
 export const teamMembers = [
   {
     id: 1,
@@ -155,27 +218,5 @@ export const teamMembers = [
       "EdTech builder & project lead. Passionate about collaborative learning",
     bg: "bg-[#76A136]",
     social: { facebook: "#", instagram: "#", twitter: "#", linkedin: "#" },
-  },
-];
-export const milestones = [
-  {
-    id: 1,
-    title: "Milestone 1",
-    description: "Prototype validated with pilot classrooms",
-  },
-  {
-    id: 2,
-    title: "Milestone 2",
-    description: "Gamified missions & progress dashboard",
-  },
-  {
-    id: 3,
-    title: "Milestone 3",
-    description: "Teacher tools for classes, circles & analytics",
-  },
-  {
-    id: 4,
-    title: "Milestone 4",
-    description: "Bilingual (EN/AR) with RTL support",
   },
 ];

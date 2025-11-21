@@ -16,25 +16,28 @@ import { Tab } from "@/components/ui/Tab";
 import { useStepsData } from "@/data/feature";
 import SectionHeader from "@/components/shared/HeadingWrapper";
 
-type UserType = "I'm Student" | "I'm Teacher";
+export type UserType = "student" | "teacher";
+
 interface Type {
   name: string;
+  value: UserType;
 }
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
 const Page = () => {
   const t = useTranslations("how-it-work");
+  const t2 = useTranslations("tabs");
   const pathname = usePathname();
   const { stepStudent, stepTeacher } = useStepsData();
 
-  /* ---------- Refs (renamed for clarity) ---------- */
+  /* ---------- Refs ---------- */
   const heroHeadingRef = useRef<HTMLHeadingElement>(null);
   const heroParaRef = useRef<HTMLParagraphElement>(null);
   const heroCtaBtnRef = useRef<HTMLButtonElement>(null);
   const heroWatchBtnWrapperRef = useRef<HTMLDivElement>(null);
-  const heroImageWrapperRef = useRef<HTMLDivElement>(null); // bgWrapper → image wrapper
-  const heroImageRef = useRef<HTMLImageElement>(null); // actual <Image>
+  const heroImageWrapperRef = useRef<HTMLDivElement>(null);
+  const heroImageRef = useRef<HTMLImageElement>(null);
 
   const stepsContainerRef = useRef<HTMLDivElement>(null);
   const aboutContainerRef = useRef<HTMLDivElement>(null);
@@ -45,10 +48,17 @@ const Page = () => {
   const aboutButtonsWrapperRef = useRef<HTMLDivElement>(null);
 
   /* ---------- State ---------- */
-  const [currentTab, setCurrentTab] = useState<UserType>("I'm Student");
+  const [currentTab, setCurrentTab] = useState<UserType>("student");
   const isRTL = pathname?.startsWith("/ar") ?? false;
-  const type: Type[] = [{ name: "I'm Student" }, { name: "I'm Teacher" }];
-  const steps = currentTab === "I'm Student" ? stepStudent : stepTeacher;
+
+  // ✅ FIX: Add value property with actual state values
+  const type: Type[] = [
+    { name: t2("student"), value: "student" },
+    { name: t2("teacher"), value: "teacher" },
+  ];
+
+  // ✅ Get correct steps based on currentTab value
+  const steps = currentTab === "student" ? stepStudent : stepTeacher;
 
   const features = [
     t("features.0") || "Built by educators",
@@ -57,7 +67,7 @@ const Page = () => {
   ];
 
   /* -------------------------------------------------
-     1. HERO ANIMATION – SAFE WITH requestAnimationFrame
+     1. HERO ANIMATION
      ------------------------------------------------- */
   useEffect(() => {
     let ctx: gsap.Context;
@@ -117,7 +127,7 @@ const Page = () => {
           );
         }
 
-        // === HERO IMAGE (scale in) ===
+        // === HERO IMAGE ===
         const img = heroImageRef.current || heroImageWrapperRef.current;
         if (img) {
           tl.from(
@@ -132,7 +142,7 @@ const Page = () => {
           );
         }
 
-        // === BACKGROUND WRAPPER (blurred circle) ===
+        // === BACKGROUND WRAPPER ===
         if (heroImageWrapperRef.current) {
           tl.from(
             heroImageWrapperRef.current,
@@ -155,6 +165,9 @@ const Page = () => {
     };
   }, []);
 
+  /* -------------------------------------------------
+     2. STEPS ANIMATION - Re-run when tab changes
+     ------------------------------------------------- */
   useEffect(() => {
     if (!stepsContainerRef.current) return;
 
@@ -177,9 +190,10 @@ const Page = () => {
     }, stepsContainerRef);
 
     return () => ctx.revert();
-  }, [currentTab]); // Re-run when tab changes
+  }, [currentTab]); // Re-animate when tab changes
+
   /* -------------------------------------------------
-     2. ABOUT SECTION – SAFE SCROLL ANIMATION
+     3. ABOUT SECTION ANIMATION
      ------------------------------------------------- */
   useEffect(() => {
     if (!aboutContainerRef.current) return;
@@ -253,7 +267,7 @@ const Page = () => {
           });
         }
 
-        // === STEP CARDS (feature-card) ===
+        // === STEP CARDS ===
         const cards =
           aboutContainerRef.current?.querySelectorAll(".feature-card") || [];
         if (cards.length) {
@@ -278,10 +292,6 @@ const Page = () => {
       ctx?.revert();
     };
   }, [currentTab, t]);
-
-  /* -------------------------------------------------
-     3. CLEANUP SPLIT TEXT ON LANGUAGE CHANGE
-     ------------------------------------------------- */
 
   return (
     <>
@@ -322,7 +332,7 @@ const Page = () => {
               </div>
             </div>
 
-            {/* Hero Image Wrapper */}
+            {/* Hero Image */}
             <div
               ref={heroImageWrapperRef}
               className="rounded-2xl tab:w-6/12 sm:w-full sm:h-[300px] tab:h-full relative z-30 aspect-square h-full"
@@ -343,6 +353,7 @@ const Page = () => {
         {/* ==================== TABS + STEPS ==================== */}
         <SectionWrapper>
           <div ref={stepsContainerRef} className="">
+            {/* ✅ Fixed Tab Component */}
             <Tab
               space="px-8 py-4"
               className="border tab:mb-10 border-gray-300 w-max rounded-md mx-auto"
@@ -355,14 +366,10 @@ const Page = () => {
 
             <SectionHeader
               heading={
-                currentTab === "I'm Student"
-                  ? t("studentTitle")
-                  : t("teacherTitle")
+                currentTab === "student" ? t("studentTitle") : t("teacherTitle")
               }
               subheading={
-                currentTab === "I'm Student"
-                  ? t("studentDesc")
-                  : t("teacherDesc")
+                currentTab === "student" ? t("studentDesc") : t("teacherDesc")
               }
             />
 
@@ -372,7 +379,7 @@ const Page = () => {
                   <div
                     dir={isRTL ? "rtl" : "ltr"}
                     className={`feature-card flex flex-col relative sm:w-full ${
-                      currentTab === "I'm Teacher"
+                      currentTab === "teacher"
                         ? "tab:w-[20%] min-h-[200px]"
                         : "tab:w-[30%]"
                     } sm:px-5 tab:px-3 md:px-4 py-6 rounded-xl shadow-[0px_4px_9px_0px_#0000000D] md:max-w-xs bg-white`}
@@ -486,7 +493,7 @@ const Page = () => {
           <CTAReuse
             backgroundImage="bg-[url('/images/png/cta-how.png')]"
             title={t("CTATitle")}
-            primaryText={t("Join a Circle Now")}
+            primaryText={t("CTA_Button")}
             secondaryText={t("Try a Free Mission")}
           />
         </SectionWrapper>
