@@ -28,7 +28,7 @@ export async function POST(req: NextRequest) {
   }
 
   const stripe = new Stripe(secretKey, {
-    apiVersion: "2025-06-30" as unknown as Stripe.LatestApiVersion,,
+    apiVersion: "2025-06-30" as unknown as Stripe.LatestApiVersion,
   });
 
   const PRICE_MAP: Record<string, string | undefined> = {
