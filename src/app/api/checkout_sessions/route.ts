@@ -79,6 +79,7 @@ export async function POST(req: NextRequest) {
         ) as DecodedToken;
         userId = decoded?.userId ?? null;
       } catch (err) {
+        console.log("Invalid JWT token:", err);
         // Invalid token, proceed without userId
       }
     }
