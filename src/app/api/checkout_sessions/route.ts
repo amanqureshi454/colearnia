@@ -1,9 +1,10 @@
+// app/api/checkout_sessions/route.ts
+
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const preferredRegion = "auto";
 
 import { NextRequest, NextResponse } from "next/server";
-import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
@@ -24,16 +25,12 @@ interface CheckoutRequestBody {
 
 export async function POST(req: NextRequest) {
   try {
-    const secretKey = process.env.STRIPE_SECRET_KEY;
-    if (!secretKey) {
-      return NextResponse.json(
-        { error: "Stripe secret key is not configured" },
-        { status: 500 }
-      );
-    }
-
-    // Stripe initialized safely inside POST at runtime only
-    const stripe = new Stripe(secretKey);
+    // --- DYNAMIC IMPORT — THIS FIXES THE BUILD ERROR ---
+    const { default: Stripe } = await import("stripe");
+    const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+      apiVersion: "2025-06-30.basil", // or whatever version you're using
+    });
+    // ---------------------------------------------------
 
     const PRICE_MAP: Record<string, string | undefined> = {
       student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
@@ -45,7 +42,6 @@ export async function POST(req: NextRequest) {
       teacher_plus_yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
     };
 
-    // Parse request JSON safely
     const requestData = (await req.json()) as CheckoutRequestBody;
     const {
       plan,
@@ -57,7 +53,6 @@ export async function POST(req: NextRequest) {
       discountPercentage,
     } = requestData;
 
-    // Validate required fields
     if (!plan || !duration || !email) {
       return NextResponse.json(
         { error: "Missing plan, duration, or email" },
@@ -68,40 +63,34 @@ export async function POST(req: NextRequest) {
     const mapKey = `${plan}_${duration}`;
     const priceId = PRICE_MAP[mapKey];
 
-    if (!priceId || typeof priceId !== "string") {
+    if (!priceId) {
       return NextResponse.json(
-        { error: "Invalid plan or duration (Price ID missing)" },
+        { error: "Invalid plan or duration" },
         { status: 400 }
       );
     }
 
-    // Decode JWT token if provided
     let userId: string | null = null;
     if (token) {
       try {
         const decoded = jwt.verify(
           token,
-          process.env.JWT_SECRET as string
+          process.env.JWT_SECRET!
         ) as DecodedToken;
-        if (decoded?.userId) userId = decoded.userId;
-      } catch {}
+        userId = decoded?.userId ?? null;
+      } catch (err) {
+        // Invalid token, proceed without userId
+      }
     }
 
-    // Build Stripe session payload
-    const sessionData: Stripe.Checkout.SessionCreateParams = {
+    const session = await stripe.checkout.sessions.create({
       mode: "subscription",
       payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
+      line_items: [{ price: priceId, quantity: 1 }],
       customer_email: email,
-      success_url: `https://YOUR_DOMAIN.com/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `https://YOUR_DOMAIN.com/${locale}/pricing`,
+      success_url: `${process.env.NEXT_PUBLIC_DOMAIN_URL}/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${process.env.NEXT_PUBLIC_DOMAIN_URL}/${locale}/pricing`,
       allow_promotion_codes: true,
-
       metadata: {
         plan,
         duration,
@@ -112,24 +101,19 @@ export async function POST(req: NextRequest) {
         promoCode: promoCode ?? "",
         discountPercentage: discountPercentage?.toString() ?? "",
       },
-
       subscription_data: {
         metadata: {
           plan,
           duration,
           userId: userId ?? "",
           email,
-          token: token ?? "",
           promoCode: promoCode ?? "",
           discountPercentage: discountPercentage?.toString() ?? "",
         },
       },
-    };
+    });
 
-    // Create checkout session
-    const session = await stripe.checkout.sessions.create(sessionData);
-
-    // Save session to database
+    // Save to DB
     try {
       const db = await getDb();
       await db.collection("checkout_sessions").insertOne({
@@ -140,19 +124,18 @@ export async function POST(req: NextRequest) {
         userId,
         promoCode: promoCode ?? null,
         discountPercentage: discountPercentage ?? null,
-        couponId: null,
         status: "pending",
-        createdAt: new Date().toISOString(),
+        createdAt: new Date(),
       });
     } catch (dbErr) {
-      console.error("Database save error:", dbErr);
+      console.error("Failed to save checkout session:", dbErr);
     }
 
     return NextResponse.json({ url: session.url });
-  } catch (err) {
-    console.error("Stripe route error:", err);
+  } catch (err: unknown) {
+    console.error("Checkout session error:", err);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to create checkout session" },
       { status: 500 }
     );
   }
