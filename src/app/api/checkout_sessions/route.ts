@@ -27,9 +27,7 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const stripe = new Stripe(secretKey, {
-    apiVersion: "2025-06-30" as unknown as Stripe.LatestApiVersion,
-  });
+  const stripe = new Stripe(secretKey);
 
   const PRICE_MAP: Record<string, string | undefined> = {
     student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,

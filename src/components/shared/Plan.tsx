@@ -289,7 +289,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
                 }`}
               >
                 {isActive && (
-                  <p className=" absolute top-3 left-3 text-white text-xs rounded-full">
+                  <p className=" absolute top-3 left-3 text-black text-xs rounded-full">
                     Active Plan
                   </p>
                 )}

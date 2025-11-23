@@ -36,6 +36,8 @@ export default function ResourceModal({
 }: ResourceModalProps) {
   const [selectedLevelLabel, setSelectedLevelLabel] = useState("");
   const [country, setCountry] = useState<string>("");
+  const [consent, setConsent] = useState(false);
+
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showThankYou, setShowThankYou] = useState(false);
 
@@ -72,14 +74,12 @@ export default function ResourceModal({
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (
-      !formData.fullName ||
-      !formData.email ||
-      !country ||
-      !formData.school ||
-      !selectedLevelLabel
-    ) {
+    if (!formData.fullName || !formData.email || !country) {
       toast.error("Please fill all fields");
+      return;
+    }
+    if (!consent) {
+      toast.error("Please agree to receive communications.");
       return;
     }
 
@@ -90,13 +90,29 @@ export default function ResourceModal({
         { name: "full_name", value: formData.fullName.trim() },
         { name: "email", value: formData.email.trim() },
         { name: "country_name", value: country },
-        { name: "school", value: formData.school.trim() },
-        { name: "school_level", value: selectedLevelLabel },
+        { name: "school", value: formData.school.trim() || "" },
+        { name: "school_level", value: selectedLevelLabel || "" },
         { name: "resource_name", value: selectedResource?.title || "Unknown" },
       ],
+
       context: {
         pageUri: window.location.href,
         pageName: document.title,
+      },
+
+      legalConsentOptions: {
+        consent: {
+          consentToProcess: true,
+          text: "I agree to allow Colearnia to store and process my personal data.",
+          communications: [
+            {
+              // LEGAL_CONSENT.subscription_type_1321138204
+              value: consent, // true/false
+              subscriptionTypeId: 1321138204, // <-- REPLACE with your real ID
+              text: "I agree to receive other communications from Colearnia.",
+            },
+          ],
+        },
       },
     };
 
@@ -225,9 +241,9 @@ export default function ResourceModal({
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
                 School Name
+                <span className=" text-gray-400 mx-1">(Optional)</span>
               </label>
               <input
-                required
                 type="text"
                 placeholder="Your school name"
                 value={formData.school}
@@ -241,7 +257,8 @@ export default function ResourceModal({
             {/* Level */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">
-                Select your level
+                Select your level{" "}
+                <span className=" text-gray-400 mx-1">(Optional)</span>
               </label>
               <Dropdown
                 placeholder="Choose level"
@@ -249,6 +266,18 @@ export default function ResourceModal({
                 onChange={(label: string) => setSelectedLevelLabel(label)}
                 value={selectedLevelLabel}
               />
+            </div>
+            <div className="flex items-start gap-3">
+              <input
+                type="checkbox"
+                checked={consent}
+                onChange={(e) => setConsent(e.target.checked)}
+                className="mt-1 h-5 w-5 accent-background cursor-pointer"
+              />
+
+              <label className="text-sm text-gray-700 cursor-pointer">
+                I agree to receive other communications from Colearnia.
+              </label>
             </div>
 
             <button
