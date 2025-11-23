@@ -1,32 +1,30 @@
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
+import { MongoClient, Db } from "mongodb";
 
-import { MongoClient, MongoClientOptions, Db } from "mongodb";
+// Lazy client variables (no top-level connection)
+let client: MongoClient | null = null;
+let clientPromise: Promise<MongoClient> | null = null;
 
-const uri = process.env.MONGO_URI || process.env.MONGODB_URI!;
-const options: MongoClientOptions = {};
+const uri = process.env.MONGO_URI || process.env.MONGODB_URI;
 
-declare global {
-  var _mongoClientPromise: Promise<MongoClient> | undefined;
+if (!uri) {
+  // Do NOT throw during build — only warn
+  console.warn(
+    "⚠️ MongoDB URI is not set (this is normal during Cloud Run build)"
+  );
 }
 
-const client = new MongoClient(uri, options);
+async function getClient(): Promise<MongoClient> {
+  if (client) return client;
 
-const clientPromise: Promise<MongoClient> =
-  global._mongoClientPromise || client.connect();
+  if (!clientPromise) {
+    clientPromise = new MongoClient(uri || "").connect();
+  }
 
-if (process.env.NODE_ENV !== "production") {
-  global._mongoClientPromise = clientPromise;
+  client = await clientPromise;
+  return client;
 }
 
 export async function getDb(): Promise<Db> {
-  try {
-    const client = await clientPromise;
-    return client.db();
-  } catch (error) {
-    console.error("❌ MongoDB connection failed:", error);
-    throw new Error("Database connection failed");
-  }
+  const client = await getClient();
+  return client.db(); // database name comes from URI
 }
-
-export { clientPromise };
