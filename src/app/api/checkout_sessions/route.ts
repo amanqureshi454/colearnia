@@ -1,3 +1,6 @@
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
@@ -19,38 +22,30 @@ interface CheckoutRequestBody {
 }
 
 export async function POST(req: NextRequest) {
-  const secretKey = process.env.STRIPE_SECRET_KEY;
-  if (!secretKey) {
-    return NextResponse.json(
-      { error: "Stripe secret key not configured." },
-      { status: 500 }
-    );
-  }
-
-  const stripe = new Stripe(secretKey);
-
-  const PRICE_MAP: Record<string, string | undefined> = {
-    student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
-    student_basic_monthly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY,
-    student_basic_yearly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY,
-    student_plus_monthly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY,
-    student_plus_yearly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY,
-    teacher_plus_monthly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY,
-    teacher_plus_yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
-  };
-
   try {
-    let requestData: CheckoutRequestBody;
-
-    try {
-      requestData = (await req.json()) as CheckoutRequestBody;
-    } catch {
+    const secretKey = process.env.STRIPE_SECRET_KEY;
+    if (!secretKey) {
       return NextResponse.json(
-        { error: "Invalid JSON in request body" },
-        { status: 400 }
+        { error: "Stripe secret key is not configured" },
+        { status: 500 }
       );
     }
 
+    // Stripe initialized safely inside POST at runtime only
+    const stripe = new Stripe(secretKey);
+
+    const PRICE_MAP: Record<string, string | undefined> = {
+      student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
+      student_basic_monthly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY,
+      student_basic_yearly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY,
+      student_plus_monthly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY,
+      student_plus_yearly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY,
+      teacher_plus_monthly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY,
+      teacher_plus_yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
+    };
+
+    // Parse request JSON safely
+    const requestData = (await req.json()) as CheckoutRequestBody;
     const {
       plan,
       duration,
@@ -61,6 +56,7 @@ export async function POST(req: NextRequest) {
       discountPercentage,
     } = requestData;
 
+    // Validate required fields
     if (!plan || !duration || !email) {
       return NextResponse.json(
         { error: "Missing plan, duration, or email" },
@@ -71,32 +67,26 @@ export async function POST(req: NextRequest) {
     const mapKey = `${plan}_${duration}`;
     const priceId = PRICE_MAP[mapKey];
 
-    if (!priceId) {
+    if (!priceId || typeof priceId !== "string") {
       return NextResponse.json(
-        { error: "Invalid plan or duration" },
+        { error: "Invalid plan or duration (Price ID missing)" },
         { status: 400 }
       );
     }
 
-    // Decode token safely
+    // Decode JWT token if provided
     let userId: string | null = null;
-
     if (token) {
       try {
         const decoded = jwt.verify(
           token,
-          process.env.JWT_SECRET!
+          process.env.JWT_SECRET as string
         ) as DecodedToken;
-
-        if (decoded?.userId) {
-          userId = decoded.userId;
-        }
-      } catch {
-        console.warn("JWT decode failed");
-      }
+        if (decoded?.userId) userId = decoded.userId;
+      } catch {}
     }
 
-    // Type-safe session data
+    // Build Stripe session payload
     const sessionData: Stripe.Checkout.SessionCreateParams = {
       mode: "subscription",
       payment_method_types: ["card"],
@@ -107,8 +97,8 @@ export async function POST(req: NextRequest) {
         },
       ],
       customer_email: email,
-      success_url: `http://localhost:3000/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3000/${locale}/pricing`,
+      success_url: `https://YOUR_DOMAIN.com/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `https://YOUR_DOMAIN.com/${locale}/pricing`,
       allow_promotion_codes: true,
 
       metadata: {
@@ -135,12 +125,12 @@ export async function POST(req: NextRequest) {
       },
     };
 
+    // Create checkout session
     const session = await stripe.checkout.sessions.create(sessionData);
 
-    // Save to DB
+    // Save session to database
     try {
       const db = await getDb();
-
       await db.collection("checkout_sessions").insertOne({
         sessionId: session.id,
         email,
@@ -159,7 +149,7 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (err) {
-    console.error("Stripe error:", err);
+    console.error("Stripe route error:", err);
     return NextResponse.json(
       { error: "Internal server error" },
       { status: 500 }
