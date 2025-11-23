@@ -103,7 +103,7 @@ export async function POST(req: NextRequest) {
         const decoded = jwt.verify(token, JWT_SECRET) as DecodedToken;
         userId = decoded.userId ?? null;
       } catch (err) {
-        console.log("Invalid token, continuing without userId");
+        console.log("Invalid token, continuing without userId", err);
       }
     }
 
