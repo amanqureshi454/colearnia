@@ -1,12 +1,12 @@
-// lib/mongodb.ts
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+
 import { MongoClient, MongoClientOptions, Db } from "mongodb";
 
 const uri = process.env.MONGO_URI || process.env.MONGODB_URI!;
 const options: MongoClientOptions = {};
 
 declare global {
-  // Prevent multiple connections in development
-  // eslint-disable-next-line no-var
   var _mongoClientPromise: Promise<MongoClient> | undefined;
 }
 
@@ -22,7 +22,7 @@ if (process.env.NODE_ENV !== "production") {
 export async function getDb(): Promise<Db> {
   try {
     const client = await clientPromise;
-    return client.db(); // Uses DB name from URI
+    return client.db();
   } catch (error) {
     console.error("❌ MongoDB connection failed:", error);
     throw new Error("Database connection failed");
