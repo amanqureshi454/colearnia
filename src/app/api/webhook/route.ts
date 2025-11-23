@@ -1,7 +1,7 @@
+/* eslint-disable */
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const preferredRegion = "auto";
-/* eslint-disable */
 
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";

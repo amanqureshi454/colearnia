@@ -1,9 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 export const preferredRegion = "auto";
 
-/* eslint-disable @typescript-eslint/no-explicit-any */
-/* @ts-nocheck */
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
