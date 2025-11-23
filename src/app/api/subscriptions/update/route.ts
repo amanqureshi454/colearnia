@@ -1,5 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* @ts-nocheck */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
+export const preferredRegion = "auto";
 
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -14,10 +17,11 @@ interface MySubscription extends Stripe.Subscription {
 }
 
 const PRICE_MAP: Record<string, string | undefined> = {
-  pro_monthly: process.env.STRIPE_PRICE_ID_STUDENT_PRO_MONTHLY,
-  pro_yearly: process.env.STRIPE_PRICE_ID_STUDENT_PRO_YEARLY,
-  premium_monthly: process.env.STRIPE_PRICE_ID_STUDENT_PREMIUM_MONTHLY,
-  premium_yearly: process.env.STRIPE_PRICE_ID_STUDENT_PREMIUM_YEARLY,
+  student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
+  student_basic_monthly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY,
+  student_basic_yearly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY,
+  student_plus_monthly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY,
+  student_plus_yearly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY,
   teacher_plus_monthly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY,
   teacher_plus_yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
 };
