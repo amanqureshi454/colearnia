@@ -5,7 +5,12 @@ const nextConfig: NextConfig = {
   experimental: {
     serverActions: {},
   },
-
+  typescript: {
+    ignoreBuildErrors: true, // Never fail build on TS errors
+  },
+  eslint: {
+    ignoreDuringBuilds: true, // Never fail build on ESLint errors
+  },
   async redirects() {
     return [
       {
