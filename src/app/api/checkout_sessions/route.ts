@@ -1,26 +1,22 @@
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-export const preferredRegion = "auto";
+// interface DecodedToken {
+//   userId: string;
+//   [key: string]: unknown;
+// }
+
+// interface CheckoutRequestBody {
+//   plan: string;
+//   duration: string;
+//   email: string;
+//   locale: string;
+//   token?: string;
+//   promoCode?: string;
+//   discountPercentage?: number;
+// }
 
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
-
-interface DecodedToken {
-  userId: string;
-  [key: string]: unknown;
-}
-
-interface CheckoutRequestBody {
-  plan: string;
-  duration: string;
-  email: string;
-  locale: string;
-  token?: string;
-  promoCode?: string;
-  discountPercentage?: number;
-}
 
 export async function POST(req: NextRequest) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -30,10 +26,11 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  const stripe = new Stripe(secretKey, {
-    apiVersion: "2025-06-30" as unknown as Stripe.LatestApiVersion,
-  });
+  console.log("Webhook secret:", webhookSecret);
+
+  const stripe = new Stripe(secretKey, { apiVersion: "2025-06-30.basil" });
 
   const PRICE_MAP: Record<string, string | undefined> = {
     student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
@@ -46,11 +43,11 @@ export async function POST(req: NextRequest) {
   };
 
   try {
-    let requestData: CheckoutRequestBody;
-
+    let requestData;
     try {
-      requestData = (await req.json()) as CheckoutRequestBody;
-    } catch {
+      requestData = await req.json();
+    } catch (jsonError) {
+      console.error("JSON parse error:", jsonError);
       return NextResponse.json(
         { error: "Invalid JSON in request body" },
         { status: 400 }
@@ -66,6 +63,14 @@ export async function POST(req: NextRequest) {
       promoCode,
       discountPercentage,
     } = requestData;
+
+    console.log("📋 Creating checkout session:", {
+      plan,
+      duration,
+      email,
+      promoCode,
+      discountPercentage,
+    });
 
     if (!plan || !duration || !email) {
       return NextResponse.json(
@@ -84,26 +89,19 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    // Decode token safely
-    let userId: string | null = null;
-
+    // Decode user info from token
+    let userId = null;
     if (token) {
       try {
-        const decoded = jwt.verify(
-          token,
-          process.env.JWT_SECRET!
-        ) as DecodedToken;
-
-        if (decoded?.userId) {
-          userId = decoded.userId;
-        }
-      } catch {
-        console.warn("JWT decode failed");
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
+        userId = decoded.userId;
+      } catch (err) {
+        console.log("Token decode failed");
       }
     }
 
-    // Type-safe session data
-    const sessionData: Stripe.Checkout.SessionCreateParams = {
+    // Prepare session data
+    const sessionData: any = {
       mode: "subscription",
       payment_method_types: ["card"],
       line_items: [
@@ -116,51 +114,49 @@ export async function POST(req: NextRequest) {
       success_url: `http://localhost:3000/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
       cancel_url: `http://localhost:3000/${locale}/pricing`,
       allow_promotion_codes: true,
-
       metadata: {
+        token: token || "",
         plan,
         duration,
         priceId,
-        userId: userId ?? "",
+        userId: userId || "",
         email,
-        token: token ?? "",
-        promoCode: promoCode ?? "",
-        discountPercentage: discountPercentage?.toString() ?? "",
+        promoCode: promoCode || "",
+        discountPercentage: discountPercentage?.toString() || "",
       },
-
       subscription_data: {
         metadata: {
+          token: token || "",
           plan,
           duration,
-          userId: userId ?? "",
+          userId: userId || "",
           email,
-          token: token ?? "",
-          promoCode: promoCode ?? "",
-          discountPercentage: discountPercentage?.toString() ?? "",
+          promoCode: promoCode || "",
+          discountPercentage: discountPercentage?.toString() || "",
         },
       },
     };
 
     const session = await stripe.checkout.sessions.create(sessionData);
 
-    // Save to DB
+    // Pre-save checkout session to database
     try {
       const db = await getDb();
-
       await db.collection("checkout_sessions").insertOne({
         sessionId: session.id,
         email,
         plan,
         duration,
         userId,
-        promoCode: promoCode ?? null,
-        discountPercentage: discountPercentage ?? null,
+        promoCode: promoCode || null,
+        discountPercentage: discountPercentage || null,
         couponId: null,
         status: "pending",
         createdAt: new Date().toISOString(),
       });
-    } catch (dbErr) {
-      console.error("Database save error:", dbErr);
+      console.log("✅ Checkout session pre-saved with promo code");
+    } catch (err) {
+      console.error("Failed to pre-save checkout session:", err);
     }
 
     return NextResponse.json({ url: session.url });

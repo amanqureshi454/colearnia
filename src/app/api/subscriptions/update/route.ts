@@ -1,7 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-export const preferredRegion = "auto";
+/* @ts-nocheck */
 
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -11,9 +9,6 @@ import jwt from "jsonwebtoken";
 const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
   apiVersion: "2025-06-30.basil",
 });
-interface MySubscription extends Stripe.Subscription {
-  current_period_end: number;
-}
 
 const PRICE_MAP: Record<string, string | undefined> = {
   student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
@@ -89,15 +84,8 @@ export async function POST(req: NextRequest) {
     );
 
     // Update subscription in database
-
-    // const currentPeriodEnd = new Date(
-    //   updatedSubscription.current_period_end * 1000
-    // );
-    const updatedSubscriptionTyped =
-      updatedSubscription as unknown as MySubscription;
-
     const currentPeriodEnd = new Date(
-      updatedSubscriptionTyped.current_period_end * 1000
+      updatedSubscription.current_period_end * 1000
     );
 
     await db.collection("subscriptions").updateOne(

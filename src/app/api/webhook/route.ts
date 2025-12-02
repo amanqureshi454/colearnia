@@ -1,13 +1,11 @@
 /* eslint-disable */
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-export const preferredRegion = "auto";
 
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
+export const dynamic = "force-dynamic";
 interface DecodedToken {
   userId?: string;
   [key: string]: unknown;
