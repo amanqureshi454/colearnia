@@ -16,7 +16,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
-import jwt from "jsonwebtoken";
+import { verifyToken } from "@/lib/verifyToken";
 
 export async function POST(req: NextRequest) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
@@ -91,18 +91,8 @@ export async function POST(req: NextRequest) {
 
     // Decode user info from token
     let userId: string | null = null;
-    if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
-          userId?: string;
-        };
-        userId =
-          typeof decoded === "object" && decoded !== null
-            ? decoded.userId || null
-            : null;
-      } catch (err) {
-        console.log("Token decode failed");
-      }
+    if (token && typeof token === "string") {
+      userId = verifyToken(token);
     }
 
     // Prepare session data
