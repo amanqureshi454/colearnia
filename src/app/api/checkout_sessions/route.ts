@@ -90,11 +90,16 @@ export async function POST(req: NextRequest) {
     }
 
     // Decode user info from token
-    let userId = null;
+    let userId: string | null = null;
     if (token) {
       try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-        userId = decoded.userId;
+        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as {
+          userId?: string;
+        };
+        userId =
+          typeof decoded === "object" && decoded !== null
+            ? decoded.userId || null
+            : null;
       } catch (err) {
         console.log("Token decode failed");
       }
