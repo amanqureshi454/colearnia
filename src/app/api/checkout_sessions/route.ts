@@ -18,6 +18,54 @@ import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
 import { verifyToken } from "@/lib/verifyToken";
 
+console.log("=== BUILD-TIME ENV CHECK (checkout_sessions) ===");
+console.log(
+  "STRIPE_SECRET_KEY:",
+  process.env.STRIPE_SECRET_KEY ? "SET" : "UNDEFINED"
+);
+console.log(
+  "STRIPE_WEBHOOK_SECRET:",
+  process.env.STRIPE_WEBHOOK_SECRET ? "SET" : "UNDEFINED"
+);
+console.log("JWT_SECRET:", process.env.JWT_SECRET ? "SET" : "UNDEFINED");
+
+// Check PRICE MAP env vars
+console.log(
+  "STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY:",
+  process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY ? "SET" : "UNDEFINED"
+);
+console.log(
+  "STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY:",
+  process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY ? "SET" : "UNDEFINED"
+);
+console.log(
+  "STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY:",
+  process.env.STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY ? "SET" : "UNDEFINED"
+);
+console.log(
+  "STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY:",
+  process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY ? "SET" : "UNDEFINED"
+);
+console.log(
+  "STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY:",
+  process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY ? "SET" : "UNDEFINED"
+);
+console.log(
+  "STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY:",
+  process.env.STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY ? "SET" : "UNDEFINED"
+);
+console.log(
+  "STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY:",
+  process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY ? "SET" : "UNDEFINED"
+);
+
+// Any other secret?
+console.log(
+  "NEXT_PUBLIC_URL:",
+  process.env.NEXT_PUBLIC_URL || "not set (normal for server)"
+);
+console.log("================================================");
+
 export async function POST(req: NextRequest) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
