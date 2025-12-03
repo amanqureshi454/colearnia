@@ -15,10 +15,10 @@ interface PlanProps {
 }
 const PLAN_KEY_MAP: Record<string, string> = {
   Basic: "student_basic",
-  Pro: "student_plus",
+  Pro: "student_pro",
   "Trial Pass": "student_trial",
   Guest: "student_trial",
-  "Teacher Plus": "teacher_plus",
+  "Teacher Pro": "teacher_pro",
 };
 interface SubscriptionData {
   plan: string;
