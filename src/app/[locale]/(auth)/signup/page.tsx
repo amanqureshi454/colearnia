@@ -120,6 +120,11 @@ const SignUpPage = () => {
 
     setIsLoading(true);
 
+    if (!process.env.NEXT_PUBLIC_DASHBOARD_URL) {
+      toast.error("Dashboard URL not configured");
+      setIsLoading(false);
+      return;
+    }
     try {
       const response = await fetch(
         `${process.env.NEXT_PUBLIC_DASHBOARD_URL}auth/api/auth/register`,
