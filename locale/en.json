@@ -329,5 +329,72 @@
         "desc": "Progress isn’t visible or rewarding"
       }
     ]
+  },
+  "login": {
+    "title": "Join the study circle by signing in",
+    "emailLabel": "Email",
+    "emailPlaceholder": "Enter your email",
+    "passwordLabel": "Password",
+    "passwordPlaceholder": "**************",
+    "forgotPassword": "Forget your password?",
+    "signInButton": "Sign in",
+    "signingInButton": "Signing in...",
+    "noAccountText": "Don't have an account?",
+    "signUpHere": "Sign up here",
+    "footerText": "By signing in, you are agreeing to our",
+    "privacyPolicy": "privacy policy",
+    "terms": "terms",
+    "showPassword": "Show password",
+    "hidePassword": "Hide password"
+  },
+  "signup": {
+    "title": "Let's create an account for you",
+
+    "selectRole": "Select your role",
+    "student": "Student",
+    "teacher": "Teacher",
+
+    "firstName": "First name",
+    "firstNamePlaceholder": "Enter your first name",
+    "lastName": "Last name",
+    "lastNamePlaceholder": "Enter your last name",
+
+    "email": "Email",
+    "emailPlaceholder": "Enter your email",
+
+    "gender": "Select Gender",
+    "selectGender": "Select Gender",
+    "male": "Male",
+    "female": "Female",
+
+    "level": "Select Your Level",
+    "selectLevel": "Select Level",
+
+    "curriculum": "Select Your Curriculum",
+    "selectCurriculum": "Select Curriculum",
+
+    "city": "Select your city",
+    "selectCity": "Select City",
+
+    "school": "Select the school",
+    "selectSchool": "Select School",
+
+    "createPassword": "Create password",
+    "confirmPassword": "Confirm password",
+
+    "signUp": "Sign up",
+    "creatingAccount": "Creating account...",
+
+    "alreadyHaveAccount": "Already in the circle?",
+    "signInHere": "Sign in here",
+
+    "footerText": "By creating an account, you are agreeing to our",
+    "privacyPolicy": "privacy policy",
+    "terms": "terms",
+
+    "showPassword": "Show password",
+    "hidePassword": "Hide password",
+    "showConfirmPassword": "Show confirm password",
+    "hideConfirmPassword": "Hide confirm password"
   }
 }

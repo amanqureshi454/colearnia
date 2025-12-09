@@ -101,21 +101,7 @@ body.arabic .font-inter {
   border-radius: 0 4px 82px 0px;
 }
 
-.auth-container {
-  display: flex;
-  width: 100%;
-  min-height: 100vh; /* height को min-height से बदलें */
-}
-
-.auth-form-panel {
-  flex: 1;
-  display: grid;
-  place-items: center;
-  padding: 40px 20px; /* ऊपर-नीचे थोड़ा और पैडिंग दें */
-}
-
 .auth-card {
-  background: #ffffff;
   border-radius: 16px;
   padding: 32px;
   width: 100%;

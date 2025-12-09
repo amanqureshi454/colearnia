@@ -7,7 +7,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { getCities, getLevels, getSchools } from "@/services/locationService";
 import toast, { Toaster } from "react-hot-toast";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface FormData {
   firstName: string;
@@ -36,6 +36,8 @@ interface Option {
 
 const SignUpPage = () => {
   const navigate = useRouter();
+  const t = useTranslations("signup");
+
   const locale = useLocale();
 
   // ------------------ State ------------------
@@ -127,7 +129,7 @@ const SignUpPage = () => {
     }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DASHBOARD_URL}auth/api/auth/register`,
+        `${process.env.NEXT_PUBLIC_DASHBOARD_URL}/api/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -203,19 +205,19 @@ const SignUpPage = () => {
   }, [formData.city]);
 
   return (
-    <>
+    <div className="min-h-screen flex items-center justify-center bg-[#F7F9FC]">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="flex justify-between bg-[#F7F9FC] sm:flex-col tab:flex-row sm:p-2 tab:p-0  items-center w-full h-full min-h-screen relative">
-        <div className="flex justify-center items-center flex-1">
+      <div className="flex justify-between  sm:flex-col tab:flex-row sm:p-2 tab:p-0  items-center w-full h-full min-h-screen relative">
+        <div className="flex justify-center  items-center flex-1">
           <div className="shadow-[0px_4px_24px_rgba(0, 0, 0, 0.05)] my-10 bg-white sm:p-4 tab:p-[32px] h-full flex-col rounded-2xl w-full max-w-lg flex justify-center items-center">
-            <h1 className="tab:text-3xl sm:text-xl font-semibold text-[#383F34] mb-8 ">
-              Let's create an account for you
+            <h1 className="tab:text-3xl sm:text-xl font-semibold text-heading mb-8 ">
+              {t("title")}
             </h1>
 
             <form className="w-full" onSubmit={handleSubmit}>
               {/* Role Selection */}
               <div className="form-group">
-                <label>Select your role</label>
+                <label>{t("selectRole")}</label>
                 <div
                   className="role-chips w-full "
                   style={{ display: "flex", gap: "12px", marginTop: "8px" }}
@@ -223,129 +225,76 @@ const SignUpPage = () => {
                   <button
                     type="button"
                     onClick={() => handleRoleSelect("student")}
-                    className={`role-chip w-1/2 ${
-                      formData.role === "student" ? "active" : ""
-                    }`}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      padding: "12px 16px",
-                      border:
-                        formData.role === "student"
-                          ? "2px solid ##1A233A"
-                          : "2px solid #E5E7EB",
-                      borderRadius: "8px",
-                      background:
-                        formData.role === "student" ? "#F7FAFC" : "#FFFFFF",
-                      color:
-                        formData.role === "student" ? "##1A233A" : "#6B7280",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                    }}
+                    className={`role-chip w-1/2 flex items-center gap-2 px-4 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200
+    ${
+      formData.role === "student"
+        ? "border-[#1A233A] bg-[#F7FAFC] text-[#1A233A]"
+        : "border-gray-200 bg-white text-gray-500"
+    }
+  `}
                   >
                     <User className="w-5 h-5" />
-                    Student
+                    {t("student")}
                   </button>
                   <button
                     type="button"
                     onClick={() => handleRoleSelect("teacher")}
-                    className={`role-chip w-1/2 ${
-                      formData.role === "teacher" ? "active" : ""
-                    }`}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "8px",
-                      padding: "12px 16px",
-                      border:
+                    className={`role-chip w-1/2 flex items-center gap-2 px-4 py-3 rounded-lg border-2 cursor-pointer transition-all duration-200
+                      ${
                         formData.role === "teacher"
-                          ? "2px solid ##1A233A"
-                          : "2px solid #E5E7EB",
-                      borderRadius: "8px",
-                      background:
-                        formData.role === "teacher" ? "#F7FAFC" : "#FFFFFF",
-                      color:
-                        formData.role === "teacher" ? "##1A233A" : "#6B7280",
-                      cursor: "pointer",
-                      transition: "all 0.2s",
-                    }}
+                          ? "border-[#1A233A] bg-[#F7FAFC] text-[#1A233A]"
+                          : "border-gray-200 bg-white text-gray-500"
+                      }
+                    `}
                   >
                     <GraduationCap className="w-5 h-5" />
-                    Teacher
+                    {t("teacher")}
                   </button>
-                  {/* <button
-                type="button"
-                onClick={() => handleRoleSelect("institution")}
-                className={`role-chip ${
-                  formData.role === "institution" ? "active" : ""
-                }`}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "8px",
-                  padding: "12px 16px",
-                  border:
-                    formData.role === "institution"
-                      ? "2px solid ##1A233A"
-                      : "2px solid #E5E7EB",
-                  borderRadius: "8px",
-                  background:
-                    formData.role === "institution" ? "#F7FAFC" : "#FFFFFF",
-                  color:
-                    formData.role === "institution" ? "##1A233A" : "#6B7280",
-                  cursor: "pointer",
-                  transition: "all 0.2s",
-                }}
-              >
-                <User className="w-5 h-5" />
-                Institution
-              </button> */}
                 </div>
               </div>
 
               {/* Basic Information */}
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="firstName">First name</label>
+                  <label htmlFor="firstName">{t("firstName")}</label>
                   <input
                     type="text"
                     id="firstName"
                     name="firstName"
                     value={formData.firstName}
                     onChange={handleInputChange}
-                    placeholder="Enter your first name"
+                    placeholder={t("firstNamePlaceholder")}
                     required
                   />
                 </div>
                 <div className="form-group">
-                  <label htmlFor="lastName">Last name</label>
+                  <label htmlFor="lastName">{t("lastName")}</label>
                   <input
                     type="text"
                     id="lastName"
                     name="lastName"
                     value={formData.lastName}
                     onChange={handleInputChange}
-                    placeholder="Enter your last name"
+                    placeholder={t("lastNamePlaceholder")}
                     required
                   />
                 </div>
               </div>
 
               <div className="form-group">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{t("email")}</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="Enter your email"
+                  placeholder={t("emailPlaceholder")}
                   required
                 />
               </div>
               <div className="form-group">
-                <label htmlFor="gender">Select Gender</label>
+                <label htmlFor="gender">{t("selectGender")}</label>
                 <select
                   id="gender"
                   name="gender"
@@ -353,16 +302,16 @@ const SignUpPage = () => {
                   onChange={handleInputChange}
                   required
                 >
-                  <option value="">Select Gender</option>
-                  <option value="male">Male</option>
-                  <option value="female">Female</option>
+                  <option value="">{t("selectGender")}</option>
+                  <option value="male">{t("male")}</option>
+                  <option value="female">{t("female")}</option>
                 </select>
               </div>
 
               {formData.role === "student" && (
                 <>
                   <div className="form-group">
-                    <label htmlFor="city">Select Your Level</label>
+                    <label htmlFor="city">{t("level")}</label>
                     <select
                       id="level"
                       name="level"
@@ -370,7 +319,7 @@ const SignUpPage = () => {
                       onChange={handleInputChange}
                       required
                     >
-                      <option value="">Select Level</option>
+                      <option value="">{t("selectLevel")}</option>
                       {levelOptions.map((level) => (
                         <option key={level.value} value={level.value}>
                           {level.label}
@@ -380,7 +329,7 @@ const SignUpPage = () => {
                   </div>
 
                   <div className="form-group">
-                    <label htmlFor="city">Select Your Curriculum</label>
+                    <label htmlFor="city">{t("curriculum")}</label>
                     <select
                       id="curriculum"
                       name="curriculum"
@@ -388,7 +337,7 @@ const SignUpPage = () => {
                       onChange={handleInputChange}
                       required
                     >
-                      <option value="">Select Curriculum</option>
+                      <option value="">{t("selectCurriculum")}</option>
                       {CurriculumsData.map((cur) => (
                         <option key={cur.name} value={cur.name}>
                           {cur.name}
@@ -401,7 +350,7 @@ const SignUpPage = () => {
 
               <div className="form-row">
                 <div className="form-group">
-                  <label htmlFor="city">Select your city</label>
+                  <label htmlFor="city">{t("city")}</label>
                   <select
                     id="city"
                     name="city"
@@ -409,7 +358,7 @@ const SignUpPage = () => {
                     onChange={handleInputChange}
                     required
                   >
-                    <option value="">Select City</option>
+                    <option value="">{t("selectCity")}</option>
                     {cities.map((city: string) => (
                       <option key={city} value={city}>
                         {city}
@@ -418,7 +367,7 @@ const SignUpPage = () => {
                   </select>
                 </div>
                 <div className="form-group">
-                  <label htmlFor="school">Select the school</label>
+                  <label htmlFor="school">{t("selectSchool")}</label>
                   <select
                     id="school"
                     name="school"
@@ -427,7 +376,7 @@ const SignUpPage = () => {
                     required
                     disabled={!formData.city}
                   >
-                    <option value="">Select School</option>
+                    <option value="">{t("selectSchool")}</option>
                     {schools.map((school: string) => (
                       <option key={school} value={school}>
                         {school}
@@ -438,7 +387,7 @@ const SignUpPage = () => {
               </div>
 
               <div className="form-group mt-[-25px]">
-                <label htmlFor="password">Create password</label>
+                <label htmlFor="password">{t("createPassword")}</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -464,7 +413,7 @@ const SignUpPage = () => {
               </div>
 
               <div className="form-group">
-                <label htmlFor="confirmPassword">Confirm password</label>
+                <label htmlFor="confirmPassword">{t("confirmPassword")}</label>
                 <div className="relative">
                   <input
                     type={showConfirmPassword ? "text" : "password"}
@@ -508,7 +457,8 @@ const SignUpPage = () => {
             </form>
 
             <p className="secondary-link">
-              Already in the circle? <Link href="/ar/signin">Sign in here</Link>
+              Already in the circle?{" "}
+              <Link href={`/${locale}/signin`}>Sign in here</Link>
             </p>
 
             <p className="footer-text">
@@ -518,8 +468,8 @@ const SignUpPage = () => {
           </div>
         </div>
 
-        <div className="flex-1 h-[1280px] sm:hidden tab:block relative flex justify-center items-center bg-[#002347] bg-[url('/images/png/hero.png')] bg-center bg-cover overflow-hidden">
-          <div className="relative z-10 text-center text-white">
+        <div className="w-1/2 h-[1280px] sm:hidden tab:flex relative  !justify-center items-center bg-[#002347] bg-[url('/images/png/hero.png')] bg-center bg-cover overflow-hidden">
+          <div className="relative z-10 h-max text-center text-white">
             <h1 className="text-[64px] font-bold m-0 drop-shadow-[2px_2px_10px_rgba(0,0,0,0.3)]">
               Study Circle
             </h1>
@@ -527,7 +477,7 @@ const SignUpPage = () => {
           </div>
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

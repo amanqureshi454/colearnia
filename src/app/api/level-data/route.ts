@@ -2,7 +2,7 @@
 export async function GET() {
   try {
     const res = await fetch(
-      `${process.env.NEXT_PUBLIC_DASHBOARD_URL}student/api/auth/levels-data`,
+      `https://student-service-375591904635.us-central1.run.app/api/auth/levels-data`,
       { cache: "no-store" }
     );
 

@@ -132,7 +132,7 @@ const Hero = () => {
         duration: 1.2,
         ease: "power2.out",
       },
-      "-=0.8"
+      "0.8"
     );
     tl.from(
       ".hero-bg-wrapper",
