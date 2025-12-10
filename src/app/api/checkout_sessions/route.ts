@@ -18,10 +18,6 @@ import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
 import jwt from "jsonwebtoken";
 
-// ✅ ADD THIS - Forces dynamic rendering
-export const dynamic = "force-dynamic";
-export const runtime = "nodejs";
-
 export async function POST(req: NextRequest) {
   const secretKey = process.env.STRIPE_SECRET_KEY;
   if (!secretKey) {
@@ -30,48 +26,21 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
   const stripe = new Stripe(secretKey, { apiVersion: "2025-06-30.basil" });
 
+  const PRICE_MAP: Record<string, string | undefined> = {
+    student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
+    student_basic_monthly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY,
+    student_basic_yearly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY,
+    student_plus_monthly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY,
+    student_plus_yearly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY,
+    teacher_plus_monthly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY,
+    teacher_plus_yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
+  };
+
   try {
-    // ✅ Verify token FIRST before doing anything
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json(
-        { error: "Unauthorized - No token provided" },
-        { status: 401 }
-      );
-    }
-
-    const token = authHeader.substring(7);
-
-    if (!process.env.JWT_SECRET) {
-      return NextResponse.json(
-        { error: "Server configuration error" },
-        { status: 500 }
-      );
-    }
-
-    let userId: string;
-    try {
-      const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
-      userId = decoded.userId;
-
-      if (!userId) {
-        return NextResponse.json(
-          { error: "Invalid token - missing userId" },
-          { status: 401 }
-        );
-      }
-    } catch (err) {
-      console.log("❌ Token verification failed:", err);
-      return NextResponse.json(
-        { error: "Invalid or expired token" },
-        { status: 401 }
-      );
-    }
-
-    // ✅ Now get the request data
     let requestData;
     try {
       requestData = await req.json();
@@ -83,14 +52,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
-    const { plan, duration, email, locale, promoCode, discountPercentage } =
-      requestData;
+    const {
+      plan,
+      duration,
+      email,
+      locale,
+      token,
+      promoCode,
+      discountPercentage,
+    } = requestData;
 
     console.log("📋 Creating checkout session:", {
       plan,
       duration,
       email,
-      userId,
       promoCode,
       discountPercentage,
     });
@@ -112,6 +87,20 @@ export async function POST(req: NextRequest) {
       );
     }
 
+    // Decode user info from token
+    let userId = null;
+    if (token) {
+      if (!process.env.JWT_SECRET) {
+        console.error("❌ JWT_SECRET missing");
+      } else {
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+          userId = decoded.userId;
+        } catch (err) {
+          console.log("❌ Token decode failed:", err);
+        }
+      }
+    }
     // Prepare session data
     const sessionData: any = {
       mode: "subscription",
@@ -123,23 +112,25 @@ export async function POST(req: NextRequest) {
         },
       ],
       customer_email: email,
-      success_url: `${process.env.NEXT_PUBLIC_BASE_URL}/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${process.env.NEXT_PUBLIC_BASE_URL}/${locale}/pricing`,
+      success_url: `http://localhost:3000/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `http://localhost:3000/${locale}/pricing`,
       allow_promotion_codes: true,
       metadata: {
+        token: token || "",
         plan,
         duration,
         priceId,
-        userId,
+        userId: userId || "",
         email,
         promoCode: promoCode || "",
         discountPercentage: discountPercentage?.toString() || "",
       },
       subscription_data: {
         metadata: {
+          token: token || "",
           plan,
           duration,
-          userId,
+          userId: userId || "",
           email,
           promoCode: promoCode || "",
           discountPercentage: discountPercentage?.toString() || "",
@@ -164,7 +155,7 @@ export async function POST(req: NextRequest) {
         status: "pending",
         createdAt: new Date().toISOString(),
       });
-      console.log("✅ Checkout session pre-saved");
+      console.log("✅ Checkout session pre-saved with promo code");
     } catch (err) {
       console.error("Failed to pre-save checkout session:", err);
     }

@@ -154,12 +154,12 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`, // ✅ Send in header
         },
         body: JSON.stringify({
           plan,
           duration,
-          // ❌ Removed token from here
+          token,
           locale:
             typeof window !== "undefined"
               ? window.location.pathname.split("/")[1] || "ar"
@@ -169,17 +169,6 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
       });
 
       const data = await res.json();
-
-      // ✅ Handle authentication errors
-      if (res.status === 401) {
-        toast.error("Session expired. Please sign in again.");
-        localStorage.removeItem("token");
-        localStorage.removeItem("user");
-        const locale = window.location.pathname.split("/")[1] || "ar";
-        window.location.href = `/${locale}/signin`;
-        return;
-      }
-
       if (data.url) {
         if (typeof window !== "undefined") {
           localStorage.setItem(
@@ -197,7 +186,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
           }, 300);
         }
       } else {
-        toast.error(data.error || "Failed to start checkout session");
+        toast.error("Failed to start checkout session");
       }
     } catch (err) {
       console.error(err);
