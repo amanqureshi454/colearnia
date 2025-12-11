@@ -328,5 +328,73 @@
       "date": "24 يناير 2025",
       "categories": ["دراسات-حالة", "الفصل-الدراسي"]
     }
-  ]
+  ],
+  "login": {
+    "title": "انضم إلى حلقة الدراسة عن طريق تسجيل الدخول",
+    "emailLabel": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+    "passwordLabel": "كلمة المرور",
+    "passwordPlaceholder": "**************",
+    "forgotPassword": "هل نسيت كلمة المرور؟",
+    "signInButton": "تسجيل الدخول",
+    "signingInButton": "جاري تسجيل الدخول...",
+    "noAccountText": "ليس لديك حساب؟",
+    "signUpHere": "سجّل هنا",
+    "footerText": "بتسجيل الدخول، فإنك توافق على",
+    "privacyPolicy": "سياسة الخصوصية",
+    "terms": "الشروط",
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور"
+  },
+
+  "signup": {
+    "title": "لنقم بإنشاء حساب لك",
+
+    "selectRole": "اختر دورك",
+    "student": "طالب",
+    "teacher": "معلم",
+
+    "firstName": "الاسم الأول",
+    "firstNamePlaceholder": "أدخل اسمك الأول",
+    "lastName": "اسم العائلة",
+    "lastNamePlaceholder": "أدخل اسم العائلة",
+
+    "email": "البريد الإلكتروني",
+    "emailPlaceholder": "أدخل بريدك الإلكتروني",
+
+    "gender": "اختر الجنس",
+    "selectGender": "اختر الجنس",
+    "male": "ذكر",
+    "female": "أنثى",
+
+    "level": "اختر مستواك",
+    "selectLevel": "اختر المستوى",
+
+    "curriculum": "اختر المنهج",
+    "selectCurriculum": "اختر المنهج",
+
+    "city": "اختر مدينتك",
+    "selectCity": "اختر المدينة",
+
+    "school": "اختر المدرسة",
+    "selectSchool": "اختر المدرسة",
+
+    "createPassword": "إنشاء كلمة المرور",
+    "confirmPassword": "تأكيد كلمة المرور",
+
+    "signUp": "إنشاء حساب",
+    "creatingAccount": "جاري إنشاء الحساب...",
+
+    "alreadyHaveAccount": "هل لديك حساب بالفعل؟",
+    "signInHere": "سجّل الدخول هنا",
+
+    "footerText": "بإنشائك حسابًا، فإنك توافق على",
+    "privacyPolicy": "سياسة الخصوصية",
+    "terms": "الشروط",
+
+    "showPassword": "إظهار كلمة المرور",
+    "hidePassword": "إخفاء كلمة المرور",
+    "showConfirmPassword": "إظهار تأكيد كلمة المرور",
+    "hideConfirmPassword": "إخفاء تأكيد كلمة المرور"
+  }
 }

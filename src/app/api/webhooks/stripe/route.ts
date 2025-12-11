@@ -123,6 +123,31 @@ async function handleCheckoutSessionCompleted(
     ? session.amount_total / 100
     : originalAmount;
 
+  // Check if this is a Trial Pass purchase (14 days)
+  const isTrialPass = session.metadata?.plan === "student_trial";
+  const trialEndDate = isTrialPass
+    ? new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString() // 14 days from now
+    : null;
+
+  // Check if this is an upgrade from Trial Pass
+  const upgradedFromTrial = session.metadata?.upgradedFromTrial === "true";
+  const remainingTrialDays = parseInt(
+    session.metadata?.remainingTrialDays || "0"
+  );
+
+  // Calculate period end based on plan type
+  let periodEnd: string;
+  if (isTrialPass) {
+    periodEnd = trialEndDate!; // Trial Pass: 14 days
+  } else if (upgradedFromTrial && remainingTrialDays > 0) {
+    // Upgraded from trial: period starts after remaining trial days
+    periodEnd = new Date(
+      Date.now() + (remainingTrialDays + 30) * 24 * 60 * 60 * 1000
+    ).toISOString();
+  } else {
+    periodEnd = new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(); // Monthly: 30 days
+  }
+
   // Create subscription data
   const subscriptionData = {
     user: session.metadata?.userId || "user_auto_" + Date.now(),
@@ -134,9 +159,17 @@ async function handleCheckoutSessionCompleted(
     stripeCustomerId: session.customer as string,
     stripeSubscriptionId: session.subscription as string,
     priceId: session.metadata?.priceId,
-    currentPeriodEnd: new Date(
-      Date.now() + 30 * 24 * 60 * 60 * 1000
-    ).toISOString(),
+    currentPeriodEnd: periodEnd,
+    // Trial Pass specific fields
+    isTrialPass: isTrialPass,
+    trialEndDate: trialEndDate,
+    trialStartDate: isTrialPass ? new Date().toISOString() : null,
+    // Upgrade from Trial Pass tracking
+    upgradedFromTrial: upgradedFromTrial,
+    remainingTrialDaysApplied: upgradedFromTrial ? remainingTrialDays : 0,
+    subscriptionTrialEnd: upgradedFromTrial && remainingTrialDays > 0
+      ? new Date(Date.now() + remainingTrialDays * 24 * 60 * 60 * 1000).toISOString()
+      : null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     cancelAtPeriodEnd: false,
@@ -155,7 +188,11 @@ async function handleCheckoutSessionCompleted(
     sessionId: session.id,
     notes: promoCode
       ? `Payment saved with ${discountPercentage}% discount using promo code ${promoCode}`
-      : "Payment saved via Stripe webhook",
+      : isTrialPass
+        ? "Trial Pass (14 days) saved via Stripe webhook"
+        : upgradedFromTrial
+          ? `Upgraded from Trial Pass with ${remainingTrialDays} remaining days applied as free trial`
+          : "Payment saved via Stripe webhook",
   };
 
   // Save to database
@@ -175,6 +212,15 @@ async function handleCheckoutSessionCompleted(
   console.log("💰 Discount Applied:", discountApplied.toFixed(2), "QAR");
   console.log("💰 Final Amount:", finalAmount.toFixed(2), "QAR");
   console.log("📊 Status: active");
+  if (isTrialPass) {
+    console.log("🎟️ Trial Pass: 14 days");
+    console.log("📅 Trial End Date:", trialEndDate);
+  }
+  if (upgradedFromTrial) {
+    console.log("⬆️ Upgraded from Trial Pass");
+    console.log("⏳ Remaining Trial Days Applied:", remainingTrialDays);
+    console.log("📅 Subscription Trial End:", subscriptionData.subscriptionTrialEnd);
+  }
 }
 
 async function handleInvoicePaymentSucceeded(invoice: Stripe.Invoice) {

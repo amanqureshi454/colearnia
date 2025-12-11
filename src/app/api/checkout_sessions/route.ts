@@ -100,6 +100,47 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    // Check if user has an active Trial Pass with remaining days
+    let trialEndTimestamp: number | null = null;
+    let remainingTrialDays = 0;
+    const isUpgradeFromTrial =
+      plan === "student_basic" || plan === "student_plus";
+
+    if (isUpgradeFromTrial && email) {
+      try {
+        const db = await getDb();
+        const existingSubscription = await db
+          .collection("subscriptions")
+          .findOne({ email });
+
+        if (
+          existingSubscription?.isTrialPass &&
+          existingSubscription?.trialEndDate &&
+          existingSubscription?.status === "active"
+        ) {
+          const trialEnd = new Date(existingSubscription.trialEndDate);
+          const now = new Date();
+
+          // Only apply remaining days if trial hasn't expired
+          if (trialEnd > now) {
+            remainingTrialDays = Math.ceil(
+              (trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
+            );
+            trialEndTimestamp = Math.floor(trialEnd.getTime() / 1000); // Unix timestamp for Stripe
+
+            console.log("🎟️ User upgrading from Trial Pass");
+            console.log("📅 Trial End Date:", existingSubscription.trialEndDate);
+            console.log("⏳ Remaining Trial Days:", remainingTrialDays);
+          }
+        }
+      } catch (err) {
+        console.error("Error checking existing subscription:", err);
+      }
+    }
+
+    // Check if this is a Trial Pass purchase
+    const isTrialPassPurchase = plan === "student_trial";
+
     // Prepare session data
     const sessionData: any = {
       mode: "subscription",
@@ -123,6 +164,8 @@ export async function POST(req: NextRequest) {
         email,
         promoCode: promoCode || "",
         discountPercentage: discountPercentage?.toString() || "",
+        upgradedFromTrial: trialEndTimestamp ? "true" : "false",
+        remainingTrialDays: remainingTrialDays.toString(),
       },
       subscription_data: {
         metadata: {
@@ -133,9 +176,26 @@ export async function POST(req: NextRequest) {
           email,
           promoCode: promoCode || "",
           discountPercentage: discountPercentage?.toString() || "",
+          upgradedFromTrial: trialEndTimestamp ? "true" : "false",
+          remainingTrialDays: remainingTrialDays.toString(),
         },
       },
     };
+
+    // For Trial Pass: cancel at period end (no auto-renewal)
+    if (isTrialPassPurchase) {
+      sessionData.subscription_data.metadata.cancelAtPeriodEnd = "true";
+    }
+
+    // Apply remaining trial days as free trial period on new subscription
+    if (trialEndTimestamp && remainingTrialDays > 0) {
+      sessionData.subscription_data.trial_end = trialEndTimestamp;
+      console.log(
+        "✅ Applied",
+        remainingTrialDays,
+        "remaining trial days to new subscription"
+      );
+    }
 
     const session = await stripe.checkout.sessions.create(sessionData);
 
@@ -160,10 +220,12 @@ export async function POST(req: NextRequest) {
     }
 
     return NextResponse.json({ url: session.url });
-  } catch (err) {
+  } catch (err: any) {
     console.error("Stripe error:", err);
+    console.error("Error message:", err?.message);
+    console.error("Error type:", err?.type);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Internal server error", details: err?.message },
       { status: 500 }
     );
   }

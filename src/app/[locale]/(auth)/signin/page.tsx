@@ -9,13 +9,14 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import toast, { Toaster } from "react-hot-toast";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 interface SignInFormData {
   email: string;
   password: string;
 }
 
 const SignInPage = () => {
+  const t = useTranslations("login");
   const router = useRouter();
   const [formData, setFormData] = useState<SignInFormData>({
     email: "",
@@ -36,7 +37,7 @@ const SignInPage = () => {
     setIsLoading(true);
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DASHBOARD_URL}/auth/api/auth/login`,
+        `${process.env.NEXT_PUBLIC_DASHBOARD_URL}/api/auth/login`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -64,7 +65,7 @@ const SignInPage = () => {
 
         if (token && user) {
           localStorage.setItem("token", token);
-          
+
           // Store user data only (no subscription storage)
           localStorage.setItem("user", JSON.stringify(user));
           toast.success("Welcome! Login successful!");
@@ -82,40 +83,31 @@ const SignInPage = () => {
   };
 
   return (
-    <>
+    <div className="min-h-screen flex items-center justify-center bg-[#F7F9FC]">
       <Toaster position="top-right" reverseOrder={false} />
-      <div className="flex justify-between sm:flex-col tab:flex-row p-2 items-center w-full tab:h-screen relative">
-        <div className="shadow-[0px_4px_24px_rgba(0, 0, 0, 0.05)] bg-white p-[32px] h-full flex-col rounded-2xl tab:w-1/2 sm:w-full flex justify-center items-center">
-          <div className="logo tab:ml-5 mr-auto sm:mb-12 tab:mb-[130px]">
-            <Image
-              src="/images/png/logo (2).png"
-              alt="sign in"
-              width={100}
-              height={100}
-              className="w-[170px]  h-full object-contain"
-            />
-          </div>
-          <div className="sm:w-full tab:w-8/12 h-max">
-            <h1 className="text-3xl font-semibold text-[#383F34] mb-8 ">
-              Join the study circle by signing in
-            </h1>
 
+      <div className="flex justify-between sm:flex-col tab:flex-row p-2 items-center w-full tab:h-screen relative">
+        <div className=" p-[32px] h-full flex-col gap-8 rounded-2xl tab:w-1/2 sm:w-full flex justify-center items-center">
+          <div className="sm:w-full shadow-[0px_4px_24px_rgba(0, 0, 0, 0.05)] bg-white p-[32px] rounded-2xl tab:w-9/12 h-max">
+            <h1 className="text-3xl font-semibold text-background mb-8 ">
+              {t("title")}
+            </h1>
             <form onSubmit={handleSubmit}>
               <div className="form-group">
-                <label htmlFor="email">Email</label>
+                <label htmlFor="email">{t("emailLabel")}</label>
                 <input
                   type="email"
                   id="email"
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
-                  placeholder="Enter your email"
+                  placeholder={t("emailPlaceholder")}
                   required
                 />
               </div>
 
               <div className="form-group">
-                <label htmlFor="password">Password</label>
+                <label htmlFor="password">{t("passwordLabel")}</label>
                 <div className="relative">
                   <input
                     type={showPassword ? "text" : "password"}
@@ -123,13 +115,15 @@ const SignInPage = () => {
                     name="password"
                     value={formData.password}
                     onChange={handleInputChange}
-                    placeholder="**************"
+                    placeholder={t("passwordPlaceholder")}
                     required
                   />
                   <button
                     type="button"
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none"
+                    className={`absolute ${
+                      locale === "ar" ? "left-3" : "right-3"
+                    } top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 focus:outline-none`}
                     aria-label={
                       showPassword ? "Hide password" : "Show password"
                     }
@@ -140,10 +134,10 @@ const SignInPage = () => {
               </div>
 
               <Link
-                href={`${process.env.NEXT_PUBLIC_DOMAIN_URL}forget-password`}
+                href="https://studycircleapp.com/forgot-password"
                 className="forgot-link"
               >
-                Forget your password?
+                {t("forgotPassword")}
               </Link>
 
               <Button
@@ -153,17 +147,21 @@ const SignInPage = () => {
                 disabled={isLoading}
                 icon={isLoading ? Loader : undefined}
               >
-                {isLoading ? "Signing in..." : "Sign in"}
+                {isLoading ? t("signingInButton") : t("signInButton")}
               </Button>
             </form>
 
             <p className="secondary-link">
-              Don't have an account? <Link href="/ar/signup">Sign up here</Link>
+              {t("noAccountText")}{" "}
+              <Link className=" font-semibold" href={`/${locale}/signup`}>
+                {t("signUpHere")}
+              </Link>
             </p>
 
             <p className="footer-text">
-              By signing in, you are agreeing to our{" "}
-              <a href="#">privacy policy</a> and <a href="#">terms</a>.
+              {t("footerText")}
+              <a href="#">{t("privacyPolicy")}</a> and{" "}
+              <a href="#">{t("terms")}</a>.
             </p>
           </div>
         </div>
@@ -177,7 +175,7 @@ const SignInPage = () => {
           />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

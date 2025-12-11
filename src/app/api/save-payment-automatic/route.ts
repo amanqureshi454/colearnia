@@ -28,18 +28,21 @@ export async function POST(req: NextRequest) {
       currentDate.getTime() + 30 * 24 * 60 * 60 * 1000
     );
 
-    // Calculate amount with discount based on plan and duration
-    let originalAmount = 99.0; // Default monthly price
+    let originalAmount = 99.0; // fallback (won't be used after conditions)
 
-    // Set proper amount based on plan and duration
-    if (plan === "student_plus" || plan === "teacher_plus") {
-      if (duration === "yearly") {
-        originalAmount = 999.0; // Yearly price
-      } else {
-        originalAmount = 99.0; // Monthly price
-      }
-    } else if (plan === "institution") {
-      originalAmount = 0; // Contact sales
+    // Student Basic Plan
+    if (plan === "student_basic") {
+      originalAmount = duration === "yearly" ? 490 : 49;
+    }
+
+    // Student Plus / Teacher Plus Plans
+    else if (plan === "student_plus" || plan === "teacher_plus") {
+      originalAmount = duration === "yearly" ? 990 : 99;
+    }
+
+    // Institution Plan
+    else if (plan === "institution") {
+      originalAmount = 0; // Contact sales / custom pricing
     }
 
     let finalAmount = originalAmount;

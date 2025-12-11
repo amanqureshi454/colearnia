@@ -12,6 +12,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
 import { SplitText } from "gsap/SplitText";
 import ResourceModal from "@/components/ui/resource-modal";
+import { resources } from "@/data/resource";
 
 type Resource = {
   id: number;
@@ -23,26 +24,7 @@ type Resource = {
 };
 
 gsap.registerPlugin(SplitText);
-const resources: Resource[] = [
-  {
-    id: 1,
-    title: "Name of the resource",
-    category1: "College",
-    category2: "Data Science",
-    image: "/images/book-sample.jpg",
-    description:
-      "Each circle has weekly goals, missions, and a shared progress view so everyone stays on track.",
-  },
-  {
-    id: 2,
-    title: "Python Course",
-    category1: "College",
-    category2: "Data Science",
-    image: "/images/book-sample.jpg",
-    description:
-      "Each circle has weekly goals, missions, and a shared progress view so everyone stays on track.",
-  },
-];
+
 const Page = () => {
   const pathname = usePathname();
   const t = useTranslations("resource");

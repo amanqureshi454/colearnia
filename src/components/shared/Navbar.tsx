@@ -46,10 +46,7 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
-
   const isRTL = pathname?.startsWith("/ar") ?? false;
-
-  // ✅ helper for locale-aware paths
   const localizePath = (path: string = "") =>
     `/${locale}${path ? `/${path}` : ""}`;
   // const isAboutUsPage = pathname?.includes("/about-us");

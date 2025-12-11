@@ -1,11 +1,10 @@
 import { Check } from "lucide-react";
-import Link from "next/link";
 import React, { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
-import BtnLoader from "../ui/btn-loader";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
 import { pricingData } from "@/data/pricing";
+import PlanCTA from "./PricingBtn";
 export type UserType = "student" | "teacher";
 type DurationType = "monthly" | "yearly";
 
@@ -15,10 +14,10 @@ interface PlanProps {
 }
 const PLAN_KEY_MAP: Record<string, string> = {
   Basic: "student_basic",
-  Pro: "student_pro",
+  Plus: "student_plus",
   "Trial Pass": "student_trial",
   Guest: "student_trial",
-  "Teacher Pro": "teacher_pro",
+  "Teacher Plus": "teacher_plus",
 };
 interface SubscriptionData {
   plan: string;
@@ -194,15 +193,58 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
     }
   };
 
+  // const fetchCurrentPlan = async () => {
+  //   try {
+  //     const userData = localStorage.getItem("user");
+  //     if (!userData) {
+  //       setLoading(false);
+  //       return;
+  //     }
+
+  //     const user = JSON.parse(userData);
+  //     const response = await fetch("/api/subscriptions/by-email", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({ email: user.email }),
+  //     });
+
+  //     if (response.ok) {
+  //       const data = await response.json();
+  //       console.log("📊 API Response:", data);
+  //       if (data && data.plan) {
+  //         setSubscription(data);
+  //         console.log("✅ Subscription set:", data);
+  //       } else {
+  //         console.log("❌ No subscription data in response");
+  //       }
+  //     } else {
+  //       console.log("❌ API request failed:", response.status);
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching subscription:", error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
+
   const fetchCurrentPlan = async () => {
     try {
+      console.log("🔄 Fetching current plan...");
+
       const userData = localStorage.getItem("user");
+      console.log("👤 userData from localStorage:", userData);
+
       if (!userData) {
+        console.log("⚠️ No user found in localStorage");
         setLoading(false);
         return;
       }
 
       const user = JSON.parse(userData);
+      console.log("📧 Sending request for email:", user.email);
+
       const response = await fetch("/api/subscriptions/by-email", {
         method: "POST",
         headers: {
@@ -211,20 +253,22 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
         body: JSON.stringify({ email: user.email }),
       });
 
-      if (response.ok) {
-        const data = await response.json();
-        console.log("📊 API Response:", data);
-        if (data && data.plan) {
-          setSubscription(data);
-          console.log("✅ Subscription set:", data);
-        } else {
-          console.log("❌ No subscription data in response");
-        }
+      console.log("📡 API Status:", response.status);
+
+      const data = await response.json().catch(() => null);
+      console.log("📦 Raw API Response Body:", data);
+
+      // The important fix:
+      const subscription = data?.subscription || data;
+
+      if (subscription?.plan) {
+        setSubscription(subscription);
+        console.log("✅ Subscription set:", subscription);
       } else {
-        console.log("❌ API request failed:", response.status);
+        console.log("❌ No subscription.plan found in response");
       }
     } catch (error) {
-      console.error("Error fetching subscription:", error);
+      console.error("🚨 Error fetching subscription:", error);
     } finally {
       setLoading(false);
     }
@@ -263,9 +307,11 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
             },
             index: number
           ) => {
+            const mappedPlan = PLAN_KEY_MAP[plan.type];
+
             const isActive =
               subscription?.status === "active" &&
-              normalize(subscription?.plan) === normalize(plan.type) &&
+              mappedPlan === subscription?.plan &&
               subscription?.duration === durationTab;
 
             const isFreeStudentPlan = plan.type === "Student Free";
@@ -282,18 +328,18 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
                       ? "tab:w-[32%]" // ⭐ ADDED → yearly student card width
                       : "tab:w-[45%] md:w-[24%]"
                     : "tab:w-[45%] md:w-[32%]"
-                } sm:w-full  p-4 rounded-2xl flex flex-col overflow-hidden justify-between ${
-                  plan.type === "Pro" || plan.type === "Teacher Plus"
+                } sm:w-full  p-4 rounded-2xl border border-gray-200 flex flex-col overflow-hidden justify-between ${
+                  plan.type === "Plus" || plan.type === "Teacher Plus"
                     ? "bg-background"
                     : "bg-white shadow-[0px_4px_9px_0px_#0000000D]"
                 }`}
               >
-                {isActive && (
+                {/* {isActive && (
                   <p className=" absolute top-3 left-3 text-black text-xs rounded-full">
                     Active Plan
                   </p>
-                )}
-                {plan.type === "Pro" || plan.type === "Teacher Plus" ? (
+                )} */}
+                {plan.type === "Plus" || plan.type === "Teacher Plus" ? (
                   <div
                     className={`absolute ${
                       currentTab === "teacher"
@@ -308,7 +354,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
                     <div className="h-max text-center mt-3">
                       <h3
                         className={`text-3xl font-inter font-semibold ${
-                          plan.type === "Pro" || plan.type === "Teacher Plus"
+                          plan.type === "Plus" || plan.type === "Teacher Plus"
                             ? "text-white"
                             : "text-black"
                         }`}
@@ -318,7 +364,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
 
                       <p
                         className={`mt-3 font-inter font-medium text-lg ${
-                          plan.type === "Pro" || plan.type === "Teacher Plus"
+                          plan.type === "Plus" || plan.type === "Teacher Plus"
                             ? "text-white"
                             : "text-paragraph"
                         }`}
@@ -328,7 +374,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
 
                       <p
                         className={`mt-8 text-4xl font-inter font-extrabold ${
-                          plan.type === "Pro" || plan.type === "Teacher Plus"
+                          plan.type === "Plus" || plan.type === "Teacher Plus"
                             ? "text-white"
                             : "text-black"
                         }`}
@@ -336,16 +382,16 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
                         {plan.price[durationTab]} QAR
                       </p>
                     </div>
-                    {/* {plan.type === "Pro" && (
-                    <div className="px-4 py-2.5 mx-auto text-center w-max bg-secondary rounded-xl text-white font-inter font-medium">
-                      Save $50 a year
-                    </div>
-                  )} */}
+                    {isActive && (
+                      <div className="px-4 py-1.5 mx-auto text-center text-sm w-max bg-secondary rounded-lg text-white font-inter font-medium">
+                        Active Plan
+                      </div>
+                    )}
                     <ul
                       className={`mt-3  flex flex-col justify-between md:h-[440px] text-sm ${
                         currentTab === "teacher" ? "p-5" : "p-3"
                       } rounded-xl ${
-                        plan.type === "Pro" ? "bg-white" : " bg-[#F9FAFB]"
+                        plan.type === "Plus" ? "bg-white" : " bg-[#F9FAFB]"
                       }`}
                     >
                       <div className="space-y-2">
@@ -366,116 +412,19 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
 
                       {/* Button Logic */}
                       {/* ────────────────────────────── BUTTON LOGIC ────────────────────────────── */}
-                      {isActive ? (
-                        // ── 1. CURRENT ACTIVE PLAN → GO TO DASHBOARD ────────────────────────
-                        <Link
-                          href={
-                            process.env.NEXT_PUBLIC_DASHBOARD_URL ||
-                            "https://uat.studycircleapp.com/"
-                          }
-                          className="mt-8 py-4 w-full flex justify-center items-center
-               rounded-2xl text-sm font-medium border border-[#727272]
-               text-[#3D3B3B] hover:scale-105 transition-all
-               duration-200"
-                        >
-                          Go to Dashboard
-                        </Link>
-                      ) : isFreePlan && hasSubscription && !isActive ? (
-                        // ── 2. USER HAS PAID PLAN → SWITCH TO FREE ───────────────────────────
-                        <button
-                          onClick={() => {
-                            setLoadingPlan(plan.type);
-                            handleFreePlan();
-                          }}
-                          disabled={loading}
-                          className={`mt-8 py-4 shadow-[0px_4px_9px_0px_#0000000D] 
-               ${
-                 plan.type === "Pro" || plan.type === "Teacher Plus"
-                   ? "bg-heading text-white"
-                   : "bg-white text-heading border border-[#727272]"
-               } cursor-pointer hover:scale-105 transition-all
-               duration-200 w-full rounded-3xl text-sm font-normal
-               flex items-center justify-center gap-2`}
-                        >
-                          {loading && loadingPlan === plan.type ? (
-                            <>
-                              <BtnLoader
-                                size={24}
-                                color={
-                                  plan.type.includes("Plus")
-                                    ? "#ffffff"
-                                    : "#000000"
-                                }
-                              />
-                              Switching to {plan.type}...
-                            </>
-                          ) : (
-                            `Switch to ${plan.type}`
-                          )}
-                        </button>
-                      ) : isInstitutionPlan ? (
-                        // ── 3. INSTITUTION → REDIRECT TO CONTACT PAGE ───────────────────────
-                        <button
-                          onClick={() => {
-                            setLoadingPlan(plan.type);
-                            // replace with your real contact URL
-                            window.location.href = "/contact";
-                          }}
-                          className={`mt-8 py-4 shadow-[0px_4px_9px_0px_#0000000D] 
-               ${
-                 plan.type === "Pro" || plan.type === "Teacher Plus"
-                   ? "bg-heading text-white"
-                   : "bg-white text-heading border border-[#727272]"
-               } cursor-pointer hover:scale-105 transition-all
-               duration-200 w-full rounded-3xl text-sm font-normal
-               flex items-center justify-center gap-2`}
-                        >
-                          {plan.buttonText}
-                        </button>
-                      ) : (
-                        // ── 4. DEFAULT → SUBSCRIBE (new user / upgrade) ───────────────────────
-                        <button
-                          onClick={() => {
-                            setLoadingPlan(plan.type);
+                      <PlanCTA
+                        plan={plan}
+                        isActive={isActive}
+                        hasSubscription={hasSubscription}
+                        loading={loading}
+                        loadingPlan={loadingPlan}
+                        setLoadingPlan={setLoadingPlan}
+                        durationTab={durationTab}
+                        handleSubscribe={handleSubscribe}
+                        handleFreePlan={handleFreePlan}
+                        isInstitutionPlan={isInstitutionPlan}
+                      />
 
-                            const backendPlan = PLAN_KEY_MAP[plan.type];
-                            const durationToSend =
-                              backendPlan === "student_trial"
-                                ? "week"
-                                : durationTab;
-
-                            handleSubscribe(
-                              backendPlan,
-                              durationToSend,
-                              backendPlan === "student_trial"
-                                ? process.env.NEXT_PUBLIC_STRIPE_TRIAL_PRICE_ID
-                                : plan.priceID?.[durationTab]
-                            );
-                          }}
-                          disabled={loading}
-                          className={`mt-8 py-4 w-full flex justify-center items-center
-               rounded-2xl text-sm font-medium border border-[#727272]
-               text-[#3D3B3B] hover:bg-gray-50 hover:scale-105
-               transition-all duration-200 disabled:opacity-50
-               disabled:cursor-not-allowed`}
-                        >
-                          {loading && loadingPlan === plan.type ? (
-                            <>
-                              <BtnLoader
-                                size={24}
-                                color={
-                                  plan.type.includes("Plus")
-                                    ? "#ffffff"
-                                    : "#000000"
-                                }
-                              />
-                              Redirecting...
-                            </>
-                          ) : (
-                            plan.buttonText
-                          )}
-                        </button>
-                      )}
                       {/* ─────────────────────────────────────────────────────────────────────── */}
                     </ul>
                   </div>
