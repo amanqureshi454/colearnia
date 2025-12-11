@@ -4,13 +4,12 @@ import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getDb } from "@/lib/mongodb";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-06-30.basil",
-});
-
-const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
-
 export async function POST(req: NextRequest) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2025-06-30.basil",
+  });
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
   const body = await req.text();
   const signature = req.headers.get("stripe-signature")!;
 
@@ -54,6 +53,11 @@ export async function POST(req: NextRequest) {
 async function handleCheckoutSessionCompleted(
   session: Stripe.Checkout.Session
 ) {
+  const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
+    apiVersion: "2025-06-30.basil",
+  });
+
+  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET!;
   console.log("✅ Checkout session completed:", session.id);
 
   const db = await getDb();
@@ -167,9 +171,12 @@ async function handleCheckoutSessionCompleted(
     // Upgrade from Trial Pass tracking
     upgradedFromTrial: upgradedFromTrial,
     remainingTrialDaysApplied: upgradedFromTrial ? remainingTrialDays : 0,
-    subscriptionTrialEnd: upgradedFromTrial && remainingTrialDays > 0
-      ? new Date(Date.now() + remainingTrialDays * 24 * 60 * 60 * 1000).toISOString()
-      : null,
+    subscriptionTrialEnd:
+      upgradedFromTrial && remainingTrialDays > 0
+        ? new Date(
+            Date.now() + remainingTrialDays * 24 * 60 * 60 * 1000
+          ).toISOString()
+        : null,
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
     cancelAtPeriodEnd: false,
@@ -189,10 +196,10 @@ async function handleCheckoutSessionCompleted(
     notes: promoCode
       ? `Payment saved with ${discountPercentage}% discount using promo code ${promoCode}`
       : isTrialPass
-        ? "Trial Pass (14 days) saved via Stripe webhook"
-        : upgradedFromTrial
-          ? `Upgraded from Trial Pass with ${remainingTrialDays} remaining days applied as free trial`
-          : "Payment saved via Stripe webhook",
+      ? "Trial Pass (14 days) saved via Stripe webhook"
+      : upgradedFromTrial
+      ? `Upgraded from Trial Pass with ${remainingTrialDays} remaining days applied as free trial`
+      : "Payment saved via Stripe webhook",
   };
 
   // Save to database
@@ -219,7 +226,10 @@ async function handleCheckoutSessionCompleted(
   if (upgradedFromTrial) {
     console.log("⬆️ Upgraded from Trial Pass");
     console.log("⏳ Remaining Trial Days Applied:", remainingTrialDays);
-    console.log("📅 Subscription Trial End:", subscriptionData.subscriptionTrialEnd);
+    console.log(
+      "📅 Subscription Trial End:",
+      subscriptionData.subscriptionTrialEnd
+    );
   }
 }
 

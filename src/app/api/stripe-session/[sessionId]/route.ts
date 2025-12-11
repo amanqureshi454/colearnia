@@ -3,14 +3,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
 
-const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: "2025-06-30.basil",
-});
-
 export async function GET(
   req: NextRequest,
   { params }: { params: Promise<{ sessionId: string }> }
 ) {
+  const secretKey = process.env.STRIPE_SECRET_KEY;
+  if (!secretKey) {
+    return NextResponse.json({ error: "Stripe key missing" }, { status: 500 });
+  }
+
+  const stripe = new Stripe(secretKey, {
+    apiVersion: "2025-06-30.basil",
+  });
+
   try {
     const { sessionId } = await params;
 
