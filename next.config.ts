@@ -2,14 +2,11 @@ import { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  experimental: {
-    serverActions: {},
+  eslint: {
+    ignoreDuringBuilds: true,
   },
   typescript: {
-    ignoreBuildErrors: true, // Never fail build on TS errors
-  },
-  eslint: {
-    ignoreDuringBuilds: true, // Never fail build on ESLint errors
+    ignoreBuildErrors: true, // Add this line
   },
   async redirects() {
     return [

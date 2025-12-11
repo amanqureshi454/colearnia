@@ -152,7 +152,10 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
       setLoading(true);
       const res = await fetch("/api/checkout_sessions", {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`, // ✅ Send in header
+        },
         body: JSON.stringify({
           plan,
           duration,

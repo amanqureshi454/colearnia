@@ -28,8 +28,6 @@ export async function POST(req: NextRequest) {
   }
   const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 
-  console.log("Webhook secret:", webhookSecret);
-
   const stripe = new Stripe(secretKey, { apiVersion: "2025-06-30.basil" });
 
   const PRICE_MAP: Record<string, string | undefined> = {
@@ -92,11 +90,15 @@ export async function POST(req: NextRequest) {
     // Decode user info from token
     let userId = null;
     if (token) {
-      try {
-        const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
-        userId = decoded.userId;
-      } catch (err) {
-        console.log("Token decode failed");
+      if (!process.env.JWT_SECRET) {
+        console.error("❌ JWT_SECRET missing");
+      } else {
+        try {
+          const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+          userId = decoded.userId;
+        } catch (err) {
+          console.log("❌ Token decode failed:", err);
+        }
       }
     }
 
@@ -129,7 +131,10 @@ export async function POST(req: NextRequest) {
             trialEndTimestamp = Math.floor(trialEnd.getTime() / 1000); // Unix timestamp for Stripe
 
             console.log("🎟️ User upgrading from Trial Pass");
-            console.log("📅 Trial End Date:", existingSubscription.trialEndDate);
+            console.log(
+              "📅 Trial End Date:",
+              existingSubscription.trialEndDate
+            );
             console.log("⏳ Remaining Trial Days:", remainingTrialDays);
           }
         }
