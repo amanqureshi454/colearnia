@@ -90,7 +90,6 @@ const CTAReuse: React.FC<CTAReuseProps> = ({
                ${backgroundImage}  bg-cover bg-center overflow-hidden`}
     >
       <div className="relative flex h-full gap-4 items-center justify-center flex-col p-3 text-center">
-        {/* Title */}
         <h1
           ref={headingRef}
           className="text-center w-full text-white font-bold font-inter sm:text-4xl md:text-5xl"
