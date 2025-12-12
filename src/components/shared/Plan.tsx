@@ -195,43 +195,6 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
       setLoading(false);
     }
   };
-
-  // const fetchCurrentPlan = async () => {
-  //   try {
-  //     const userData = localStorage.getItem("user");
-  //     if (!userData) {
-  //       setLoading(false);
-  //       return;
-  //     }
-
-  //     const user = JSON.parse(userData);
-  //     const response = await fetch("/api/subscriptions/by-email", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({ email: user.email }),
-  //     });
-
-  //     if (response.ok) {
-  //       const data = await response.json();
-  //       console.log("📊 API Response:", data);
-  //       if (data && data.plan) {
-  //         setSubscription(data);
-  //         console.log("✅ Subscription set:", data);
-  //       } else {
-  //         console.log("❌ No subscription data in response");
-  //       }
-  //     } else {
-  //       console.log("❌ API request failed:", response.status);
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching subscription:", error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
   const fetchCurrentPlan = async () => {
     try {
       console.log("🔄 Fetching current plan...");
@@ -281,7 +244,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
     fetchCurrentPlan();
   }, []);
 
-  const normalize = (str: string) => str?.toLowerCase().replace(/\s|_/g, "");
+  // const normalize = (str: string) => str?.toLowerCase().replace(/\s|_/g, "");
 
   // console.log(subscription);
   return (

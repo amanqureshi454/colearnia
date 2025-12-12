@@ -1,4 +1,6 @@
 /* eslint-disable */
+export const dynamic = "force-dynamic";
+export const runtime = "nodejs";
 
 import { NextRequest, NextResponse } from "next/server";
 import Stripe from "stripe";
@@ -11,12 +13,18 @@ export async function POST(req: NextRequest) {
   });
 
   try {
-    const authHeader = req.headers.get("authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    const authHeader = req.headers.get("authorization") || "";
+
+    // SAFE AUTH CHECK – no startsWith used
+    const isBearer = /^Bearer\s+(.+)$/.test(authHeader);
+
+    if (!isBearer) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    const token = authHeader.substring(7);
+    const token = authHeader.replace("Bearer ", "").trim();
+
+    // const token = authHeader.substring(7);
     const decoded = jwt.verify(token, process.env.JWT_SECRET!) as any;
     const userId = decoded.userId;
 
