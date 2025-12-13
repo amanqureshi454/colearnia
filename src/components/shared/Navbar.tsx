@@ -46,6 +46,7 @@ const Navbar = () => {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
   const isRTL = pathname?.startsWith("/ar") ?? false;
   const localizePath = (path: string = "") =>
     `/${locale}${path ? `/${path}` : ""}`;

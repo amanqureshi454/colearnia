@@ -10,7 +10,6 @@ import SectionHeader from "@/components/shared/HeadingWrapper";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-
 // Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
@@ -27,7 +26,6 @@ const Testimonials = () => {
     headingRef,
     triggerId: "testimonials",
   });
-
   // DATA — Edit this array only
   const testimonials = [
     {
@@ -74,36 +72,30 @@ const Testimonials = () => {
 
   // Card Reveal Animation
   useEffect(() => {
-    if (!containerRef.current) return;
+    const timeout = setTimeout(() => {
+      if (!containerRef.current) return;
 
-    document.fonts.ready.then(() => {
-      const tl = gsap.timeline({
+      const cards = containerRef.current.querySelectorAll(
+        ".swiper-slide > div"
+      );
+
+      gsap.from(cards, {
+        opacity: 0,
+        y: 100,
+        duration: 1,
+        ease: "power1.out",
+        stagger: 0.18,
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top 70%",
         },
       });
 
-      let cards: NodeListOf<Element> = [] as unknown as NodeListOf<Element>;
-      if (containerRef.current) {
-        cards = containerRef.current.querySelectorAll(".swiper-slide > div");
-        if (cards && cards.length > 0) {
-          tl.from(
-            cards,
-            {
-              opacity: 0,
-              y: 100,
-              duration: 1,
-              ease: "power1.out",
-              stagger: 0.18,
-            },
-            0
-          );
-        }
-      }
-    });
+      ScrollTrigger.refresh();
+    }, 500); // allow Swiper to load
 
     return () => {
+      clearTimeout(timeout);
       ScrollTrigger.getAll().forEach((st) => st.kill());
     };
   }, []);
@@ -159,12 +151,10 @@ const Testimonials = () => {
                       height={16}
                     />
                   </div>
-
                   {/* Quote */}
                   <p className="text-[#2D2D2D] text-sm md:text-base leading-relaxed flex-1">
                     {testimonial.quote}
                   </p>
-
                   {/* Author */}
                   <div className="flex items-center gap-3 mt-auto">
                     <div className="w-10 h-10 rounded-full overflow-hidden border-2 border-gray-200">

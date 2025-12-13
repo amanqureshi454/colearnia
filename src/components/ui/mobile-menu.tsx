@@ -13,6 +13,10 @@ const MobileMenu = () => {
   const [menuOpen, setMenuOpen] = useState(false);
   const t = useTranslations("Navbar");
   const pathname = usePathname();
+
+  const [userEmail, setUserEmail] = useState<string | null>(null);
+  const [mounted, setMounted] = useState(false);
+
   const [isScrolled, setIsScrolled] = useState(false);
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
@@ -21,7 +25,6 @@ const MobileMenu = () => {
     { label: t("How it work"), href: "how-it-work" },
     { label: t("About Us"), href: "about-us" },
     { label: t("Blog"), href: "blog" },
-    // { label: t("Pricing"), href: "pricing" },
     { label: t("Contact"), href: "contact" },
     { label: t("FreeResource"), href: "resource" },
   ];
@@ -38,6 +41,28 @@ const MobileMenu = () => {
 
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
+  useEffect(() => {
+    setMounted(true);
+
+    try {
+      const userData = localStorage.getItem("user");
+
+      if (!userData || userData === "undefined") {
+        console.warn("⚠️ No valid user data found in localStorage");
+        return;
+      }
+
+      const user = JSON.parse(userData);
+      if (user && user.email) {
+        setUserEmail(user.email);
+      } else {
+        console.warn("⚠️ User data does not contain email");
+      }
+    } catch (error) {
+      console.error("❌ Failed to parse user from localStorage:", error);
+    }
   }, []);
 
   const localizePath = (path: string = "") =>
@@ -141,30 +166,34 @@ const MobileMenu = () => {
                 })}
               </motion.ul>
             </div>
-
             {/* CTA Buttons */}
-            <motion.div
-              className="btn flex w-full flex-col justify-center items-center gap-3 overflow-hidden"
-              initial={{ scale: 0.8, opacity: 0 }}
-              animate={{ scale: 1, opacity: 1 }}
-              exit={{ scale: 0.8, opacity: 0 }}
-              transition={{ duration: 0.6, ease: "easeInOut" }}
-            >
-              <Link
-                href={localizePath("signup")}
-                className="bg-third w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform hover:scale-105"
+            {userEmail ? (
+              <p className="text-sm text-black font-medium font-inter">
+                {userEmail}
+              </p>
+            ) : (
+              <motion.div
+                className="btn flex w-full flex-col justify-center items-center gap-3 overflow-hidden"
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                exit={{ scale: 0.8, opacity: 0 }}
+                transition={{ duration: 0.6, ease: "easeInOut" }}
               >
-                {t("create-account")}
-              </Link>
+                <Link
+                  href={localizePath("signup")}
+                  className="bg-third w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform hover:scale-105"
+                >
+                  {t("create-account")}
+                </Link>
 
-              <Link
-                href={localizePath("signin")}
-                className="bg-secondary w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform hover:scale-105"
-              >
-                {t("Login")}
-              </Link>
-            </motion.div>
-
+                <Link
+                  href={localizePath("signin")}
+                  className="bg-secondary w-full text-white px-5 py-3 flex justify-center items-center rounded-xl font-normal transition-transform hover:scale-105"
+                >
+                  {t("Login")}
+                </Link>
+              </motion.div>
+            )}
             {/* Language Switcher */}
             <motion.div
               initial={{ scale: 0.8, opacity: 0 }}

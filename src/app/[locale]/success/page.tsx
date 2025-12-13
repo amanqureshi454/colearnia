@@ -8,48 +8,52 @@ export default function SuccessPage() {
   useEffect(() => {
     const savePaymentAutomatically = async () => {
       try {
-        console.log("🚀 AUTOMATIC PAYMENT SAVE TRIGGERED FROM SUCCESS PAGE");
-        
-        // Get session ID from URL
         const urlParams = new URLSearchParams(window.location.search);
-        const sessionId = urlParams.get('session_id');
-        
+        const sessionId = urlParams.get("session_id");
+
         if (sessionId) {
-          console.log("📧 Session ID found:", sessionId);
-          
           // Get user email from localStorage
-          const userData = localStorage.getItem('user');
-          const userEmail = userData ? JSON.parse(userData).email : 'unknown@email.com';
-          
+          const userData = localStorage.getItem("user");
+          const userEmail = userData
+            ? JSON.parse(userData).email
+            : "unknown@email.com";
+
           // Get plan info from localStorage (saved during checkout)
-          const pendingCheckout = localStorage.getItem('pendingCheckout');
-          const planInfo = pendingCheckout ? JSON.parse(pendingCheckout) : { plan: 'teacher_plus', duration: 'monthly' };
-          
-          console.log("📧 User email from localStorage:", userEmail);
-          console.log("📦 Plan info from localStorage:", planInfo);
-          
+          const pendingCheckout = localStorage.getItem("pendingCheckout");
+          const planInfo = pendingCheckout
+            ? JSON.parse(pendingCheckout)
+            : { plan: "teacher_plus", duration: "monthly" };
+
           // Fetch session details from Stripe to get promo code information
           let promoCode = null;
           let discountPercentage = null;
-          
+
           try {
-            const sessionResponse = await fetch(`/api/stripe-session/${sessionId}`);
+            const sessionResponse = await fetch(
+              `/api/stripe-session/${sessionId}`
+            );
             if (sessionResponse.ok) {
               const sessionData = await sessionResponse.json();
               promoCode = sessionData.promoCode;
               discountPercentage = sessionData.discountPercentage;
               console.log("🎫 Promo code from Stripe session:", promoCode);
-              console.log("💰 Discount percentage from Stripe session:", discountPercentage);
+              console.log(
+                "💰 Discount percentage from Stripe session:",
+                discountPercentage
+              );
             }
           } catch (error) {
-            console.log("⚠️ Failed to fetch session details from Stripe:", error);
+            console.log(
+              "⚠️ Failed to fetch session details from Stripe:",
+              error
+            );
           }
-          
+
           // Call API to save payment
-          const response = await fetch('/api/save-payment-automatic', {
-            method: 'POST',
+          const response = await fetch("/api/save-payment-automatic", {
+            method: "POST",
             headers: {
-              'Content-Type': 'application/json',
+              "Content-Type": "application/json",
             },
             body: JSON.stringify({
               sessionId: sessionId,
@@ -57,10 +61,10 @@ export default function SuccessPage() {
               plan: planInfo.plan,
               duration: planInfo.duration,
               promoCode: promoCode,
-              discountPercentage: discountPercentage
-            })
+              discountPercentage: discountPercentage,
+            }),
           });
-          
+
           if (response.ok) {
             console.log("✅ Payment saved automatically to database!");
           } else {
@@ -71,7 +75,7 @@ export default function SuccessPage() {
         console.log("⚠️ Automatic save error:", error);
       }
     };
-    
+
     savePaymentAutomatically();
   }, []);
   return (
@@ -96,7 +100,7 @@ export default function SuccessPage() {
           <p> Have a great day! </p>
           <div className="py-10 text-center">
             <Link
-              href={process.env.NEXT_PUBLIC_DASHBOARD_URL ?? "/"}
+              href={"https://uat.studycircleapp.com/"}
               className="px-4 py-3 bg-brand block text-white font-semibold"
             >
               Join Study Circle

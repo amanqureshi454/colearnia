@@ -209,7 +209,7 @@ const SignUpPage = () => {
       <Toaster position="top-right" reverseOrder={false} />
       <div className="flex justify-between  sm:flex-col tab:flex-row sm:p-2 tab:p-0  items-center w-full h-full min-h-screen relative">
         <div className="flex justify-center  items-center flex-1">
-          <div className="shadow-[0px_4px_24px_rgba(0, 0, 0, 0.05)] my-10 bg-white sm:p-4 tab:p-[32px] h-full flex-col rounded-2xl w-full max-w-lg flex justify-center items-center">
+          <div className="shadow-[0px_4px_24px_rgba(0, 0, 0, 0.05)] my-10 bg-white sm:p-0 tab:p-[32px] h-full flex-col rounded-2xl w-full max-w-lg flex justify-center items-center">
             <h1 className="tab:text-3xl sm:text-xl font-semibold text-heading mb-8 ">
               {t("title")}
             </h1>

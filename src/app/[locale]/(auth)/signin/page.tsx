@@ -87,7 +87,7 @@ const SignInPage = () => {
       <Toaster position="top-right" reverseOrder={false} />
 
       <div className="flex justify-between sm:flex-col tab:flex-row p-2 items-center w-full tab:h-screen relative">
-        <div className=" p-[32px] h-full flex-col gap-8 rounded-2xl tab:w-1/2 sm:w-full flex justify-center items-center">
+        <div className=" sm:p-0 tab:p-[32px] h-full flex-col gap-8 rounded-2xl tab:w-1/2 sm:w-full flex justify-center items-center">
           <div className="sm:w-full shadow-[0px_4px_24px_rgba(0, 0, 0, 0.05)] bg-white p-[32px] rounded-2xl tab:w-9/12 h-max">
             <h1 className="text-3xl font-semibold text-background mb-8 ">
               {t("title")}

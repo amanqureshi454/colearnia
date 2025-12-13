@@ -4,9 +4,6 @@ import { NextRequest, NextResponse } from "next/server";
 import { getDb } from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
-  console.log("🚀 AUTOMATIC PAYMENT SAVE API CALLED");
-  console.log("====================================");
-
   try {
     const { sessionId, email, plan, duration, promoCode, discountPercentage } =
       await req.json();

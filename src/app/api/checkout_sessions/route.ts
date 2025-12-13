@@ -40,6 +40,8 @@ export async function POST(req: NextRequest) {
     teacher_plus_yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
   };
 
+  const BASE_URL =
+    process.env.NEXT_PUBLIC_DOMAIN_URL || "http://localhost:3000";
   try {
     let requestData;
     try {
@@ -157,8 +159,8 @@ export async function POST(req: NextRequest) {
         },
       ],
       customer_email: email,
-      success_url: `http://localhost:3000/${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `http://localhost:3000/${locale}/pricing`,
+      success_url: `${BASE_URL}${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
+      cancel_url: `${BASE_URL}/${locale}/pricing`,
       allow_promotion_codes: true,
       metadata: {
         token: token || "",

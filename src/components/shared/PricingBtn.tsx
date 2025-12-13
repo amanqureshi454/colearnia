@@ -1,5 +1,6 @@
 import Link from "next/link";
 import BtnLoader from "@/components/ui/btn-loader";
+import { useTranslations } from "next-intl";
 
 export type PlanType =
   | "Student Free"
@@ -63,6 +64,7 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
   handleFreePlan,
   isInstitutionPlan,
 }) => {
+  const locale = useTranslations();
   const isFreeStudentPlan = plan.type === "Student Free";
   const isFreeTeacherPlan = plan.type === "Teacher Free";
   const isFreePlan = isFreeStudentPlan || isFreeTeacherPlan;
@@ -72,10 +74,7 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
       {/* ✅ 1. ACTIVE PLAN → DASHBOARD */}
       {isActive ? (
         <Link
-          href={
-            process.env.NEXT_PUBLIC_DASHBOARD_URL ||
-            "https://uat.studycircleapp.com/"
-          }
+          href="https://uat.studycircleapp.com/"
           className="mt-8 py-4 w-full flex cursor-pointer justify-center items-center
           rounded-2xl text-sm font-medium border border-[#727272]
           text-[#3D3B3B] hover:scale-105 transition-all duration-200"
@@ -106,7 +105,7 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
       ) : isInstitutionPlan ? (
         /* ✅ 3. INSTITUTION → CONTACT */
         <button
-          onClick={() => (window.location.href = "/contact")}
+          onClick={() => (window.location.href = `${locale}/contact`)}
           className="mt-8 py-4 w-full rounded-2xl cursor-pointer text-sm font-normal
           flex items-center justify-center gap-2 border border-[#727272]
           hover:scale-105 transition-all duration-200"
