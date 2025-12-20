@@ -5,14 +5,22 @@ import { getDb } from "@/lib/mongodb";
 
 export async function POST(req: NextRequest) {
   try {
-    const { sessionId, email, plan, duration, promoCode, discountPercentage } =
-      await req.json();
+    const {
+      sessionId,
+      email,
+      plan,
+      maxCircle,
+      duration,
+      promoCode,
+      discountPercentage,
+    } = await req.json();
 
     console.log("📧 Payment details:", {
       sessionId,
       email,
       plan,
       duration,
+      maxCircle,
       promoCode,
       discountPercentage,
     });
@@ -51,26 +59,31 @@ export async function POST(req: NextRequest) {
     if (discountPercentage && discountPercentage > 0) {
       discountApplied = originalAmount * (discountPercentage / 100);
       finalAmount = originalAmount - discountApplied;
-      console.log(
-        `💰 Price calculation: Original=${originalAmount.toFixed(
-          2
-        )}, Discount=${discountPercentage}%, Applied=${discountApplied.toFixed(
-          2
-        )}, Final=${finalAmount.toFixed(2)}`
-      );
+      // console.log(
+      //   `💰 Price calculation: Original=${originalAmount.toFixed(
+      //     2
+      //   )}, Discount=${discountPercentage}%, Applied=${discountApplied.toFixed(
+      //     2
+      //   )}, Final=${finalAmount.toFixed(2)}`
+      // );
     } else if (promoCode) {
       // If promo code exists but no discount percentage, assume 20% discount (WELCOME20)
       finalDiscountPercentage = 20;
       discountApplied = originalAmount * (finalDiscountPercentage / 100);
       finalAmount = originalAmount - discountApplied;
-      console.log(
-        `💰 Price calculation with promo code: Original=${originalAmount.toFixed(
-          2
-        )}, Discount=${finalDiscountPercentage}%, Applied=${discountApplied.toFixed(
-          2
-        )}, Final=${finalAmount.toFixed(2)}`
-      );
+      // console.log(
+      //   `💰 Price calculation with promo code: Original=${originalAmount.toFixed(
+      //     2
+      //   )}, Discount=${finalDiscountPercentage}%, Applied=${discountApplied.toFixed(
+      //     2
+      //   )}, Final=${finalAmount.toFixed(2)}`
+      // );
     }
+
+    const processedMaxCircle =
+      maxCircle === 0 || maxCircle === undefined || maxCircle === null
+        ? null
+        : maxCircle;
 
     const subscriptionData = {
       user: userId, // Fixed: use 'user' field instead of 'userId' to match database index
@@ -89,6 +102,7 @@ export async function POST(req: NextRequest) {
       paymentMethod: "card",
       paymentStatus: "succeeded",
       originalAmount: originalAmount,
+      maxCircle: processedMaxCircle,
       discountApplied: discountApplied,
       amount: finalAmount,
       currency: "QAR", // Fixed: use QAR instead of AED for consistency
@@ -110,20 +124,6 @@ export async function POST(req: NextRequest) {
       { $set: subscriptionData },
       { upsert: true }
     );
-
-    console.log("✅ PAYMENT SAVED AUTOMATICALLY TO DATABASE!");
-    console.log("📧 Email:", email);
-    console.log("📦 Plan:", plan);
-    console.log("🎫 Promo Code:", promoCode || "None");
-    console.log(
-      "💰 Discount Percentage:",
-      finalDiscountPercentage || "None",
-      "%"
-    );
-    console.log("💰 Original Amount:", originalAmount.toFixed(2), "QAR");
-    console.log("💰 Discount Applied:", discountApplied.toFixed(2), "QAR");
-    console.log("💰 Final Amount:", finalAmount.toFixed(2), "QAR");
-    console.log("📊 Status: active");
 
     return NextResponse.json({
       success: true,

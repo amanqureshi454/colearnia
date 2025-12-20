@@ -27,12 +27,34 @@ const Pricing = () => {
   const tab = useRef<HTMLDivElement>(null);
   const t2 = useTranslations("tabs");
 
-  const [currentTab, setCurrentTab] = useState<UserType>("student");
+  const [currentTab, setCurrentTab] = useState<UserType>("teacher");
   const [durationTab, setDurationTab] = useState<DurationType>("monthly");
+  const [mounted, setMounted] = useState(false);
 
   const t = useTranslations("Pricing.pricingOptions");
 
+  useEffect(() => {
+    setMounted(true);
+
+    try {
+      const userData = localStorage.getItem("user");
+      if (!userData || userData === "undefined") return;
+
+      const user = JSON.parse(userData);
+      if (user?.role) {
+        // Set the current tab based on user role
+        if (user.role === "teacher") {
+          setCurrentTab("teacher");
+        } else if (user.role === "student") {
+          setCurrentTab("student");
+        }
+      }
+    } catch (error) {
+      console.error("Failed to parse user:", error);
+    }
+  }, [setCurrentTab]);
   // ✅ FIX 1: Add value property for user type tabs
+
   const type: Type[] = [
     { name: t2("student"), value: "student" },
     { name: t2("teacher"), value: "teacher" },

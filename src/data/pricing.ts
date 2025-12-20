@@ -12,6 +12,7 @@ export const pricingData: {
         monthly?: string;
         yearly?: string;
       };
+      maxCircle: number;
       time: string;
       description: string;
       benefits: string[];
@@ -27,6 +28,8 @@ export const pricingData: {
           monthly: "0",
           yearly: "0",
         },
+        maxCircle: 0,
+
         time: "month",
         description: "For invited students exploring a single Circle.",
         benefits: [
@@ -42,6 +45,7 @@ export const pricingData: {
           monthly: "7",
           yearly: "0",
         },
+        maxCircle: 1,
         time: "Week",
         description: "Try all features for 14 days at a symbolic price.",
         benefits: [
@@ -58,6 +62,7 @@ export const pricingData: {
           monthly: "49",
           yearly: "490",
         },
+        maxCircle: 3,
         time: "month",
         description: "Experiment the power of infinite possibilities",
         benefits: [
@@ -82,6 +87,7 @@ export const pricingData: {
           monthly: "99",
           yearly: "990",
         },
+        maxCircle: 10,
         time: "month",
         description: "Unveil new superpowers and join the Design League.",
         benefits: [
@@ -108,6 +114,7 @@ export const pricingData: {
           monthly: "",
           yearly: "",
         },
+        maxCircle: 2,
         time: "month",
         description: "Basic features for teachers.",
         benefits: [
@@ -123,6 +130,7 @@ export const pricingData: {
           monthly: "99",
           yearly: "999",
         },
+        maxCircle: 0,
         time: "month",
         description: "Advanced features for teachers.",
         benefits: [
@@ -132,6 +140,7 @@ export const pricingData: {
           "Co-conception program",
           "Collaboration-Soon",
         ],
+
         priceID: {
           monthly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY,
           yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
@@ -144,6 +153,7 @@ export const pricingData: {
           monthly: "",
           yearly: "",
         },
+        maxCircle: 0,
         time: "",
         description: "For schools and institutions.",
         benefits: [

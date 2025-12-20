@@ -5,7 +5,10 @@ import { ChevronDown } from "lucide-react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 
-gsap.registerPlugin(ScrollTrigger);
+// Register plugin outside component to avoid re-registration
+if (typeof window !== "undefined") {
+  gsap.registerPlugin(ScrollTrigger);
+}
 
 interface FAQItem {
   question: string;
@@ -20,6 +23,7 @@ export default function FAQSection({ faqData }: FAQProps) {
   const [openIndex, setOpenIndex] = useState<number | null>(null);
   const containerRef = useRef<HTMLDivElement>(null);
   const itemRefs = useRef<(HTMLDivElement | null)[]>([]);
+  const hasAnimated = useRef(false);
 
   // Toggle open/close
   const toggle = (index: number) => {
@@ -28,32 +32,55 @@ export default function FAQSection({ faqData }: FAQProps) {
 
   // GSAP Scroll Animation
   useEffect(() => {
-    const items = itemRefs.current.filter(Boolean);
-    gsap.set(items, {
-      opacity: 0,
-      y: 50,
-      filter: "blur(10px)",
-    });
+    // Prevent re-running animation
+    if (hasAnimated.current) return;
 
-    ScrollTrigger.batch(items, {
-      onEnter: (batch) => {
-        gsap.to(batch, {
+    const items = itemRefs.current.filter(Boolean) as HTMLDivElement[];
+    if (items.length === 0) return;
+
+    // Small delay to ensure DOM is ready
+    const timer = setTimeout(() => {
+      const ctx = gsap.context(() => {
+        // Set initial state immediately
+        gsap.set(items, {
+          opacity: 0,
+          y: 50,
+          filter: "blur(10px)",
+        });
+
+        // Create a timeline triggered by the container
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: containerRef.current,
+            start: "top 85%",
+            once: true,
+            onEnter: () => {
+              hasAnimated.current = true;
+            },
+            // markers: true, // Uncomment for debugging
+          },
+        });
+
+        // Animate all items with stagger
+        tl.to(items, {
           opacity: 1,
           y: 0,
           filter: "blur(0px)",
-          stagger: 0.15,
-          duration: 1,
+          duration: 0.6,
           ease: "power2.out",
+          stagger: 0.1,
         });
-      },
-      start: "top 90%",
-      once: true,
-    });
+      }, containerRef);
+
+      // Store context for cleanup
+      return () => ctx.revert();
+    }, 100);
 
     return () => {
-      ScrollTrigger.getAll().forEach((t) => t.kill());
+      clearTimeout(timer);
+      ScrollTrigger.getAll().forEach((trigger) => trigger.kill());
     };
-  }, []);
+  }, [faqData]);
 
   // Height animation for answer
   useEffect(() => {
@@ -103,19 +130,18 @@ export default function FAQSection({ faqData }: FAQProps) {
             {/* Question */}
             <button
               onClick={() => toggle(index)}
-              className="w-full px-6 py-4 flex items-center justify-between text-left gap-4  transition"
+              className="w-full px-6 py-4 flex items-center justify-between text-left gap-4 transition"
               aria-expanded={openIndex === index}
             >
               <span
                 className={`
                     text-lg font-semibold text-[#193c51] transition-all
-                   
                   `}
               >
                 {item.question}
               </span>
               <div
-                className={`" rounded-full flex justify-center items-center w-12 h-12 ${
+                className={`rounded-full flex justify-center items-center w-12 h-12 ${
                   openIndex === index ? "bg-heading" : "bg-transparent"
                 }`}
               >

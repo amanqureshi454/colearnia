@@ -1,17 +1,3 @@
-// interface DecodedToken {
-//   userId: string;
-//   [key: string]: unknown;
-// }
-
-// interface CheckoutRequestBody {
-//   plan: string;
-//   duration: string;
-//   email: string;
-//   locale: string;
-//   token?: string;
-//   promoCode?: string;
-//   discountPercentage?: number;
-// }
 export const dynamic = "force-dynamic";
 export const runtime = "nodejs";
 
@@ -60,17 +46,18 @@ export async function POST(req: NextRequest) {
       email,
       locale,
       token,
+      maxCircle,
       promoCode,
       discountPercentage,
     } = requestData;
 
-    console.log("📋 Creating checkout session:", {
-      plan,
-      duration,
-      email,
-      promoCode,
-      discountPercentage,
-    });
+    // console.log("📋 Creating checkout session:", {
+    //   plan,
+    //   duration,
+    //   email,
+    //   promoCode,
+    //   discountPercentage,
+    // });
 
     if (!plan || !duration || !email) {
       return NextResponse.json(
@@ -104,6 +91,9 @@ export async function POST(req: NextRequest) {
       }
     }
 
+    const processedMaxCircle =
+      maxCircle === 0 || maxCircle === undefined ? null : maxCircle;
+
     // Check if user has an active Trial Pass with remaining days
     let trialEndTimestamp: number | null = null;
     let remainingTrialDays = 0;
@@ -132,12 +122,12 @@ export async function POST(req: NextRequest) {
             );
             trialEndTimestamp = Math.floor(trialEnd.getTime() / 1000); // Unix timestamp for Stripe
 
-            console.log("🎟️ User upgrading from Trial Pass");
-            console.log(
-              "📅 Trial End Date:",
-              existingSubscription.trialEndDate
-            );
-            console.log("⏳ Remaining Trial Days:", remainingTrialDays);
+            // console.log("🎟️ User upgrading from Trial Pass");
+            // console.log(
+            //   "📅 Trial End Date:",
+            //   existingSubscription.trialEndDate
+            // );
+            // console.log("⏳ Remaining Trial Days:", remainingTrialDays);
           }
         }
       } catch (err) {
@@ -169,6 +159,7 @@ export async function POST(req: NextRequest) {
         priceId,
         userId: userId || "",
         email,
+        maxCircle: processedMaxCircle?.toString() || "",
         promoCode: promoCode || "",
         discountPercentage: discountPercentage?.toString() || "",
         upgradedFromTrial: trialEndTimestamp ? "true" : "false",
@@ -179,6 +170,7 @@ export async function POST(req: NextRequest) {
           token: token || "",
           plan,
           duration,
+          maxCircle: processedMaxCircle?.toString() || "",
           userId: userId || "",
           email,
           promoCode: promoCode || "",
@@ -214,6 +206,7 @@ export async function POST(req: NextRequest) {
         email,
         plan,
         duration,
+        maxCircle: processedMaxCircle?.toString() || "",
         userId,
         promoCode: promoCode || null,
         discountPercentage: discountPercentage || null,
@@ -228,9 +221,9 @@ export async function POST(req: NextRequest) {
 
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
-    console.error("Stripe error:", err);
-    console.error("Error message:", err?.message);
-    console.error("Error type:", err?.type);
+    // console.error("Stripe error:", err);
+    // console.error("Error message:", err?.message);
+    // console.error("Error type:", err?.type);
     return NextResponse.json(
       { error: "Internal server error", details: err?.message },
       { status: 500 }

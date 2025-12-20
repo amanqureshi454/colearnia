@@ -3,7 +3,7 @@
 import { useSplitTextAnimation } from "@/lib/useSectionReveal";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import React, { useRef, useEffect } from "react";
+import React, { useRef } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Autoplay, Pagination } from "swiper/modules";
 import SectionHeader from "@/components/shared/HeadingWrapper";
@@ -69,36 +69,6 @@ const Testimonials = () => {
       avatar: "/images/svg/test-.svg",
     },
   ];
-
-  // Card Reveal Animation
-  useEffect(() => {
-    const timeout = setTimeout(() => {
-      if (!containerRef.current) return;
-
-      const cards = containerRef.current.querySelectorAll(
-        ".swiper-slide > div"
-      );
-
-      gsap.from(cards, {
-        opacity: 0,
-        y: 100,
-        duration: 1,
-        ease: "power1.out",
-        stagger: 0.18,
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 70%",
-        },
-      });
-
-      ScrollTrigger.refresh();
-    }, 500); // allow Swiper to load
-
-    return () => {
-      clearTimeout(timeout);
-      ScrollTrigger.getAll().forEach((st) => st.kill());
-    };
-  }, []);
 
   return (
     <SectionWrapper>
