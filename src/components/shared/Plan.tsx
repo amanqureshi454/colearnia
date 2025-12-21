@@ -154,11 +154,11 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
   };
 
   // Handle modal close - reset loading state
-  const handleModalClose = () => {
-    setShowRoleModal(false);
-    setLoadingPlan(null); // Reset loading state when modal is closed
-    setLoading(false);
-  };
+  // const handleModalClose = () => {
+  //   setShowRoleModal(false);
+  //   setLoadingPlan(null); // Reset loading state when modal is closed
+  //   setLoading(false);
+  // };
 
   const handleFreePlan = async () => {
     const userData =
@@ -259,7 +259,6 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
     if (!canUserPurchasePlan(plan)) {
       setAttemptedPlanType(plan);
       setShowRoleModal(true);
-      // ✅ Reset loading state immediately when showing modal
       setLoadingPlan(null);
       setLoading(false);
       return;
