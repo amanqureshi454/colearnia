@@ -14,8 +14,9 @@ export async function POST(req: NextRequest) {
       { status: 500 }
     );
   }
-  const webhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
+
   const stripe = new Stripe(secretKey, { apiVersion: "2025-06-30.basil" });
+
   const PRICE_MAP: Record<string, string | undefined> = {
     student_trial_week: process.env.STRIPE_PRICE_ID_STUDENT_TRIAL_WEEKLY,
     student_basic_monthly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY,
@@ -28,6 +29,7 @@ export async function POST(req: NextRequest) {
 
   const BASE_URL =
     process.env.NEXT_PUBLIC_DOMAIN_URL || "http://localhost:3000";
+
   try {
     let requestData;
     try {
@@ -51,13 +53,13 @@ export async function POST(req: NextRequest) {
       discountPercentage,
     } = requestData;
 
-    // console.log("📋 Creating checkout session:", {
-    //   plan,
-    //   duration,
-    //   email,
-    //   promoCode,
-    //   discountPercentage,
-    // });
+    console.log("📋 Creating checkout session:", {
+      plan,
+      duration,
+      email,
+      promoCode,
+      discountPercentage,
+    });
 
     if (!plan || !duration || !email) {
       return NextResponse.json(
@@ -69,32 +71,35 @@ export async function POST(req: NextRequest) {
     const mapKey = `${plan}_${duration}`;
     const priceId = PRICE_MAP[mapKey];
 
+    console.log("🟡 LOOKUP:", { mapKey, priceId, plan, duration });
+
     if (!priceId) {
+      console.error("❌ Invalid mapKey:", mapKey);
+      console.error("Available keys:", Object.keys(PRICE_MAP));
       return NextResponse.json(
         { error: "Invalid plan or duration" },
         { status: 400 }
       );
     }
 
-    // Decode user info from token
+    // Decode user info from token (optional - won't break if it fails)
     let userId = null;
-    if (token) {
-      if (!process.env.JWT_SECRET) {
-        console.error("❌ JWT_SECRET missing");
-      } else {
-        try {
-          const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
-          userId = decoded.userId;
-        } catch (err) {
-          console.log("❌ Token decode failed:", err);
-        }
+    if (token && process.env.JWT_SECRET) {
+      try {
+        const decoded = jwt.verify(token, process.env.JWT_SECRET) as any;
+        userId = decoded.userId;
+      } catch (err) {
+        console.log("⚠️ Token decode failed - continuing without userId");
       }
     }
 
     const processedMaxCircle =
       maxCircle === 0 || maxCircle === undefined ? null : maxCircle;
 
-    // Check if user has an active Trial Pass with remaining days
+    // Check if this is a Trial Pass purchase
+    const isTrialPassPurchase = plan === "student_trial";
+
+    // Check if user has an active Trial Pass with remaining days (for upgrades)
     let trialEndTimestamp: number | null = null;
     let remainingTrialDays = 0;
     const isUpgradeFromTrial =
@@ -115,19 +120,12 @@ export async function POST(req: NextRequest) {
           const trialEnd = new Date(existingSubscription.trialEndDate);
           const now = new Date();
 
-          // Only apply remaining days if trial hasn't expired
           if (trialEnd > now) {
             remainingTrialDays = Math.ceil(
               (trialEnd.getTime() - now.getTime()) / (1000 * 60 * 60 * 24)
             );
-            trialEndTimestamp = Math.floor(trialEnd.getTime() / 1000); // Unix timestamp for Stripe
-
-            // console.log("🎟️ User upgrading from Trial Pass");
-            // console.log(
-            //   "📅 Trial End Date:",
-            //   existingSubscription.trialEndDate
-            // );
-            // console.log("⏳ Remaining Trial Days:", remainingTrialDays);
+            trialEndTimestamp = Math.floor(trialEnd.getTime() / 1000);
+            console.log("🎟️ Remaining trial days:", remainingTrialDays);
           }
         }
       } catch (err) {
@@ -135,68 +133,98 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Check if this is a Trial Pass purchase
-    const isTrialPassPurchase = plan === "student_trial";
+    // Prepare session data based on plan type
+    let sessionData: any;
 
-    // Prepare session data
-    const sessionData: any = {
-      mode: "subscription",
-      payment_method_types: ["card"],
-      line_items: [
-        {
-          price: priceId,
-          quantity: 1,
-        },
-      ],
-      customer_email: email,
-      success_url: `${BASE_URL}${locale}/success?session_id={CHECKOUT_SESSION_ID}`,
-      cancel_url: `${BASE_URL}/${locale}/pricing`,
-      allow_promotion_codes: true,
-      metadata: {
-        token: token || "",
-        plan,
-        duration,
-        priceId,
-        userId: userId || "",
-        email,
-        maxCircle: processedMaxCircle?.toString() || "",
-        promoCode: promoCode || "",
-        discountPercentage: discountPercentage?.toString() || "",
-        upgradedFromTrial: trialEndTimestamp ? "true" : "false",
-        remainingTrialDays: remainingTrialDays.toString(),
-      },
-      subscription_data: {
+    if (isTrialPassPurchase) {
+      // ✅ TRIAL PASS: One-time payment (not subscription)
+      sessionData = {
+        mode: "payment",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        customer_email: email,
+        success_url: `${BASE_URL}/${
+          locale || "en"
+        }/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${BASE_URL}/${locale || "en"}/pricing`,
+        allow_promotion_codes: true,
         metadata: {
           token: token || "",
           plan,
           duration,
-          maxCircle: processedMaxCircle?.toString() || "",
+          priceId,
           userId: userId || "",
           email,
+          maxCircle: processedMaxCircle?.toString() || "",
+          promoCode: promoCode || "",
+          discountPercentage: discountPercentage?.toString() || "",
+          isTrialPass: "true",
+          trialDuration: "14", // 14 days trial
+        },
+      };
+      console.log("🎟️ Creating TRIAL PASS (one-time payment)");
+    } else {
+      // ✅ REGULAR PLANS: Subscription mode
+      sessionData = {
+        mode: "subscription",
+        payment_method_types: ["card"],
+        line_items: [
+          {
+            price: priceId,
+            quantity: 1,
+          },
+        ],
+        customer_email: email,
+        success_url: `${BASE_URL}/${
+          locale || "en"
+        }/success?session_id={CHECKOUT_SESSION_ID}`,
+        cancel_url: `${BASE_URL}/${locale || "en"}/pricing`,
+        allow_promotion_codes: true,
+        metadata: {
+          token: token || "",
+          plan,
+          duration,
+          priceId,
+          userId: userId || "",
+          email,
+          maxCircle: processedMaxCircle?.toString() || "",
           promoCode: promoCode || "",
           discountPercentage: discountPercentage?.toString() || "",
           upgradedFromTrial: trialEndTimestamp ? "true" : "false",
           remainingTrialDays: remainingTrialDays.toString(),
         },
-      },
-    };
+        subscription_data: {
+          metadata: {
+            token: token || "",
+            plan,
+            duration,
+            maxCircle: processedMaxCircle?.toString() || "",
+            userId: userId || "",
+            email,
+            promoCode: promoCode || "",
+            discountPercentage: discountPercentage?.toString() || "",
+            upgradedFromTrial: trialEndTimestamp ? "true" : "false",
+            remainingTrialDays: remainingTrialDays.toString(),
+          },
+        },
+      };
 
-    // For Trial Pass: cancel at period end (no auto-renewal)
-    if (isTrialPassPurchase) {
-      sessionData.subscription_data.metadata.cancelAtPeriodEnd = "true";
-    }
+      // Apply remaining trial days as free trial period on new subscription
+      if (trialEndTimestamp && remainingTrialDays > 0) {
+        sessionData.subscription_data.trial_end = trialEndTimestamp;
+        console.log("✅ Applied", remainingTrialDays, "remaining trial days");
+      }
 
-    // Apply remaining trial days as free trial period on new subscription
-    if (trialEndTimestamp && remainingTrialDays > 0) {
-      sessionData.subscription_data.trial_end = trialEndTimestamp;
-      console.log(
-        "✅ Applied",
-        remainingTrialDays,
-        "remaining trial days to new subscription"
-      );
+      console.log("📦 Creating SUBSCRIPTION");
     }
 
     const session = await stripe.checkout.sessions.create(sessionData);
+    console.log("✅ Stripe session created:", session.id);
 
     // Pre-save checkout session to database
     try {
@@ -212,18 +240,17 @@ export async function POST(req: NextRequest) {
         discountPercentage: discountPercentage || null,
         couponId: null,
         status: "pending",
+        isTrialPass: isTrialPassPurchase,
         createdAt: new Date().toISOString(),
       });
-      console.log("✅ Checkout session pre-saved with promo code");
+      console.log("✅ Checkout session pre-saved");
     } catch (err) {
       console.error("Failed to pre-save checkout session:", err);
     }
 
     return NextResponse.json({ url: session.url });
   } catch (err: any) {
-    // console.error("Stripe error:", err);
-    // console.error("Error message:", err?.message);
-    // console.error("Error type:", err?.type);
+    console.error("💥 Stripe error:", err?.message);
     return NextResponse.json(
       { error: "Internal server error", details: err?.message },
       { status: 500 }

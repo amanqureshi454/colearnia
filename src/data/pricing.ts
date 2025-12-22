@@ -1,25 +1,23 @@
 export type UserType = "student" | "teacher";
-export const pricingData: {
-  plans: Record<
-    UserType,
-    {
-      type: string;
-      price: {
-        monthly: string;
-        yearly: string;
-      };
-      priceID?: {
-        monthly?: string;
-        yearly?: string;
-      };
-      maxCircle: number;
-      time: string;
-      description: string;
-      benefits: string[];
-      buttonText: string;
-    }[]
-  >;
-} = {
+
+interface PlanItem {
+  type: string;
+  price: {
+    monthly: string;
+    yearly: string;
+  };
+  maxCircle: number;
+  time: string;
+  description: string;
+  benefits: string[];
+  buttonText: string;
+}
+
+interface PricingData {
+  plans: Record<UserType, PlanItem[]>;
+}
+
+export const pricingData: PricingData = {
   plans: {
     student: [
       {
@@ -29,7 +27,6 @@ export const pricingData: {
           yearly: "0",
         },
         maxCircle: 0,
-
         time: "month",
         description: "For invited students exploring a single Circle.",
         benefits: [
@@ -75,10 +72,6 @@ export const pricingData: {
           "Circle Leader badge",
           "Standard",
         ],
-        priceID: {
-          monthly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_MONTHLY,
-          yearly: process.env.STRIPE_PRICE_ID_STUDENT_BASIC_YEARLY,
-        },
         buttonText: "Go with basic",
       },
       {
@@ -100,10 +93,6 @@ export const pricingData: {
           "Circle Captain badge",
           "Priority support",
         ],
-        priceID: {
-          monthly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_MONTHLY,
-          yearly: process.env.STRIPE_PRICE_ID_STUDENT_PLUS_YEARLY,
-        },
         buttonText: "Go with Plus",
       },
     ],
@@ -140,11 +129,6 @@ export const pricingData: {
           "Co-conception program",
           "Collaboration-Soon",
         ],
-
-        priceID: {
-          monthly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_MONTHLY,
-          yearly: process.env.STRIPE_PRICE_ID_TEACHER_PLUS_YEARLY,
-        },
         buttonText: "Go with Teacher Plus",
       },
       {

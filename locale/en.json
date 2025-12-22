@@ -5,6 +5,7 @@
     "About Us": "About Us",
     "Blog": "Blog",
     "Contact": "Contact us",
+    "Company": "Company",
     "Pricing": "Pricing",
     "create-account": "Join a circle",
     "Login": "Login",
@@ -182,7 +183,7 @@
         "links": ["Update", "Security", "Beta test", "Pricing product"]
       }
     ],
-    "copyright": "© 2025 CoLearnnia. Copyright and rights reserved",
+    "copyright": "CoLearnnia. Copyright and rights reserved",
     "legalLinks": ["Terms and conditions", "Privacy Policy"]
   },
   "CTA": {

@@ -17,30 +17,22 @@ export type DurationType = "monthly" | "yearly";
 export interface PlanCTAProps {
   plan: {
     type: string;
-    priceID?: {
-      monthly?: string;
-      yearly?: string;
-    };
+    maxCircle?: number;
     buttonText?: string;
   };
-
-  // Subscription State
   isActive: boolean;
   hasSubscription: boolean;
-
-  // Loading State
   loading: boolean;
   loadingPlan: string | null;
   setLoadingPlan: (plan: string) => void;
-
-  // Duration
   durationTab: DurationType;
-
-  // Action Handlers
-  handleSubscribe: (plan: string, duration: string, priceId?: string) => void;
+  handleSubscribe: (
+    plan: string,
+    duration: string,
+    priceId?: string,
+    maxCircle?: number
+  ) => void;
   handleFreePlan: () => void;
-
-  // Contact Button
   isInstitutionPlan: boolean;
 }
 
@@ -65,9 +57,10 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
   isInstitutionPlan,
 }) => {
   const locale = useTranslations();
-  const isFreeStudentPlan = plan.type === "Student Free";
-  const isFreeTeacherPlan = plan.type === "Teacher Free";
-  const isFreePlan = isFreeStudentPlan || isFreeTeacherPlan;
+  const isGuestPlan = plan.type === "Guest";
+
+  // ✅ Check if subscription is cancelled but still has access
+  // This will be passed from parent or checked here
 
   return (
     <>
@@ -81,8 +74,22 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
         >
           Go to Dashboard
         </Link>
-      ) : isFreePlan && hasSubscription ? (
-        /* ✅ 2. SWITCH TO FREE */
+      ) : isGuestPlan && hasSubscription ? (
+        /* ✅ 2. GUEST + HAS PAID PLAN → DOWNGRADE BUTTON */
+        <button
+          onClick={() => {
+            handleFreePlan();
+          }}
+          disabled={loadingPlan === plan.type}
+          className="mt-8 py-4 w-full rounded-2xl cursor-pointer text-sm font-medium
+          flex items-center justify-center gap-2 border border-red-300
+          text-red-600 hover:bg-red-50 hover:scale-105
+          transition-all duration-200 disabled:opacity-50"
+        >
+          Cancel & Switch to Free
+        </button>
+      ) : isGuestPlan && !hasSubscription ? (
+        /* ✅ 3. GUEST + NO SUBSCRIPTION → SIGNUP FREE */
         <button
           onClick={() => {
             setLoadingPlan(plan.type);
@@ -93,17 +100,10 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
           flex items-center justify-center gap-2 border border-[#727272]
           hover:scale-105 transition-all duration-200 disabled:opacity-50"
         >
-          {loadingPlan === plan.type ? (
-            <>
-              <BtnLoader size={24} color="#000000" />
-              <span className="ml-2">Switching to {plan.type}...</span>
-            </>
-          ) : (
-            `Switch to ${plan.type}`
-          )}
+          {plan.buttonText || "Signup for free"}
         </button>
       ) : isInstitutionPlan ? (
-        /* ✅ 3. INSTITUTION → CONTACT */
+        /* ✅ 4. INSTITUTION → CONTACT */
         <button
           onClick={() => (window.location.href = `${locale}/contact`)}
           className="mt-8 py-4 w-full rounded-2xl cursor-pointer text-sm font-normal
@@ -113,7 +113,7 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
           {plan.buttonText || "Contact Us"}
         </button>
       ) : (
-        /* ✅ 4. DEFAULT → SUBSCRIBE / TRIAL / PLUS / BASIC */
+        /* ✅ 5. DEFAULT → SUBSCRIBE */
         <button
           onClick={async () => {
             setLoadingPlan(plan.type);
@@ -122,15 +122,14 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
             const durationToSend =
               backendPlan === "student_trial" ? "week" : durationTab;
 
-            const priceIdToSend =
-              durationToSend === "week"
-                ? process.env.NEXT_PUBLIC_STRIPE_TRIAL_PRICE_ID
-                : plan.priceID?.[durationTab];
-
-            // ✅ FORCE LOADER TO RENDER BEFORE REDIRECT
             await new Promise((res) => setTimeout(res, 50));
 
-            handleSubscribe(backendPlan, durationToSend, priceIdToSend);
+            handleSubscribe(
+              backendPlan,
+              durationToSend,
+              undefined,
+              plan.maxCircle
+            );
           }}
           disabled={loadingPlan === plan.type}
           className="mt-8 py-4 w-full flex cursor-pointer justify-center items-center

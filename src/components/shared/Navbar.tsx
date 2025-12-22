@@ -64,7 +64,7 @@ const Navbar = () => {
     <>
       <nav
         dir={isRTL ? "rtl" : "ltr"}
-        className={`fixed top-0 lg:block sm:hidden left-1/2  -translate-x-1/2 z-[199] w-full py-2.5 transition-all duration-300 font-inter
+        className={`fixed top-0 lg:block sm:hidden left-1/2  -translate-x-1/2 z-199 w-full py-2.5 transition-all duration-300 font-inter
         ${
           isScrolled
             ? "bg-white/80 backdrop-blur-md shadow-sm"
