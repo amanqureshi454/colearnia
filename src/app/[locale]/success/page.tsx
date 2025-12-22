@@ -22,11 +22,12 @@ export default function SuccessPage() {
           const pendingCheckout = localStorage.getItem("pendingCheckout");
           const planInfo = pendingCheckout
             ? JSON.parse(pendingCheckout)
-            : { plan: "teacher_plus", duration: "monthly" };
+            : { plan: "teacher_plus", duration: "monthly", maxCircle: null };
 
           // Fetch session details from Stripe to get promo code information
           let promoCode = null;
           let discountPercentage = null;
+          let maxCircle = planInfo.maxCircle || null; // ✅ Get from localStorage first
 
           try {
             const sessionResponse = await fetch(
@@ -36,11 +37,21 @@ export default function SuccessPage() {
               const sessionData = await sessionResponse.json();
               promoCode = sessionData.promoCode;
               discountPercentage = sessionData.discountPercentage;
+
+              // ✅ Get maxCircle from Stripe session metadata (override if available)
+              if (
+                sessionData.maxCircle !== undefined &&
+                sessionData.maxCircle !== null
+              ) {
+                maxCircle = sessionData.maxCircle;
+              }
+
               console.log("🎫 Promo code from Stripe session:", promoCode);
               console.log(
                 "💰 Discount percentage from Stripe session:",
                 discountPercentage
               );
+              console.log("🔵 maxCircle from Stripe session:", maxCircle); // ✅ Debug log
             }
           } catch (error) {
             console.log(
@@ -48,6 +59,16 @@ export default function SuccessPage() {
               error
             );
           }
+
+          console.log("📦 Sending to save-payment-automatic:", {
+            sessionId,
+            email: userEmail,
+            plan: planInfo.plan,
+            duration: planInfo.duration,
+            maxCircle, // ✅ Debug log
+            promoCode,
+            discountPercentage,
+          });
 
           // Call API to save payment
           const response = await fetch("/api/save-payment-automatic", {
@@ -60,6 +81,7 @@ export default function SuccessPage() {
               email: userEmail,
               plan: planInfo.plan,
               duration: planInfo.duration,
+              maxCircle: maxCircle, // ✅ ADD THIS LINE
               promoCode: promoCode,
               discountPercentage: discountPercentage,
             }),
@@ -67,6 +89,8 @@ export default function SuccessPage() {
 
           if (response.ok) {
             console.log("✅ Payment saved automatically to database!");
+            // ✅ Clear pending checkout after successful save
+            localStorage.removeItem("pendingCheckout");
           } else {
             console.log("⚠️ Payment save failed, but continuing...");
           }
@@ -78,9 +102,10 @@ export default function SuccessPage() {
 
     savePaymentAutomatically();
   }, []);
+
   return (
     <div className="bg-gray-100 h-screen flex justify-center items-center">
-      <div className="bg-white p-6  md:mx-auto">
+      <div className="bg-white p-6 md:mx-auto">
         <svg
           viewBox="0 0 24 24"
           className="text-green-600 w-16 h-16 mx-auto my-6"

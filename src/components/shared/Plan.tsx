@@ -162,6 +162,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
       setLoading(false);
     }
   };
+
   // Animation effect
   useEffect(() => {
     if (!pricingRef.current) return;
@@ -206,6 +207,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
       setLoading(false);
       return;
     }
+    console.log("🔍 handleSubscribe - maxCircle received:", maxCircle);
 
     const planKey = `${plan}_${duration}`;
     console.log("handleSubscribe called:", { plan, duration, planKey });
@@ -328,7 +330,6 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
     fetchCurrentPlan();
   }, []);
 
-  // Helper function to check if a plan is active
   // Helper function to check if a plan is active
   const checkIsActive = (planType: string): boolean => {
     if (!subscription) return false;

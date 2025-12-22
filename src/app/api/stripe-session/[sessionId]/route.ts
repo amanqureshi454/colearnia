@@ -24,11 +24,17 @@ export async function GET(
     // Get checkout session from Stripe
     const session = await stripe.checkout.sessions.retrieve(sessionId);
 
+    // ✅ DEFINE maxCircle HERE - Extract from metadata
+    const maxCircle = session.metadata?.maxCircle
+      ? parseInt(session.metadata.maxCircle)
+      : null;
+
     console.log("🔍 Stripe session details:", {
       id: session.id,
       amount_total: session.amount_total,
       amount_subtotal: session.amount_subtotal,
       total_details: session.total_details,
+      maxCircle: maxCircle, // ✅ Fixed syntax
       payment_status: session.payment_status,
       metadata: session.metadata,
     });
@@ -59,7 +65,7 @@ export async function GET(
       console.log("🎫 Discount detected in Stripe session");
 
       // Calculate discount amount
-      discountApplied = (session.amount_subtotal - session.amount_total) / 100; // Convert from cents
+      discountApplied = (session.amount_subtotal - session.amount_total) / 100;
 
       // Calculate discount percentage if not already set
       if (!discountPercentage && session.amount_subtotal > 0) {
@@ -78,74 +84,39 @@ export async function GET(
       ) {
         const discount = session.total_details.breakdown.discounts[0];
         console.log("🎫 Discount applied in Stripe:", discount);
-        console.log("🎫 Discount object keys:", Object.keys(discount));
-        console.log(
-          "🎫 Discount promotion_code:",
-          (discount as any).promotion_code
-        );
 
-        // Get promotion code details
         if ((discount as any).promotion_code) {
           try {
-            console.log(
-              "🎫 Attempting to retrieve promotion code:",
-              (discount as any).promotion_code
-            );
             const promotionCode = await stripe.promotionCodes.retrieve(
               (discount as any).promotion_code
             );
-            console.log("🎫 Promotion code details:", promotionCode);
-
             promoCode = promotionCode.code;
-            console.log("🎫 Extracted promo code:", promoCode);
 
-            // Get coupon details
             if (promotionCode.coupon) {
               const coupon = await stripe.coupons.retrieve(
                 promotionCode.coupon as unknown as string
               );
-              console.log("🎫 Coupon details:", coupon);
-
               if (coupon.percent_off) {
                 discountPercentage = coupon.percent_off;
-                console.log(
-                  "🎫 Extracted discount percentage:",
-                  discountPercentage
-                );
               }
             }
           } catch (error) {
             console.log("⚠️ Failed to retrieve promotion code details:", error);
           }
-        } else {
-          console.log("🎫 No promotion_code found in discount object");
         }
-      } else {
-        console.log(
-          "🎫 No discounts found in session or promo code already exists"
-        );
       }
-
-      console.log("🎫 Calculated discount data:", {
-        discountApplied,
-        discountPercentage,
-        promoCode,
-      });
     }
 
     // If discount is detected but no promo code found, set a default
     if (discountPercentage && discountPercentage > 0 && !promoCode) {
-      promoCode = "WELCOME20"; // Default promo code for 20% discount
-      console.log(
-        "🎫 Setting default promo code for detected discount:",
-        promoCode
-      );
+      promoCode = "WELCOME20";
     }
 
-    console.log("🎫 Final promo code data:", {
+    console.log("🎫 Final data:", {
       promoCode,
       discountPercentage,
       discountApplied,
+      maxCircle, // ✅ Log maxCircle
     });
 
     return NextResponse.json({
@@ -155,6 +126,7 @@ export async function GET(
         ? session.amount_subtotal / 100
         : 0,
       currency: session.currency,
+      maxCircle: maxCircle, // ✅ Fixed - use the variable we defined
       payment_status: session.payment_status,
       promoCode: promoCode,
       discountPercentage: discountPercentage,

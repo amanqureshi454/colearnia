@@ -30,11 +30,9 @@ export async function POST(req: NextRequest) {
         updatedAt: new Date().toISOString(),
         isFreePlan: true,
         features: [
-          "Unlimited Join Study Circles",
-          "Create Circles (Up to 3)",
-          "Access Quizzes & Leaderboard",
-          "Earn Achievement Badges",
-          "Progress Analytics",
+          "Access one invited Circle only",
+          "View results",
+          "No creation or editing",
         ],
       };
 

@@ -57,6 +57,7 @@ export async function POST(req: NextRequest) {
       plan,
       duration,
       email,
+      maxCircle,
       promoCode,
       discountPercentage,
     });

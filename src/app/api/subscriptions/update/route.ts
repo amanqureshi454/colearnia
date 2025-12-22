@@ -48,7 +48,7 @@ export async function POST(req: NextRequest) {
 
     // Get current subscription from database
     const db = await getDb();
-    y;
+
     const currentSubscription = await db
       .collection("subscriptions")
       .findOne({ userId });

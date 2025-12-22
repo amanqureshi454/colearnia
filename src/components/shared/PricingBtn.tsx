@@ -22,9 +22,10 @@ export interface PlanCTAProps {
   };
   isActive: boolean;
   hasSubscription: boolean;
+  currentPlan?: string | null; // ✅ Add current plan
   loading: boolean;
   loadingPlan: string | null;
-  setLoadingPlan: (plan: string) => void;
+  setLoadingPlan: (plan: string | null) => void;
   durationTab: DurationType;
   handleSubscribe: (
     plan: string,
@@ -33,34 +34,75 @@ export interface PlanCTAProps {
     maxCircle?: number
   ) => void;
   handleFreePlan: () => void;
+  handleUpgrade?: (newPlan: string, newDuration: string) => void; // ✅ Add upgrade handler
   isInstitutionPlan: boolean;
 }
 
 const PLAN_KEY_MAP: Record<string, string> = {
   Basic: "student_basic",
   Plus: "student_plus",
-  Guest: "student_trial",
+  Guest: "student_free",
   "Trial Pass": "student_trial",
   "Teacher Plus": "teacher_plus",
+};
+
+// ✅ Plan hierarchy for upgrade/downgrade detection
+const PLAN_HIERARCHY: Record<string, number> = {
+  student_free: 0,
+  student_trial: 1,
+  student_basic: 2,
+  student_plus: 3,
+  teacher_plus: 3,
 };
 
 const PlanCTA: React.FC<PlanCTAProps> = ({
   plan,
   isActive,
   hasSubscription,
+  currentPlan,
   loading,
   loadingPlan,
   setLoadingPlan,
   durationTab,
   handleSubscribe,
   handleFreePlan,
+  handleUpgrade,
   isInstitutionPlan,
 }) => {
   const locale = useTranslations();
   const isGuestPlan = plan.type === "Guest";
+  const backendPlan = PLAN_KEY_MAP[plan.type];
 
-  // ✅ Check if subscription is cancelled but still has access
-  // This will be passed from parent or checked here
+  // ✅ Determine if this is an upgrade or downgrade
+  const isUpgrade =
+    currentPlan && PLAN_HIERARCHY[backendPlan] > PLAN_HIERARCHY[currentPlan];
+
+  const isDowngrade =
+    currentPlan && PLAN_HIERARCHY[backendPlan] < PLAN_HIERARCHY[currentPlan];
+
+  // ✅ Get button text based on subscription state
+  const getButtonText = () => {
+    if (isUpgrade) return `Upgrade to ${plan.type}`;
+    if (isDowngrade) return `Switch to ${plan.type}`;
+    return plan.buttonText;
+  };
+
+  // ✅ Handle upgrade/switch
+  const handlePlanChange = async () => {
+    setLoadingPlan(plan.type);
+
+    const durationToSend =
+      backendPlan === "student_trial" ? "week" : durationTab;
+
+    // If user has existing subscription and this is upgrade/downgrade
+    if (hasSubscription && currentPlan && handleUpgrade) {
+      await handleUpgrade(backendPlan, durationToSend);
+    } else {
+      // New subscription
+      await new Promise((res) => setTimeout(res, 50));
+      handleSubscribe(backendPlan, durationToSend, undefined, plan.maxCircle);
+    }
+  };
 
   return (
     <>
@@ -77,9 +119,7 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
       ) : isGuestPlan && hasSubscription ? (
         /* ✅ 2. GUEST + HAS PAID PLAN → DOWNGRADE BUTTON */
         <button
-          onClick={() => {
-            handleFreePlan();
-          }}
+          onClick={() => handleFreePlan()}
           disabled={loadingPlan === plan.type}
           className="mt-8 py-4 w-full rounded-2xl cursor-pointer text-sm font-medium
           flex items-center justify-center gap-2 border border-red-300
@@ -113,24 +153,9 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
           {plan.buttonText || "Contact Us"}
         </button>
       ) : (
-        /* ✅ 5. DEFAULT → SUBSCRIBE */
+        /* ✅ 5. DEFAULT → SUBSCRIBE / UPGRADE / DOWNGRADE */
         <button
-          onClick={async () => {
-            setLoadingPlan(plan.type);
-
-            const backendPlan = PLAN_KEY_MAP[plan.type];
-            const durationToSend =
-              backendPlan === "student_trial" ? "week" : durationTab;
-
-            await new Promise((res) => setTimeout(res, 50));
-
-            handleSubscribe(
-              backendPlan,
-              durationToSend,
-              undefined,
-              plan.maxCircle
-            );
-          }}
+          onClick={handlePlanChange}
           disabled={loadingPlan === plan.type}
           className="mt-8 py-4 w-full flex cursor-pointer justify-center items-center
           rounded-2xl text-sm font-medium border border-[#727272]
@@ -140,11 +165,13 @@ const PlanCTA: React.FC<PlanCTAProps> = ({
         >
           {loadingPlan === plan.type ? (
             <>
-              <BtnLoader size={22} color="#000000" />
-              <span className="ml-1">Redirecting...</span>
+              <BtnLoader size={22} color={"#000000"} />
+              <span className="ml-1">
+                {isUpgrade ? "Upgrading..." : "Redirecting..."}
+              </span>
             </>
           ) : (
-            plan.buttonText
+            getButtonText()
           )}
         </button>
       )}

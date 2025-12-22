@@ -23,76 +23,78 @@ export function useHeadingAnimation({
   start = "top 80%",
 }: AnimationOptions) {
   useEffect(() => {
-    if (!headingRef.current) return;
+    if (!containerRef.current || !headingRef.current) return;
 
-    document.fonts.ready.then(() => {
+    let headingSplit: SplitText | null = null;
+    let paraSplit: SplitText | null = null;
+
+    const ctx = gsap.context(() => {
       const tl = gsap.timeline({
         defaults: { ease: "power3.out" },
         scrollTrigger: {
-          trigger: containerRef.current,
+          trigger: containerRef.current!,
           start,
+          once: true, // 👈 prevents re-fire issues
         },
       });
 
-      // === Headline Animation (if exists) ===
+      // Headline
       if (headlineRef?.current) {
         gsap.set(headlineRef.current, { autoAlpha: 0, y: -12 });
-        tl.to(headlineRef.current, { autoAlpha: 1, y: 0, duration: 0.5 });
+        tl.to(headlineRef.current, { autoAlpha: 1, y: 0, duration: 0.4 });
       }
 
-      // === Heading Split Text Animation ===
-      const headingSplit = new SplitText(headingRef.current!, {
-        type: "words, lines",
-        linesClass: "line",
+      // Heading
+      headingSplit = new SplitText(headingRef.current!, {
+        type: "words",
       });
-      const headingWords = headingSplit.words;
 
-      gsap.set(headingWords, {
+      gsap.set(headingSplit.words, {
         opacity: 0,
         yPercent: 120,
       });
 
       tl.to(
-        headingWords,
+        headingSplit.words,
         {
-          duration: 0.8,
           opacity: 1,
           yPercent: 0,
-          ease: "power1",
           stagger: 0.035,
+          duration: 0.8,
         },
         headlineRef?.current ? "+=0.1" : 0
       );
 
-      // === Subheading Split Text Animation ===
+      // Subheading
       if (subheadingRef?.current) {
-        const paraSplit = new SplitText(subheadingRef.current, {
-          type: "words, lines",
-          linesClass: "line",
+        paraSplit = new SplitText(subheadingRef.current, {
+          type: "words",
         });
-        const paraWords = paraSplit.words;
 
-        gsap.set(paraWords, {
+        gsap.set(paraSplit.words, {
           opacity: 0,
           yPercent: 120,
         });
 
         tl.to(
-          paraWords,
+          paraSplit.words,
           {
-            duration: 0.7,
             opacity: 1,
             yPercent: 0,
-            ease: "power1",
-            stagger: 0.018,
+            stagger: 0.02,
+            duration: 0.6,
           },
-          "-=0.5"
+          "-=0.4"
         );
       }
-    });
+
+      ScrollTrigger.refresh();
+    }, containerRef);
 
     return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill());
+      headingSplit?.revert();
+      paraSplit?.revert();
+      ctx.revert(); // 👈 cleans ONLY this animation
     };
   }, [containerRef, headlineRef, headingRef, subheadingRef, start]);
 }

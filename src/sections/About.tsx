@@ -38,46 +38,47 @@ const About = () => {
   useEffect(() => {
     if (!containerRef.current) return;
 
-    document.fonts.ready.then(() => {
+    let ctx = gsap.context(() => {
       const tl = gsap.timeline({
         scrollTrigger: {
           trigger: containerRef.current,
           start: "top 80%",
+          once: true, // 👈 prevents re-fire bugs
         },
       });
 
       // === Feature List Animation ===
       if (featureListRef.current) {
         const featureItems = featureListRef.current.querySelectorAll("li");
+
         gsap.set(featureItems, {
           opacity: 0,
           y: 20,
         });
 
-        tl.to(
-          featureItems,
-          {
-            opacity: 1,
-            y: 0,
-            duration: 0.6,
-            ease: "power2.out",
-            stagger: 0.1,
-          },
-          "+=0.6" // Delay after heading completes (~0.8s * words)
-        );
+        tl.to(featureItems, {
+          opacity: 1,
+          y: 0,
+          duration: 0.6,
+          ease: "power2.out",
+          stagger: 0.1,
+        });
       }
 
-      tl.from(
-        [".hero-button", buttonsRef.current],
-        {
-          opacity: 0,
-          y: 40,
-          duration: 0.8,
-          ease: "power2.out",
-          stagger: 0.15,
-        },
-        "-=0.3"
-      );
+      // === Buttons Animation ===
+      if (buttonsRef.current) {
+        tl.from(
+          buttonsRef.current.children,
+          {
+            opacity: 0,
+            y: 40,
+            duration: 0.8,
+            ease: "power2.out",
+            stagger: 0.15,
+          },
+          "-=0.3"
+        );
+      }
 
       // === Image Animation ===
       if (imageRef.current) {
@@ -94,15 +95,18 @@ const About = () => {
             duration: 1.2,
             ease: "power2.out",
           },
-          "-=0.8" // Runs alongside buttons
+          "-=0.6"
         );
       }
-    });
+
+      ScrollTrigger.refresh();
+    }, containerRef);
 
     return () => {
-      ScrollTrigger.getAll().forEach((st) => st.kill());
+      ctx.revert(); // 👈 cleans ONLY this section
     };
   }, []);
+
   return (
     <SectionWrapper>
       <div

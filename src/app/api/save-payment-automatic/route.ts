@@ -119,7 +119,7 @@ export async function POST(req: NextRequest) {
       discountApplied: discountApplied,
       amount: finalAmount,
       currency: "QAR",
-      promoCode: isTrialPass ? null : promoCode || null, // ✅ No promo for trial
+      promoCode: isTrialPass ? null : promoCode || null,
       discountPercentage: isTrialPass ? null : finalDiscountPercentage || null,
       automaticSave: true,
       saveMethod: "success_page_automatic_save",
@@ -136,13 +136,13 @@ export async function POST(req: NextRequest) {
         : "Payment saved automatically via success page",
     };
 
-    console.log("💾 Saving subscription:", {
-      email,
-      plan,
-      isTrialPass,
-      amount: finalAmount,
-      periodEnd: periodEnd.toISOString(),
-    });
+    // console.log("💾 Saving subscription:", {
+    //   email,
+    //   plan,
+    //   isTrialPass,
+    //   amount: finalAmount,
+    //   periodEnd: periodEnd.toISOString(),
+    // });
 
     // Save to database
     await subscriptionsCollection.updateOne(
