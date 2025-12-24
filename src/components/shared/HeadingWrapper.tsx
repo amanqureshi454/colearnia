@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useRef, forwardRef } from "react";
-import { useHeadingAnimation } from "@/lib/useHeading";
 import { usePathname } from "next/navigation";
 
 interface SectionHeaderProps {
@@ -20,13 +19,13 @@ const SectionHeader = forwardRef<HTMLDivElement, SectionHeaderProps>(
     const pathname = usePathname();
     const isRTL = pathname?.startsWith("/ar") ?? false;
 
-    useHeadingAnimation({
-      containerRef,
-      headlineRef,
-      headingRef,
-      subheadingRef,
-      start: "top 80%",
-    });
+    // useHeadingAnimation({
+    //   containerRef,
+    //   headlineRef,
+    //   headingRef,
+    //   subheadingRef,
+    //   start: "top 80%",
+    // });
 
     return (
       <div

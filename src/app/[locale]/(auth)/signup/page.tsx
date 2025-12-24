@@ -129,7 +129,7 @@ const SignUpPage = () => {
     }
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_DASHBOARD_URL}/api/auth/register`,
+        `${process.env.NEXT_PUBLIC_REGISTER_URL}/api/auth/register`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

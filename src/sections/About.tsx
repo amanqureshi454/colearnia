@@ -23,89 +23,83 @@ const About = () => {
   const imageRef = useRef<HTMLDivElement>(null);
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
-  useSplitTextAnimation({
-    headingRef,
-    paraRef,
-    triggerId: "about",
-  });
-
   const features = [
     t("features.0") || "Built by educators",
     t("features.1") || "Designed for motivation & accountability",
     t("features.2") || "Clear progress tracking",
   ];
 
-  useEffect(() => {
-    if (!containerRef.current) return;
+  // useEffect(() => {
+  //   if (!containerRef.current) return;
 
-    let ctx = gsap.context(() => {
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: containerRef.current,
-          start: "top 80%",
-          once: true, // 👈 prevents re-fire bugs
-        },
-      });
+  //   let ctx = gsap.context(() => {
+  //     const tl = gsap.timeline({
+  //       scrollTrigger: {
+  //         trigger: containerRef.current,
+  //         start: "top 90%",
+  //         once: true, // 👈 prevents re-fire bugs
+  //       },
+  //     });
 
-      // === Feature List Animation ===
-      if (featureListRef.current) {
-        const featureItems = featureListRef.current.querySelectorAll("li");
+  //     // === Feature List Animation ===
+  //     if (featureListRef.current) {
+  //       const featureItems = featureListRef.current.querySelectorAll("li");
 
-        gsap.set(featureItems, {
-          opacity: 0,
-          y: 20,
-        });
+  //       gsap.set(featureItems, {
+  //         opacity: 0,
+  //         y: 20,
+  //       });
 
-        tl.to(featureItems, {
-          opacity: 1,
-          y: 0,
-          duration: 0.6,
-          ease: "power2.out",
-          stagger: 0.1,
-        });
-      }
+  //       tl.to(featureItems, {
+  //         opacity: 1,
+  //         y: 0,
+  //         duration: 0.6,
+  //         ease: "power2.out",
+  //         stagger: 0.1,
+  //       });
+  //     }
 
-      // === Buttons Animation ===
-      if (buttonsRef.current) {
-        tl.from(
-          buttonsRef.current.children,
-          {
-            opacity: 0,
-            y: 40,
-            duration: 0.8,
-            ease: "power2.out",
-            stagger: 0.15,
-          },
-          "-=0.3"
-        );
-      }
+  //     // === Buttons Animation ===
+  //     if (buttonsRef.current) {
+  //       tl.from(
+  //         buttonsRef.current.children,
+  //         {
+  //           opacity: 0,
+  //           y: 40,
+  //           duration: 0.8,
+  //           ease: "power2.out",
+  //           stagger: 0.15,
+  //         },
+  //         "-=0.3"
+  //       );
+  //     }
 
-      // === Image Animation ===
-      if (imageRef.current) {
-        gsap.set(imageRef.current, {
-          opacity: 0,
-          scale: 1.05,
-        });
+  //     // === Image Animation ===
+  //     if (imageRef.current) {
+  //       gsap.set(imageRef.current, {
+  //         opacity: 0,
+  //         scale: 1.05,
+  //       });
 
-        tl.to(
-          imageRef.current,
-          {
-            opacity: 1,
-            scale: 1,
-            duration: 1.2,
-            ease: "power2.out",
-          },
-          "-=0.6"
-        );
-      }
+  //       tl.to(
+  //         imageRef.current,
+  //         {
+  //           opacity: 1,
+  //           scale: 1,
+  //           duration: 1.2,
+  //           ease: "power2.out",
+  //         },
+  //         "-=0.6"
+  //       );
+  //     }
 
-      ScrollTrigger.refresh();
-    }, containerRef);
+  //     ScrollTrigger.refresh();
+  //   }, containerRef);
 
-    return () => {
-      ctx.revert(); // 👈 cleans ONLY this section
-    };
-  }, []);
+  //   return () => {
+  //     ctx.revert(); // 👈 cleans ONLY this section
+  //   };
+  // }, []);
 
   return (
     <SectionWrapper>

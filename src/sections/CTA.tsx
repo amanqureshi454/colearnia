@@ -7,7 +7,6 @@ import { X, Check } from "lucide-react";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import { useSplitTextAnimation } from "@/lib/useSectionReveal";
 import CTAReuse from "@/components/shared/CTAReuse";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -16,7 +15,6 @@ const CTA = () => {
   const comparisonRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("CTA");
   const pathname = usePathname();
-  const headingRef = useRef<HTMLHeadingElement>(null);
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
   const studyCards = [
@@ -84,10 +82,10 @@ const CTA = () => {
     };
   }, []);
 
-  useSplitTextAnimation({
-    headingRef,
-    triggerId: "cta",
-  });
+  // useSplitTextAnimation({
+  //   headingRef,
+  //   triggerId: "cta",
+  // });
 
   return (
     <SectionWrapper>
