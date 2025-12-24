@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import SplitText from "gsap/SplitText";
@@ -12,6 +12,7 @@ import Button from "@/components/shared/Button";
 import HeroHeadingTitle from "@/components/shared/HeroHeadingTitle";
 import HeroParagraph from "@/components/shared/HeroParagraph";
 import { Volume2, VolumeX } from "lucide-react";
+import Link from "next/link";
 
 // Register the plugin
 gsap.registerPlugin(SplitText);
@@ -24,6 +25,7 @@ const Hero = () => {
   const videoRef = useRef<HTMLVideoElement>(null);
   const testRef = useRef<HTMLDivElement>(null);
   const paraRef = useRef(null);
+  const locale = useLocale();
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
   const [isMuted, setIsMuted] = useState(true);
@@ -191,17 +193,28 @@ const Hero = () => {
                   ref={watchBtnRef}
                   className="flex flex-row flex-wrap tab:gap-4 sm:gap-2 mt-5"
                 >
-                  <Button text={t("CTA_Button")} />
-                  <button className="w-max px-6 sm:px-4 sm:py-3 text-center transition-transform duration-200 ease-in-out hover:scale-105  rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-semibold flex justify-center items-center gap-2 bg-transparent text-black">
-                    <Image
+                  <div
+                    onClick={() => {
+                      const el = document.getElementById("pricing");
+                      el?.scrollIntoView({ behavior: "smooth" });
+                    }}
+                    className=""
+                  >
+                    <Button text={t("CTA_Button")} />
+                  </div>
+                  <Link
+                    href={`${locale}/how-it-work`}
+                    className="w-max px-6 sm:px-4 sm:py-3 text-center transition-transform duration-200 ease-in-out hover:scale-105  rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-semibold flex justify-center items-center gap-2 bg-transparent text-black"
+                  >
+                    {/* <Image
                       src="/images/svg/play.svg"
                       alt="Play"
                       className="w-8 h-8 object-cover"
                       width={28}
                       height={28}
-                    />
+                    /> */}
                     <span className="text-black">{t("Watch")}</span>
-                  </button>
+                  </Link>
                 </div>
                 <div
                   ref={testRef}

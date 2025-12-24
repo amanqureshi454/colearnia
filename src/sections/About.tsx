@@ -143,10 +143,18 @@ const About = () => {
             ))}
           </ul>
           <div ref={buttonsRef} className="flex flex-row gap-4 w-full tab:mt-5">
-            <Button text={t("AboutCTA1")} />
-            <button className="w-max  px-5 py-3.5 text-center duration-200 border border-heading ease-in-out hover:scale-105  rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-medium flex justify-center items-center gap-2 bg-transparent text-black">
+            <div
+              onClick={() => {
+                const el = document.getElementById("pricing");
+                el?.scrollIntoView({ behavior: "smooth" });
+              }}
+              className=""
+            >
+              <Button text={t("AboutCTA1")} />
+            </div>
+            {/* <button className="w-max  px-5 py-3.5 text-center duration-200 border border-heading ease-in-out hover:scale-105  rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-medium flex justify-center items-center gap-2 bg-transparent text-black">
               <span className="text-black">{t("AboutCTA2")}</span>
-            </button>
+            </button> */}
           </div>
         </div>
         <div

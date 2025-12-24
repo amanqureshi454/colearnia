@@ -1,19 +1,21 @@
 "use client";
 import SectionWrapper from "@/components/shared/SectionWrapper";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import React, { useEffect, useRef } from "react";
 import { X, Check } from "lucide-react";
 import { usePathname } from "next/navigation";
 import gsap from "gsap";
 import ScrollTrigger from "gsap/ScrollTrigger";
-import CTAReuse from "@/components/shared/CTAReuse";
+import Link from "next/link";
+import Button from "@/components/shared/Button";
 
 gsap.registerPlugin(ScrollTrigger);
 
 const CTA = () => {
   const comparisonRef = useRef<HTMLDivElement>(null);
   const t = useTranslations("CTA");
+  const locale = useLocale();
   const pathname = usePathname();
   const isRTL = pathname?.startsWith("/ar") ?? false;
 
@@ -82,19 +84,33 @@ const CTA = () => {
     };
   }, []);
 
-  // useSplitTextAnimation({
-  //   headingRef,
-  //   triggerId: "cta",
-  // });
-
   return (
     <SectionWrapper>
-      <CTAReuse
-        backgroundImage="bg-[url('/images/png/CTA-1.png')]"
-        title={t("Title")}
-        primaryText={t("CTA")}
-        secondaryText={t("CTA2")}
-      />
+      <div
+        className={`w-full bg-[url('/images/png/CTA-1.png')] relative max-w-7xl mx-auto mb-14 rounded-4xl sm:h-84 tab:h-102 
+            bg-cover bg-center overflow-hidden`}
+      >
+        <div className="relative flex h-full gap-4 items-center justify-center flex-col p-3 text-center">
+          <h1 className="text-center w-full text-white font-bold font-inter sm:text-4xl md:text-5xl">
+            {t("Title")}
+          </h1>
+
+          {/* Buttons */}
+          <div className="flex flex-row gap-4 mt-5">
+            <Link href={`/${locale}#pricing`} scroll={true}>
+              <Button text={t("CTA")} />
+            </Link>
+            <Link
+              href={`${process.env.NEXT_PUBLIC_MAIN_DASHBOARD_URL}`}
+              className="w-max px-5 py-3.5 text-center bg-white ease-in-out hover:scale-105 
+                   rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-medium 
+                   flex justify-center items-center"
+            >
+              <span className="text-heading">{t("CTA2")}</span>
+            </Link>
+          </div>
+        </div>
+      </div>
 
       {/* Comparison Section */}
       <div

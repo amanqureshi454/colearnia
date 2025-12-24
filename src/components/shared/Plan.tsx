@@ -396,6 +396,7 @@ const Plan: React.FC<PlanProps> = ({ currentTab, durationTab }) => {
       />
 
       <div
+        id="pricing"
         ref={pricingRef}
         className={`flex justify-center w-full sm:flex-col tab:flex-row ${
           currentTab === "teacher" ? "gap-5" : "gap-3"

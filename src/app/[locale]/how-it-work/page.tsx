@@ -1,7 +1,7 @@
 "use client";
 
 import Button from "@/components/shared/Button";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef, useState } from "react";
@@ -11,10 +11,11 @@ import SplitText from "gsap/SplitText";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import HeroParagraph from "@/components/shared/HeroParagraph";
 import HeroHeadingTitle from "@/components/shared/HeroHeadingTitle";
-import CTAReuse from "@/components/shared/CTAReuse";
+
 import { Tab } from "@/components/ui/Tab";
 import { useStepsData } from "@/data/feature";
 import SectionHeader from "@/components/shared/HeadingWrapper";
+import Link from "next/link";
 
 export type UserType = "student" | "teacher";
 
@@ -46,7 +47,7 @@ const Page = () => {
   const aboutFeatureListRef = useRef<HTMLUListElement>(null);
   const aboutImageWrapperRef = useRef<HTMLDivElement>(null);
   const aboutButtonsWrapperRef = useRef<HTMLDivElement>(null);
-
+  const locale = useLocale();
   /* ---------- State ---------- */
   const [currentTab, setCurrentTab] = useState<UserType>("student");
   const isRTL = pathname?.startsWith("/ar") ?? false;
@@ -164,7 +165,6 @@ const Page = () => {
       ctx?.revert();
     };
   }, []);
-
   /* -------------------------------------------------
      2. STEPS ANIMATION - Re-run when tab changes
      ------------------------------------------------- */
@@ -490,12 +490,33 @@ const Page = () => {
 
         {/* ==================== CTA ==================== */}
         <SectionWrapper>
-          <CTAReuse
-            backgroundImage="bg-[url('/images/png/cta-how.png')]"
-            title={t("CTATitle")}
-            primaryText={t("CTA_Button")}
-            secondaryText={t("Try a Free Mission")}
-          />
+          <div
+            className={`w-full bg-[url('/images/png/cta-how.png')] relative max-w-7xl mx-auto mb-14 rounded-4xl sm:h-84 tab:h-102 
+                bg-cover bg-center overflow-hidden`}
+          >
+            <div className="relative flex h-full gap-4 items-center justify-center flex-col p-3 text-center">
+              <h1 className="text-center w-full text-white font-bold font-inter sm:text-4xl md:text-5xl">
+                {t("CTATitle")}
+              </h1>
+
+              {/* Buttons */}
+              <div className="flex flex-row gap-4 mt-5">
+                <Link href={`/${locale}#pricing`}>
+                  <Button text={t("CTA_Button")} />
+                </Link>
+                <Link
+                  href={`${process.env.NEXT_PUBLIC_MAIN_DASHBOARD_URL}`}
+                  className="w-max px-5 py-3.5 text-center bg-white ease-in-out hover:scale-105 
+                       rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-medium 
+                       flex justify-center items-center"
+                >
+                  <span className="text-heading">
+                    {t("Try a Free Mission")}
+                  </span>
+                </Link>
+              </div>
+            </div>
+          </div>
         </SectionWrapper>
       </div>
     </>

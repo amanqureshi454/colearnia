@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import Image from "next/image";
 import { usePathname } from "next/navigation";
 import React, { useEffect, useRef } from "react";
@@ -11,6 +11,8 @@ import CTAReuse from "@/components/shared/CTAReuse";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import SectionHeader from "@/components/shared/HeadingWrapper";
 import { useStepsData } from "@/data/feature";
+import Button from "@/components/shared/Button";
+import Link from "next/link";
 
 // Register GSAP plugins
 gsap.registerPlugin(SplitText, ScrollTrigger);
@@ -20,7 +22,7 @@ const Page = () => {
   const pathname = usePathname();
   const { infoData, weValue, milestones } = useStepsData();
   const isRTL = pathname?.startsWith("/ar") ?? false;
-
+  const locale = useLocale();
   // Refs for animations
   const lonelySectionRef = useRef<HTMLDivElement>(null);
   const lonelyHeadingRef = useRef<HTMLHeadingElement>(null);
@@ -219,7 +221,6 @@ const Page = () => {
 
     return () => cancelAnimationFrame(raf);
   }, []);
-
   /* -------------------------------------------------
      2. MILESTONES: Same Card Animation
      ------------------------------------------------- */
@@ -449,13 +450,37 @@ const Page = () => {
 
       {/* CTA */}
       <SectionWrapper>
-        <CTAReuse
-          backgroundImage="bg-[url('/images/png/about-cta.png')]"
-          title={t("AboutPage.Milestones.ctaTitle")}
-          subtitle={t("AboutPage.Milestones.ctaSubtitle")}
-          primaryText={t("AboutPage.Milestones.ctaPrimary")}
-          secondaryText={t("AboutPage.Milestones.ctaSecondary")}
-        />
+        <div
+          className={`w-full bg-[url('/images/png/about-cta.png')] relative max-w-7xl mx-auto mb-14 rounded-4xl sm:h-84 tab:h-102 
+                bg-cover bg-center overflow-hidden`}
+        >
+          <div className="relative flex h-full gap-4 items-center justify-center flex-col p-3 text-center">
+            <h1 className="text-center w-full text-white font-bold font-inter sm:text-4xl md:text-5xl">
+              {t("AboutPage.Milestones.ctaTitle")}
+            </h1>
+
+            <p className="text-white font-inter text-lg font-semibold">
+              {t("AboutPage.Milestones.ctaSubtitle")}
+            </p>
+
+            {/* Buttons */}
+            <div className="flex flex-row gap-4 mt-5">
+              <Link href={`/${locale}#pricing`} scroll={true}>
+                <Button text={t("AboutPage.Milestones.ctaPrimary")} />
+              </Link>
+              <Link
+                href={`/${locale}/how-it-work`}
+                className="w-max px-5 py-3.5 text-center bg-white ease-in-out hover:scale-105 
+                       rounded-full cursor-pointer sm:text-sm md:text-lg font-inter font-medium 
+                       flex justify-center items-center"
+              >
+                <span className="text-heading">
+                  {t("AboutPage.Milestones.ctaSecondary")}
+                </span>
+              </Link>
+            </div>
+          </div>
+        </div>
       </SectionWrapper>
     </div>
   );

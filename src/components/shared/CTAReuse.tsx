@@ -26,63 +26,6 @@ const CTAReuse: React.FC<CTAReuseProps> = ({
   const paraRef = useRef<HTMLParagraphElement>(null);
   const buttonsRef = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   if (!containerRef.current) return;
-
-  //   document.fonts.ready.then(() => {
-  //     const tl = gsap.timeline({
-  //       scrollTrigger: {
-  //         trigger: containerRef.current,
-  //         start: "top 80%",
-  //       },
-  //     });
-
-  //     // Heading animation
-  //     if (headingRef.current) {
-  //       tl.from(headingRef.current, {
-  //         opacity: 0,
-  //         y: 40,
-  //         duration: 0.8,
-  //         ease: "power2.out",
-  //       });
-  //     }
-
-  //     // Paragraph (subtitle) animation
-  //     if (paraRef.current) {
-  //       tl.from(
-  //         paraRef.current,
-  //         {
-  //           opacity: 0,
-  //           yPercent: 120,
-  //           duration: 0.7,
-  //           ease: "power1.out",
-  //         },
-  //         "-=0.4"
-  //       );
-  //     }
-
-  //     // Buttons animation
-  //     if (buttonsRef.current) {
-  //       const buttons = buttonsRef.current.querySelectorAll("button, a");
-  //       tl.from(
-  //         buttons,
-  //         {
-  //           opacity: 0,
-  //           y: 40,
-  //           duration: 0.8,
-  //           ease: "power2.out",
-  //           stagger: 0.15,
-  //         },
-  //         "-=0.3"
-  //       );
-  //     }
-  //   });
-
-  //   return () => {
-  //     ScrollTrigger.getAll().forEach((st) => st.kill());
-  //   };
-  // }, []);
-
   return (
     <div
       ref={containerRef}

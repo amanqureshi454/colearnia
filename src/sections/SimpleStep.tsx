@@ -10,6 +10,7 @@ import ScrollTrigger from "gsap/ScrollTrigger";
 import SectionWrapper from "@/components/shared/SectionWrapper";
 import SectionHeader from "@/components/shared/HeadingWrapper";
 import Button from "@/components/shared/Button";
+import Link from "next/link";
 
 gsap.registerPlugin(SplitText, ScrollTrigger);
 
@@ -118,7 +119,9 @@ const SimpleStep = () => {
           ))}
         </div>
         <div className="pt-10 flex justify-center items-center">
-          <Button text={t("StartFree")} />
+          <Link href={process.env.NEXT_PUBLIC_MAIN_DASHBOARD_URL||"https://uat.studycircleapp.com/"} className="">
+            <Button text={t("StartFree")} />
+          </Link >
         </div>
       </div>
     </SectionWrapper>
